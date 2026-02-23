@@ -1276,6 +1276,7 @@
             if (!userSession) return;
             if (event.data.type === 'gameReset') {
                 localStorage.setItem('shownMemories', '[]');
+                localStorage.setItem('personalDiscoveries', '[]');
             }
             if (event.data.type === 'itemUpdate') {
                 var oldItems = userSession.activeItems || [];
@@ -1336,9 +1337,10 @@
                 const items = snapshot.val() || [];
                 if (userSession && Array.isArray(items)) {
                     var oldItems = userSession.activeItems || [];
-                    // Game reset detected — clear popup history on all devices
+                    // Game reset detected — clear popup history and personal discoveries on all devices
                     if (items.length === 0 && oldItems.length > 0) {
                         localStorage.setItem('shownMemories', '[]');
+                        localStorage.setItem('personalDiscoveries', '[]');
                     }
                     checkForNewMemories(oldItems, items);
                     userSession.activeItems = items;
@@ -1629,20 +1631,23 @@
                 });
             }
 
-            // Show skill summaries: person must HAVE the skill AND skillDiscovered must be in discoveredSkills
+            // Show skill summaries: person must HAVE the skill AND it must be discovered
+            // Discovered = either personally via QR scan (localStorage) OR globally via Master Controls (Firebase)
             const mySkills = getMySkills();
+            const personalDisc = getPersonalDiscoveries();
             if (mySkills.length > 0) {
                 mySkills.forEach(skillName => {
                     const skillData = skillsDatabase[skillName];
                     if (!skillData || skillName === 'Bartender') return;
                     const discoveredKey = skillName.toLowerCase() + 'Discovered';
-                    const isDiscovered = userSession.discoveredSkills.includes(discoveredKey);
-                    if (isDiscovered) {
+                    const isGlobalDiscovered = userSession.discoveredSkills.includes(discoveredKey);
+                    const isPersonalDiscovered = personalDisc.includes(discoveredKey);
+                    if (isGlobalDiscovered || isPersonalDiscovered) {
                         html += `
                             <div style="background: rgba(201, 162, 39, 0.1); border-left: 3px solid #c9a227; padding: 20px; margin-bottom: 15px; border-radius: 3px;">
                                 <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 20px; color: #c9a227; margin-bottom: 10px;">\u2726 ${skillData.title}</div>
                                 <div style="font-size: 16px; line-height: 1.6; color: #e8e8e8; margin-bottom: 12px;">${skillData.summary}</div>
-                                ${skillData.expert ? '<button onclick="showSkillContent(\'' + skillName + '\', skillsDatabase[\'' + skillName + '\'])" style="background: transparent; color: #c9a227; border: 1px solid #c9a227; padding: 6px 16px; cursor: pointer; font-family: \'Playfair Display\', Georgia, serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s;" onmouseover="this.style.background=\'#c9a227\';this.style.color=\'#1a1a2e\'" onmouseout="this.style.background=\'transparent\';this.style.color=\'#c9a227\'">View Full Analysis</button>' : ''}
+                                ${(isPersonalDiscovered && skillData.expert) ? '<button onclick="showSkillContent(\'' + skillName + '\', skillsDatabase[\'' + skillName + '\'])" style="background: transparent; color: #c9a227; border: 1px solid #c9a227; padding: 6px 16px; cursor: pointer; font-family: \'Playfair Display\', Georgia, serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s;" onmouseover="this.style.background=\'#c9a227\';this.style.color=\'#1a1a2e\'" onmouseout="this.style.background=\'transparent\';this.style.color=\'#c9a227\'">View Full Analysis</button>' : ''}
                             </div>
                         `;
                     }
@@ -1778,6 +1783,7 @@
             userSession.discoveredSkills = [];
             localStorage.setItem('userSession', JSON.stringify(userSession));
             localStorage.setItem('shownMemories', '[]');
+            localStorage.setItem('personalDiscoveries', '[]');
             
             // Clear Firebase (triggers listeners on all devices)
             if (database) {
@@ -2009,17 +2015,23 @@
         }
 
         function markSkillDiscovered(skillName) {
-            if (!database) return;
+            // Save to LOCAL storage only — not Firebase
+            // Only the scanning player sees this on their Discoveries page
+            // Scott's Master Controls toggle pushes to Firebase for everyone
             var key = skillName.toLowerCase() + 'Discovered';
-            database.ref('discoveredSkills').once('value').then(function(snapshot) {
-                var current = snapshot.val() || [];
-                if (current.indexOf(key) === -1) {
-                    current.push(key);
-                    database.ref('discoveredSkills').set(current)
-                        .then(function() { console.log('Skill discovered via scan:', key); })
-                        .catch(function(e) { console.error('Firebase write error:', e); });
-                }
-            });
+            var personal = getPersonalDiscoveries();
+            if (personal.indexOf(key) === -1) {
+                personal.push(key);
+                localStorage.setItem('personalDiscoveries', JSON.stringify(personal));
+                console.log('Skill discovered locally via scan:', key);
+                loadDiscoveriesData(); // re-render to show it
+            }
+        }
+
+        function getPersonalDiscoveries() {
+            try {
+                return JSON.parse(localStorage.getItem('personalDiscoveries') || '[]');
+            } catch(e) { return []; }
         }
 
 
