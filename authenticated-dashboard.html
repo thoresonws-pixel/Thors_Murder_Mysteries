@@ -802,6 +802,120 @@
             text-align: center;
         }
         .skill-denied p { margin-top: 15px; font-size: 16px; color: #666; font-family: 'Cormorant Garamond', Georgia, serif; }
+
+        /* ── Progressive Reveal: Revealed Items ── */
+        .revealed-item {
+            border-left: 3px solid #a03030;
+            padding-left: 12px;
+            margin-left: 0;
+            background: rgba(160, 48, 48, 0.06);
+            border-radius: 0 4px 4px 0;
+            color: #c0392b;
+        }
+        .revealed-label {
+            display: inline-block;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 11px;
+            color: #a03030;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .secret-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(139, 40, 40, 0.08);
+            border: 1px solid rgba(139, 40, 40, 0.25);
+            border-radius: 6px;
+        }
+        .secret-section .section-header { color: #a04040; }
+        .confession-guide {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(160, 48, 48, 0.08);
+            border: 1px solid rgba(160, 48, 48, 0.3);
+            border-radius: 6px;
+        }
+
+        /* ── Memory Popup ── */
+        .memory-popup-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: memoryFadeIn 0.5s ease;
+        }
+        @keyframes memoryFadeIn {
+            from { opacity: 0; } to { opacity: 1; }
+        }
+        @keyframes memoryTextReveal {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .memory-popup-box {
+            background: linear-gradient(135deg, #2a2520 0%, #1a1510 100%);
+            border: 2px solid #c9a227;
+            border-radius: 8px;
+            padding: 35px 30px;
+            max-width: 380px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(201, 162, 39, 0.15);
+        }
+        .memory-popup-header {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 13px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #c9a227;
+            margin-bottom: 20px;
+            animation: memoryTextReveal 0.6s ease 0.2s both;
+        }
+        .memory-popup-text {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 18px;
+            line-height: 1.6;
+            color: #e8e0d0;
+            font-style: italic;
+            margin-bottom: 25px;
+            animation: memoryTextReveal 0.6s ease 0.5s both;
+        }
+        .memory-popup-type {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #8b7355;
+            margin-bottom: 20px;
+            animation: memoryTextReveal 0.6s ease 0.7s both;
+        }
+        .memory-popup-dismiss {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 10px 30px;
+            background: transparent;
+            color: #c9a227;
+            border: 1px solid #c9a227;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: memoryTextReveal 0.6s ease 0.9s both;
+        }
+        .memory-popup-dismiss:hover {
+            background: #c9a227;
+            color: #2a2520;
+        }
+        .memory-popup-counter {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 12px;
+            color: #8b7355;
+            margin-top: 12px;
+            animation: memoryTextReveal 0.6s ease 0.9s both;
+        }
     </style>
 </head>
 <body>
@@ -1161,9 +1275,12 @@
         broadcastChannel.onmessage = (event) => {
             if (!userSession) return;
             if (event.data.type === 'itemUpdate') {
+                var oldItems = userSession.activeItems || [];
+                checkForNewMemories(oldItems, event.data.activeItems || []);
                 userSession.activeItems = event.data.activeItems || [];
                 localStorage.setItem('userSession', JSON.stringify(userSession));
                 loadDiscoveriesData();
+                loadCharacterData();
             }
             if (event.data.type === 'skillUpdate') {
                 userSession.discoveredSkills = event.data.discoveredSkills || [];
@@ -1215,9 +1332,12 @@
             database.ref('activeItems').on('value', (snapshot) => {
                 const items = snapshot.val() || [];
                 if (userSession && Array.isArray(items)) {
+                    var oldItems = userSession.activeItems || [];
+                    checkForNewMemories(oldItems, items);
                     userSession.activeItems = items;
                     localStorage.setItem('userSession', JSON.stringify(userSession));
                     if (document.getElementById('discoveriesContent')) loadDiscoveriesData();
+                    loadCharacterData();
                     if (document.getElementById('masterCluesContent') && userSession.role === 'master') loadMasterClues();
                 }
             });
@@ -1337,95 +1457,151 @@
                     return;
                 }
 
-                document.getElementById('characterName').textContent = charData.character;
+                document.getElementById('characterName').textContent = charData.name;
                 
+                // Get current active revelations
+                var active = userSession.activeItems || [];
+                function isUnlocked(item) {
+                    return !item.unlockedBy || active.indexOf(item.unlockedBy) !== -1;
+                }
+
                 const sectionStyle = "font-family: 'Playfair Display', Georgia, serif; font-size: 20px; color: #c9a227; margin-bottom: 15px; margin-top: 35px; text-transform: uppercase; border-bottom: 1px solid rgba(201,162,39,0.3); padding-bottom: 10px;";
                 const textStyle = "font-size: 16px; line-height: 1.8; color: #e8e8e8;";
                 
-                let html = `<div style="background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #c9a227; border-radius: 5px; padding: 30px; margin-bottom: 30px;">`;
+                let html = '<div style="background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #c9a227; border-radius: 5px; padding: 30px; margin-bottom: 30px;">';
+                
+                // PUBLIC DESCRIPTION
+                html += '<div style="font-size: 16px; color: #8b8b8b; font-style: italic; margin-bottom: 15px;">' + charData.publicDesc + '</div>';
+
+                // SKILLS
+                if (charData.skills && charData.skills.length > 0) {
+                    html += '<div style="margin-bottom: 15px;">';
+                    charData.skills.forEach(function(s) {
+                        html += '<span style="display:inline-block; font-size:11px; background:rgba(201,162,39,0.15); color:#c9a227; padding:3px 10px; border-radius:3px; margin-right:6px; margin-bottom:4px; border:1px solid rgba(201,162,39,0.3); letter-spacing:1px; text-transform:uppercase;">' + s + '</span>';
+                    });
+                    html += '</div>';
+                }
                 
                 // BACKSTORY
-                html += `<div style="${sectionStyle}">Your Story</div>`;
-                html += `<div style="${textStyle} margin-bottom: 20px;">${charData.backstory}</div>`;
-                
-                // WHAT YOU KNOW
-                if (charData.whatYouKnow && charData.whatYouKnow.length > 0) {
-                    html += `<div style="${sectionStyle}">What You Already Know</div>`;
-                    html += `<ul style="list-style: none; padding-left: 10px;">`;
-                    charData.whatYouKnow.forEach(item => {
-                        html += `<li style="margin-bottom: 12px; font-size: 15px; line-height: 1.6; color: #e8e8e8; padding-left: 20px; position: relative;"><span style="color: #c9a227; position: absolute; left: 0;">✦</span> ${item}</li>`;
-                    });
-                    html += `</ul>`;
-                }
-                
-                // WHAT YOU CAN SHARE
-                if (charData.whatYouCanShare && charData.whatYouCanShare.length > 0) {
-                    html += `<div style="${sectionStyle}">What You Can Share</div>`;
-                    html += `<div style="font-size: 13px; color: #8b8b8b; font-style: italic; margin-bottom: 15px;">Use these during conversation when the timing feels right.</div>`;
-                    charData.whatYouCanShare.forEach(item => {
-                        html += `<div style="background: rgba(201,162,39,0.08); border-left: 3px solid #c9a227; padding: 15px; margin-bottom: 12px; border-radius: 0 3px 3px 0;">`;
-                        html += `<div style="font-size: 15px; line-height: 1.6; color: #e8e8e8;">"${item.info}"</div>`;
-                        html += `<div style="font-size: 12px; color: #c9a227; margin-top: 8px; text-transform: uppercase; letter-spacing: 1px;">↳ ${item.when}</div>`;
-                        html += `</div>`;
-                    });
-                }
+                html += '<div style="' + sectionStyle + '">Your Story</div>';
+                html += '<div style="' + textStyle + ' margin-bottom: 20px;">' + charData.backstory + '</div>';
                 
                 // HOW TO PLAY
                 if (charData.howToPlay) {
-                    html += `<div style="${sectionStyle}">How To Play This Character</div>`;
-                    html += `<div style="${textStyle} margin-bottom: 20px;">${charData.howToPlay}</div>`;
+                    html += '<div style="' + sectionStyle + '">How To Play This Character</div>';
+                    html += '<div style="' + textStyle + ' margin-bottom: 20px;">';
+                    html += '<strong>Tone:</strong> ' + charData.howToPlay.tone + '<br><br>';
+                    html += '<strong>Key Behaviors:</strong> ' + charData.howToPlay.behaviors + '<br><br>';
+                    html += '<strong>Important:</strong> ' + charData.howToPlay.important;
+                    html += '</div>';
+                }
+                
+                // WHAT YOU KNOW (filtered by unlockedBy)
+                if (charData.knowledge && charData.knowledge.length > 0) {
+                    var visibleKnowledge = charData.knowledge.filter(isUnlocked);
+                    if (visibleKnowledge.length > 0) {
+                        html += '<div style="' + sectionStyle + '">What You Know</div>';
+                        html += '<ul style="list-style: none; padding-left: 10px;">';
+                        visibleKnowledge.forEach(function(k) {
+                            var isRevealed = k.unlockedBy !== null;
+                            if (isRevealed) {
+                                html += '<li class="revealed-item" style="margin-bottom: 12px; font-size: 15px; line-height: 1.6; padding: 10px 10px 10px 20px; position: relative;">';
+                                html += '<div class="revealed-label">Recalled during the evening</div>';
+                            } else {
+                                html += '<li style="margin-bottom: 12px; font-size: 15px; line-height: 1.6; color: #e8e8e8; padding-left: 20px; position: relative;">';
+                                html += '<span style="color: #c9a227; position: absolute; left: 0;">\u2726</span> ';
+                            }
+                            html += k.text + '</li>';
+                        });
+                        html += '</ul>';
+                    }
+                }
+                
+                // WHAT YOU CAN SHARE (filtered by unlockedBy)
+                if (charData.canShare && charData.canShare.length > 0) {
+                    var visibleShare = charData.canShare.filter(isUnlocked);
+                    if (visibleShare.length > 0) {
+                        html += '<div style="' + sectionStyle + '">What You Can Share</div>';
+                        html += '<div style="font-size: 13px; color: #8b8b8b; font-style: italic; margin-bottom: 15px;">Use these during conversation when the timing feels right.</div>';
+                        visibleShare.forEach(function(s) {
+                            var isRevealed = s.unlockedBy !== null;
+                            if (isRevealed) {
+                                html += '<div class="revealed-item" style="padding: 15px; margin-bottom: 12px; border-radius: 0 3px 3px 0;">';
+                                html += '<div class="revealed-label">Recalled during the evening</div>';
+                            } else {
+                                html += '<div style="background: rgba(201,162,39,0.08); border-left: 3px solid #c9a227; padding: 15px; margin-bottom: 12px; border-radius: 0 3px 3px 0;">';
+                            }
+                            html += '<div style="font-size: 15px; line-height: 1.6; color: #e8e8e8;">\u201C' + s.text + '\u201D</div>';
+                            html += '</div>';
+                        });
+                    }
                 }
                 
                 // GOALS
                 if (charData.goals && charData.goals.length > 0) {
-                    html += `<div style="${sectionStyle}">Your Goals Tonight</div>`;
-                    html += `<ul style="list-style: none; padding-left: 10px;">`;
-                    charData.goals.forEach(g => {
-                        html += `<li style="margin-bottom: 10px; font-size: 15px; color: #e8e8e8; padding-left: 20px; position: relative;"><span style="color: #c9a227; position: absolute; left: 0;">✦</span> ${g}</li>`;
+                    html += '<div style="' + sectionStyle + '">Your Goals Tonight</div>';
+                    html += '<ul style="list-style: none; padding-left: 10px;">';
+                    charData.goals.forEach(function(g) {
+                        html += '<li style="margin-bottom: 10px; font-size: 15px; color: #e8e8e8; padding-left: 20px; position: relative;"><span style="color: #c9a227; position: absolute; left: 0;">\u2726</span> ' + g + '</li>';
                     });
-                    html += `</ul>`;
+                    html += '</ul>';
                 }
                 
                 // RELATIONSHIPS
                 if (charData.relationships && charData.relationships.length > 0) {
-                    html += `<div style="${sectionStyle}">Key Relationships</div>`;
-                    html += `<ul style="list-style: none; padding-left: 10px;">`;
-                    charData.relationships.forEach(r => {
-                        html += `<li style="margin-bottom: 10px; font-size: 15px; color: #e8e8e8;"><strong style="color: #c9a227;">${r.name}</strong> — ${r.relation}</li>`;
+                    html += '<div style="' + sectionStyle + '">Key Relationships</div>';
+                    html += '<ul style="list-style: none; padding-left: 10px;">';
+                    charData.relationships.forEach(function(r) {
+                        html += '<li style="margin-bottom: 10px; font-size: 15px; color: #e8e8e8;"><strong style="color: #c9a227;">' + r.name + '</strong> \u2014 ' + r.relation + '</li>';
                     });
-                    html += `</ul>`;
+                    html += '</ul>';
                 }
                 
-                // ITEMS CARRIED (if present)
-                if (charData.carryingItems) {
-                    html += `<div style="${sectionStyle}">Items On Your Person</div>`;
-                    html += `<div style="${textStyle}">${charData.carryingItems}</div>`;
+                // ITEMS
+                if (charData.items && charData.items.length > 0) {
+                    html += '<div style="' + sectionStyle + '">Items On Your Person</div>';
+                    html += '<ul style="list-style: none; padding-left: 10px;">';
+                    charData.items.forEach(function(item) {
+                        html += '<li style="margin-bottom: 8px; font-size: 15px; color: #e8e8e8; padding-left: 20px; position: relative;"><span style="color: #c9a227; position: absolute; left: 0;">\u2726</span> ' + item + '</li>';
+                    });
+                    html += '</ul>';
                 }
                 
-                html += `</div>`; // close main container
+                html += '</div>'; // close main container
                 
-                // SECRET SECTION (Miranda only)
-                if (charData.secretSection) {
-                    html += `<div style="background: linear-gradient(145deg, #2a1010 0%, #1a0a0a 100%); border: 2px solid #8b4a4a; border-radius: 5px; padding: 30px; margin-bottom: 30px;">`;
-                    html += `<div style="font-family: 'Playfair Display', Georgia, serif; font-size: 22px; color: #8b4a4a; text-transform: uppercase; text-align: center; margin-bottom: 5px;">⚠ YOUR SECRET ⚠</div>`;
-                    html += `<div style="font-size: 12px; color: #8b4a4a; text-align: center; margin-bottom: 25px; font-style: italic;">Do not share this information until the confession scene.</div>`;
+                // SECRET SECTION (Miranda/Leanna only)
+                if (userSession.username === 'Leanna' && charData.secret) {
+                    html += '<div style="background: linear-gradient(145deg, #2a1010 0%, #1a0a0a 100%); border: 2px solid #8b4a4a; border-radius: 5px; padding: 30px; margin-bottom: 30px;">';
+                    html += '<div style="font-family: \'Playfair Display\', Georgia, serif; font-size: 22px; color: #8b4a4a; text-transform: uppercase; text-align: center; margin-bottom: 5px;">\u26A0 YOUR SECRET \u26A0</div>';
+                    html += '<div style="font-size: 12px; color: #8b4a4a; text-align: center; margin-bottom: 25px; font-style: italic;">Do not share this information until the confession scene.</div>';
                     
-                    if (charData.trueIdentity) {
-                        html += `<div style="${sectionStyle.replace('#c9a227', '#8b4a4a')}">Your True Identity: ${charData.trueIdentity}</div>`;
-                    }
-                    if (charData.trueBackstory) {
-                        html += `<div style="${textStyle} margin-bottom: 20px;">${charData.trueBackstory}</div>`;
-                    }
-                    if (charData.trueMotivation) {
-                        html += `<div style="${sectionStyle.replace('#c9a227', '#8b4a4a')}">Your Motivation</div>`;
-                        html += `<div style="${textStyle} margin-bottom: 20px;">${charData.trueMotivation}</div>`;
-                    }
-                    if (charData.confessionGuide) {
-                        html += `<div style="${sectionStyle.replace('#c9a227', '#8b4a4a')}">The Confession — How To Play It</div>`;
-                        html += `<div style="${textStyle}">${charData.confessionGuide}</div>`;
+                    var s = charData.secret;
+                    html += '<div style="' + sectionStyle.replace(/#c9a227/g, '#8b4a4a') + '">Your True Identity: ' + s.trueIdentity + '</div>';
+                    html += '<div style="' + textStyle + ' margin-bottom: 20px;">' + s.trueBio.replace(/\\n/g, '<br>') + '</div>';
+                    
+                    html += '<div style="' + sectionStyle.replace(/#c9a227/g, '#8b4a4a') + '">Your Motivation</div>';
+                    html += '<div style="' + textStyle + ' margin-bottom: 20px;">' + s.trueMotivation + '</div>';
+                    
+                    html += '<div style="' + sectionStyle.replace(/#c9a227/g, '#8b4a4a') + '">Carrying Items</div>';
+                    html += '<div style="' + textStyle + ' margin-bottom: 20px;">' + s.carryingItems + '</div>';
+                    
+                    // Confession Guide (gated)
+                    if (charData.confessionGuide && isUnlocked(charData.confessionGuide)) {
+                        html += '<div class="confession-guide revealed-item">';
+                        html += '<div class="revealed-label">The moment is approaching</div>';
+                        html += '<div style="' + sectionStyle.replace(/#c9a227/g, '#8b4a4a') + '">Confession Guide</div>';
+                        html += '<div style="' + textStyle + '">' + charData.confessionGuide.text.replace(/\\n/g, '<br>').replace(/\n/g, '<br>') + '</div>';
+                        html += '</div>';
                     }
                     
-                    html += `</div>`;
+                    // Final Entry (always visible to Leanna)
+                    if (charData.finalEntry) {
+                        html += '<div style="' + sectionStyle.replace(/#c9a227/g, '#8b4a4a') + '">Your Final Journal Entry</div>';
+                        html += '<div style="font-size: 13px; color: #8b4a4a; font-style: italic; margin-bottom: 15px;">' + charData.finalEntry.instructions + '</div>';
+                        html += '<div style="' + textStyle + ' white-space: pre-line;">' + charData.finalEntry.text.replace(/\\n/g, '\n') + '</div>';
+                    }
+                    
+                    html += '</div>';
                 }
                 
                 document.getElementById('characterContent').innerHTML = html;
@@ -1554,6 +1730,15 @@
             });
 
             html += '</div></div>';
+
+            // Popup Test Toggle (Scott only)
+            html += '<div style="margin-top:30px; padding-top:20px; border-top:2px dashed #c9a227;">';
+            html += '<div style="font-family:\'Playfair Display\',serif; font-size:13px; letter-spacing:3px; text-transform:uppercase; color:#c9a227; margin-bottom:12px;">\uD83E\uDDEA POPUP TEST</div>';
+            var isTestActive = userSession.activeItems.includes('popupTest');
+            html += '<button onclick="toggleItem(\'popupTest\')" style="background:' + (isTestActive ? '#e74c3c' : '#4caf50') + '; color:white; border:none; padding:8px 16px; cursor:pointer; border-radius:3px; font-size:13px;">' + (isTestActive ? 'Reset Test' : 'Test Memory Popup') + '</button>';
+            html += '<div style="font-size:11px; color:#8b7355; margin-top:8px; font-style:italic;">Toggle ON to see the popup on your device. Toggle OFF to reset for retesting.</div>';
+            html += '</div>';
+
             document.getElementById('masterCluesContent').innerHTML = html;
         }
 
@@ -1584,6 +1769,83 @@
             syncToFirebase();
             broadcastChannel.postMessage({ type: 'skillUpdate', discoveredSkills: userSession.discoveredSkills });
             loadMasterClues();
+        }
+
+        // ── MEMORY POPUP SYSTEM ──────────────────────────────────
+        var memoryQueue = [];
+
+        function checkForNewMemories(oldItems, newItems) {
+            var newlyAdded = newItems.filter(function(id) {
+                return oldItems.indexOf(id) === -1;
+            });
+            if (newlyAdded.length === 0) return;
+
+            var username = userSession.username;
+            var charData = characterDatabase[username];
+            if (!charData) return;
+
+            var memories = [];
+
+            if (charData.knowledge) {
+                charData.knowledge.forEach(function(item) {
+                    if (item.unlockedBy && newlyAdded.indexOf(item.unlockedBy) !== -1) {
+                        memories.push({ text: item.text, type: 'knowledge' });
+                    }
+                });
+            }
+
+            if (charData.canShare) {
+                charData.canShare.forEach(function(item) {
+                    if (item.unlockedBy && newlyAdded.indexOf(item.unlockedBy) !== -1) {
+                        memories.push({ text: item.text, type: 'canShare' });
+                    }
+                });
+            }
+
+            if (memories.length > 0) {
+                memoryQueue = memoryQueue.concat(memories);
+                if (!document.querySelector('.memory-popup-overlay')) {
+                    showNextMemory();
+                }
+            }
+        }
+
+        function showNextMemory() {
+            if (memoryQueue.length === 0) return;
+
+            var memory = memoryQueue.shift();
+            var remaining = memoryQueue.length;
+
+            var typeLabel = memory.type === 'canShare'
+                ? 'You may share this with others'
+                : 'Something you now recall';
+
+            var overlay = document.createElement('div');
+            overlay.className = 'memory-popup-overlay';
+            overlay.innerHTML =
+                '<div class="memory-popup-box">' +
+                    '<div class="memory-popup-header">A Memory Surfaces\u2026</div>' +
+                    '<div class="memory-popup-text">\u201C' + memory.text + '\u201D</div>' +
+                    '<div class="memory-popup-type">' + typeLabel + '</div>' +
+                    '<button class="memory-popup-dismiss" onclick="dismissMemory()">' +
+                        (remaining > 0 ? 'Next' : 'Dismiss') +
+                    '</button>' +
+                    (remaining > 0
+                        ? '<div class="memory-popup-counter">' + remaining + ' more memor' + (remaining === 1 ? 'y' : 'ies') + '</div>'
+                        : '') +
+                '</div>';
+
+            document.body.appendChild(overlay);
+        }
+
+        function dismissMemory() {
+            var overlay = document.querySelector('.memory-popup-overlay');
+            if (overlay) overlay.remove();
+            if (memoryQueue.length > 0) {
+                showNextMemory();
+            } else {
+                loadCharacterData();
+            }
         }
 
         // ── QR SCANNER ──────────────────────────────────────────
