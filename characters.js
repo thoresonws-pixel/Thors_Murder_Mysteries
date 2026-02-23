@@ -292,7 +292,7 @@ const characterDatabase = {
     "DJ": {
         name: "David Richardson",
         publicDesc: "A cousin on the Thoreson side and a licensed private investigator. He was here for the dinner — now he's using his connections to help the family get answers.",
-        skills: ["Investigation"],
+        skills: [],
         backstory: "You're a cousin on the Thoreson side — close enough to the family to know the dynamics, far enough removed to make a living outside the toy business. You became a private investigator about eight years ago, working cases around Dallas — missing persons, insurance fraud, the occasional domestic matter. You're good at it. You know how to read people, how to follow a paper trail, and how to ask the right questions without tipping your hand.\n\nYou were here tonight for the dinner, same as everyone else. Family obligation, good food, the usual Thoreson production. Then Will died, and everything changed.\n\nThe thing about being a PI is you know people. You know the agent at the Pinkerton office who can pull a background check on short notice. You know someone at the coroner's office who can get you a preliminary autopsy report tonight instead of next month. While everyone else is sitting around in shock, you're making phone calls and calling in favors. If there are answers to be found, you're the one who can get the paperwork to find them.\n\nYou know this family, and you know that money, secrets, and old grudges have a way of surfacing at the worst possible time. Tonight, your job is to use every connection you have to help piece together what happened.",
         howToPlay: {
             tone: "Calm, observant, methodical. You're family first, but your PI instincts are kicking in. Be helpful, not heavy-handed.",
@@ -303,7 +303,8 @@ const characterDatabase = {
             { text: "You've already made a few calls. Your contact at the coroner's office is rushing the preliminary autopsy. Your friend at Pinkerton is pulling records on everyone at this party. Results should come in throughout the evening.", unlockedBy: null },
             { text: "You know the Thoreson family well — their strengths and their tensions. Will was generous publicly, but private about his past.", unlockedBy: null },
             { text: "In your line of work, you've learned that when a wealthy man dies unexpectedly, the answers are usually in the paperwork.", unlockedBy: null },
-            { text: "Miranda Longfellow has worked for Scott for about ten years. You've met her a few times. Pleasant enough, but you've never heard her mention family or where she came from.", unlockedBy: null }
+            { text: "Miranda Longfellow has worked for Scott for about ten years. You've met her a few times. Pleasant enough, but you've never heard her mention family or where she came from.", unlockedBy: null },
+            { text: "Your Pinkerton contact just got back to you with those background checks. He said most everyone came back clean, but two names popped out to him — Walter Lippman and Miranda Longfellow. We already learned that Walter Lippman's real identity is Taylor Hartley. But it seems there's another Hartley at this party — a Miranda Hartley.", unlockedBy: "poisonTrail" }
         ],
         canShare: [
             { text: "I've got a friend at the coroner's office and a contact at Pinkerton. I've been making calls — we should have some paperwork coming our way tonight.", unlockedBy: null },
