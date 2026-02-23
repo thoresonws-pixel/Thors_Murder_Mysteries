@@ -292,7 +292,7 @@ const characterDatabase = {
     "DJ": {
         name: "David Richardson",
         publicDesc: "A cousin on the Thoreson side and a licensed private investigator. He was here for the dinner — now he's using his connections to help the family get answers.",
-        skills: [],
+        skills: ["Investigation"],
         backstory: "You're a cousin on the Thoreson side — close enough to the family to know the dynamics, far enough removed to make a living outside the toy business. You became a private investigator about eight years ago, working cases around Dallas — missing persons, insurance fraud, the occasional domestic matter. You're good at it. You know how to read people, how to follow a paper trail, and how to ask the right questions without tipping your hand.\n\nYou were here tonight for the dinner, same as everyone else. Family obligation, good food, the usual Thoreson production. Then Will died, and everything changed.\n\nThe thing about being a PI is you know people. You know the agent at the Pinkerton office who can pull a background check on short notice. You know someone at the coroner's office who can get you a preliminary autopsy report tonight instead of next month. While everyone else is sitting around in shock, you're making phone calls and calling in favors. If there are answers to be found, you're the one who can get the paperwork to find them.\n\nYou know this family, and you know that money, secrets, and old grudges have a way of surfacing at the worst possible time. Tonight, your job is to use every connection you have to help piece together what happened.",
         howToPlay: {
             tone: "Calm, observant, methodical. You're family first, but your PI instincts are kicking in. Be helpful, not heavy-handed.",
