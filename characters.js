@@ -292,19 +292,18 @@ const characterDatabase = {
     "DJ": {
         name: "David Richardson",
         publicDesc: "A cousin on the Thoreson side and a licensed private investigator. He was here for the dinner — now he's using his connections to help the family get answers.",
-        skills: [],
+        skills: ["Investigation"],
         backstory: "You're a cousin on the Thoreson side — close enough to the family to know the dynamics, far enough removed to make a living outside the toy business. You became a private investigator about eight years ago, working cases around Dallas — missing persons, insurance fraud, the occasional domestic matter. You're good at it. You know how to read people, how to follow a paper trail, and how to ask the right questions without tipping your hand.\n\nYou were here tonight for the dinner, same as everyone else. Family obligation, good food, the usual Thoreson production. Then Will died, and everything changed.\n\nThe thing about being a PI is you know people. You know the agent at the Pinkerton office who can pull a background check on short notice. You know someone at the coroner's office who can get you a preliminary autopsy report tonight instead of next month. While everyone else is sitting around in shock, you're making phone calls and calling in favors. If there are answers to be found, you're the one who can get the paperwork to find them.\n\nYou know this family, and you know that money, secrets, and old grudges have a way of surfacing at the worst possible time. Tonight, your job is to use every connection you have to help piece together what happened.",
         howToPlay: {
             tone: "Calm, observant, methodical. You're family first, but your PI instincts are kicking in. Be helpful, not heavy-handed.",
             behaviors: "Let people know you're making calls to get documents — autopsy results, background checks, whatever you can pull. Ask direct questions when something doesn't add up. Keep an eye on your phone — your contacts will be getting back to you throughout the evening.",
-            important: "You'll receive a notification later in the evening when your Pinkerton contact gets back to you with background check results. When that comes in, READ IT TO THE GROUP — it's a major piece of the puzzle."
+            important: "You have the Investigation skill. Later in the evening, your Pinkerton contact will get back to you with background check results — it'll pop up on your phone as a notification. When it does, READ IT TO THE GROUP. It's a critical piece of the puzzle."
         },
         knowledge: [
             { text: "You've already made a few calls. Your contact at the coroner's office is rushing the preliminary autopsy. Your friend at Pinkerton is pulling records on everyone at this party. Results should come in throughout the evening.", unlockedBy: null },
             { text: "You know the Thoreson family well — their strengths and their tensions. Will was generous publicly, but private about his past.", unlockedBy: null },
             { text: "In your line of work, you've learned that when a wealthy man dies unexpectedly, the answers are usually in the paperwork.", unlockedBy: null },
-            { text: "Miranda Longfellow has worked for Scott for about ten years. You've met her a few times. Pleasant enough, but you've never heard her mention family or where she came from.", unlockedBy: null },
-            { text: "\uD83D\uDCDE YOUR PINKERTON CONTACT JUST CALLED BACK:\n\n\"Hey David — I ran those background checks on everyone at the party like you asked. Most came back clean. But two names popped out to me.\n\nWalter Lippman and Miranda Longfellow.\n\nWe already learned that Walter Lippman's real identity is Taylor Hartley. But it looks like there's ANOTHER Hartley at this party.\n\nMiranda Longfellow's real name is Miranda Hartley.\"\n\n⚠️ SHARE THIS WITH THE GROUP IMMEDIATELY.", unlockedBy: "poisoning" }
+            { text: "Miranda Longfellow has worked for Scott for about ten years. You've met her a few times. Pleasant enough, but you've never heard her mention family or where she came from.", unlockedBy: null }
         ],
         canShare: [
             { text: "I've got a friend at the coroner's office and a contact at Pinkerton. I've been making calls — we should have some paperwork coming our way tonight.", unlockedBy: null },
