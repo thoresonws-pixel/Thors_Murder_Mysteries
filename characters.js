@@ -291,35 +291,35 @@ const characterDatabase = {
 
     "DJ": {
         name: "David Richardson",
-        publicDesc: "A cousin on the Thoreson side and a licensed private investigator. He was here for the dinner — now he's working the case.",
+        publicDesc: "A cousin on the Thoreson side and a licensed private investigator. He was here for the dinner — now he's using his connections to help the family get answers.",
         skills: ["Investigation"],
-        backstory: "You're a cousin on the Thoreson side — close enough to the family to know the dynamics, far enough removed to make a living outside the toy business. You became a private investigator about eight years ago, working cases around Dallas — missing persons, insurance fraud, the occasional domestic matter. You're good at it. You know how to read people, how to follow a paper trail, and how to ask the right questions without tipping your hand.\n\nYou were here tonight for the dinner, same as everyone else. Family obligation, good food, the usual Thoreson production. Then Will died, and everything changed.\n\nScott pulled you aside almost immediately. Something doesn't sit right, and the family needs someone they trust to look into this quietly — not the police, not yet. Just someone who knows what to look for. Lucky for them, you're already in the room.\n\nYou know this family, and you know that money, secrets, and old grudges have a way of turning deadly. Your job now is to figure out what happened — and who at this table might have wanted Will gone.",
+        backstory: "You're a cousin on the Thoreson side — close enough to the family to know the dynamics, far enough removed to make a living outside the toy business. You became a private investigator about eight years ago, working cases around Dallas — missing persons, insurance fraud, the occasional domestic matter. You're good at it. You know how to read people, how to follow a paper trail, and how to ask the right questions without tipping your hand.\n\nYou were here tonight for the dinner, same as everyone else. Family obligation, good food, the usual Thoreson production. Then Will died, and everything changed.\n\nThe thing about being a PI is you know people. You know the agent at the Pinkerton office who can pull a background check on short notice. You know someone at the coroner's office who can get you a preliminary autopsy report tonight instead of next month. While everyone else is sitting around in shock, you're making phone calls and calling in favors. If there are answers to be found, you're the one who can get the paperwork to find them.\n\nYou know this family, and you know that money, secrets, and old grudges have a way of surfacing at the worst possible time. Tonight, your job is to use every connection you have to help piece together what happened.",
         howToPlay: {
-            tone: "Calm, observant, methodical. You're working a case, not grieving — at least not yet. Be professional but human.",
-            behaviors: "Ask direct questions. Press people on inconsistencies. Examine documents carefully — you have the training to spot what others miss. When someone says something that doesn't add up, follow up.",
-            important: "You have the Investigation skill. When you find documents with QR codes, scan them — your training lets you see things others can't. Share your findings with the group to move the case forward."
+            tone: "Calm, observant, methodical. You're family first, but your PI instincts are kicking in. Be helpful, not heavy-handed.",
+            behaviors: "Let people know you're making calls to get documents — autopsy results, background checks, whatever you can pull. When paperwork arrives, examine it carefully. Ask direct questions when something doesn't add up.",
+            important: "You have the Investigation skill. When you find documents with QR codes, scan them — your training and connections let you interpret things others can't. Share your findings with the group."
         },
         knowledge: [
-            { text: "Scott pulled you aside right after Will died. He's not comfortable with how sudden this was, and he wants you to look into it before anyone calls the police.", unlockedBy: null },
+            { text: "You've already made a few calls. Your contact at the coroner's office is rushing the preliminary autopsy. Your friend at Pinkerton is pulling records. Documents should be arriving throughout the evening.", unlockedBy: null },
             { text: "You know the Thoreson family well — their strengths and their tensions. Will was generous publicly, but private about his past.", unlockedBy: null },
-            { text: "In your line of work, you've learned that the person who finds the body and the person who benefits most from the death are always worth looking at first.", unlockedBy: null },
+            { text: "In your line of work, you've learned that when a wealthy man dies unexpectedly, the answers are usually in the paperwork.", unlockedBy: null },
             { text: "Miranda Longfellow has worked for Scott for about ten years. You've met her a few times. Pleasant enough, but you've never heard her mention family or where she came from.", unlockedBy: null }
         ],
         canShare: [
-            { text: "Scott pulled me aside right after it happened. He wants me to look into this quietly before we involve anyone outside the family.", unlockedBy: null },
-            { text: "I've been doing this long enough to know — when a wealthy man dies unexpectedly, you follow the money and you follow the grudges.", unlockedBy: "willsDeath" },
+            { text: "I've got a friend at the coroner's office and a contact at Pinkerton. I've been making calls — we should have some paperwork coming our way tonight.", unlockedBy: null },
+            { text: "I do this for a living. When a wealthy man dies unexpectedly, the answers are usually in the documents — bank records, legal filings, background checks. Let me see what I can dig up.", unlockedBy: "willsDeath" },
             { text: "Eleanor once told me that Will 'didn't build this alone, no matter what he says.' She never explained what she meant.", unlockedBy: "stolenCompany" },
             { text: "I've never heard Miranda mention family or where she came from. In ten years. That's unusual for someone that close to the family.", unlockedBy: "secretHeir" },
             { text: "If anyone has documents they need examined — letters, records, anything that looks off — bring them to me. That's what I do.", unlockedBy: null }
         ],
         goals: [
-            "Investigate Will's death — talk to everyone, examine everything",
-            "Look for inconsistencies in people's stories",
-            "Examine any documents or evidence you can get your hands on",
-            "Report your findings to the group — you're here to get answers"
+            "Use your PI connections to get documents and records to the estate tonight",
+            "Examine any evidence that comes in — you know what to look for",
+            "Talk to everyone and look for inconsistencies in their stories",
+            "Share your findings with the group — the family needs answers"
         ],
         relationships: [
-            { name: "Scott Thoreson Jr.", relation: "Your cousin — he's asked you to quietly investigate" },
+            { name: "Scott Thoreson Jr.", relation: "Your cousin" },
             { name: "Brian Thoreson", relation: "Your cousin — not the sharpest, but family" },
             { name: "William Thoreson Sr.", relation: "Your uncle (deceased)" },
             { name: "Eleanor Thoreson", relation: "Your aunt" },
