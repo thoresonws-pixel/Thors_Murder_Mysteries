@@ -1507,8 +1507,13 @@
                 // Get current active revelations + discovered skills
                 var active = userSession.activeItems || [];
                 var discovered = userSession.discoveredSkills || [];
+                var charSkills = charData.skills || [];
                 function isUnlocked(item) {
-                    return !item.unlockedBy || active.indexOf(item.unlockedBy) !== -1 || discovered.indexOf(item.unlockedBy) !== -1;
+                    if (!item.unlockedBy) return true;
+                    // Must have the skill AND the revelation must be active
+                    var hasSkill = charSkills.indexOf(item.unlockedBy) !== -1;
+                    var isActive = active.indexOf(item.unlockedBy) !== -1 || discovered.indexOf(item.unlockedBy) !== -1;
+                    return hasSkill && isActive;
                 }
 
                 const sectionStyle = "font-family: 'Playfair Display', Georgia, serif; font-size: 20px; color: #c9a227; margin-bottom: 15px; margin-top: 35px; text-transform: uppercase; border-bottom: 1px solid rgba(201,162,39,0.3); padding-bottom: 10px;";
@@ -1888,9 +1893,12 @@
             var memories = [];
             var triggersToMark = [];
 
+            // Get character's skills for gating
+            var charSkills = charData.skills || [];
+
             if (charData.knowledge) {
                 charData.knowledge.forEach(function(item) {
-                    if (item.unlockedBy && newlyAdded.indexOf(item.unlockedBy) !== -1) {
+                    if (item.unlockedBy && newlyAdded.indexOf(item.unlockedBy) !== -1 && charSkills.indexOf(item.unlockedBy) !== -1) {
                         memories.push({ text: item.text, type: 'knowledge', triggerId: item.unlockedBy });
                         if (triggersToMark.indexOf(item.unlockedBy) === -1) triggersToMark.push(item.unlockedBy);
                     }
@@ -1899,7 +1907,7 @@
 
             if (charData.canShare) {
                 charData.canShare.forEach(function(item) {
-                    if (item.unlockedBy && newlyAdded.indexOf(item.unlockedBy) !== -1) {
+                    if (item.unlockedBy && newlyAdded.indexOf(item.unlockedBy) !== -1 && charSkills.indexOf(item.unlockedBy) !== -1) {
                         memories.push({ text: item.text, type: 'canShare', triggerId: item.unlockedBy });
                         if (triggersToMark.indexOf(item.unlockedBy) === -1) triggersToMark.push(item.unlockedBy);
                     }

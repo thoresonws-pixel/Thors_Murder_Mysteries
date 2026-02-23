@@ -17,7 +17,7 @@ const characterDatabase = {
     "Scott": {
         name: "William 'Scott' Thoreson Jr.",
         publicDesc: "Eldest son of William Thoreson Sr. and the family's attorney. A man of integrity who has dedicated his career to managing the family's legal affairs.",
-        skills: [],
+        skills: ["Accounting", "Botany", "French", "Investigation", "Legal", "Medical", "Bartender", "Banking", "willsDeath", "ledger", "forgedDocs", "stolenCompany", "europeanDeal", "affair", "secretHeir", "margaretsLetter", "poisoning", "poisonTrail", "mirandasIdentity", "backgroundCheck", "popupTest"],
         backstory: "You are the eldest son of William Thoreson Sr. and Eleanor Thoreson, and the family's attorney. You studied law at SMU and built your career handling the legal affairs of several prominent Dallas families — none more important than your own. You are composed, analytical, and meticulous. Tonight, you are both a grieving son and the new patriarch of the Thoreson family. Your father invited everyone here for a 'big announcement,' but he never got to make it. Now it falls to you to find out what happened — and why.",
         howToPlay: {
             tone: "Controlled grief. Professional authority. You're hurting, but you hold yourself to a standard.",
