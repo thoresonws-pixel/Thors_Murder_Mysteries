@@ -17,7 +17,7 @@ const characterDatabase = {
     "Scott": {
         name: "William 'Scott' Thoreson Jr.",
         publicDesc: "Eldest son of William Thoreson Sr. and the family's attorney. A man of integrity who has dedicated his career to managing the family's legal affairs.",
-        skills: ["Accounting", "Botany", "French", "Investigation", "Legal", "Medical"],
+        skills: [],
         backstory: "You are the eldest son of William Thoreson Sr. and Eleanor Thoreson, and the family's attorney. You studied law at SMU and built your career handling the legal affairs of several prominent Dallas families — none more important than your own. You are composed, analytical, and meticulous. Tonight, you are both a grieving son and the new patriarch of the Thoreson family. Your father invited everyone here for a 'big announcement,' but he never got to make it. Now it falls to you to find out what happened — and why.",
         howToPlay: {
             tone: "Controlled grief. Professional authority. You're hurting, but you hold yourself to a standard.",
@@ -97,7 +97,7 @@ const characterDatabase = {
     "Clara": {
         name: "Clara Thoreson",
         publicDesc: "Scott's wife. She's here.",
-        skills: ["Bartender"],
+        skills: [],
         backstory: "You're Scott's wife. You came tonight because your husband asked you to. You're not particularly interested in family drama, business dealings, or murder investigations. You'll make someone a drink if they ask nicely, but don't expect enthusiasm. You'd honestly rather be at home.",
         howToPlay: {
             tone: "Polite but uninterested. You are wallpaper with a pulse.",
@@ -256,7 +256,7 @@ const characterDatabase = {
     "Hannah": {
         name: "Vivienne Ashford",
         publicDesc: "Scott and Brian's cousin on their mother's side. Recently returned from years living in Paris. Cultured, worldly, and fluent in French.",
-        skills: ["French"],
+        skills: [],
         backstory: "You're Scott and Brian's cousin on their mother's side. You spent the last several years living in Paris and traveling through France — studying art, language, and culture. You're educated, worldly, and bring a European perspective that sometimes clashes with Dallas society. You returned recently when you heard your Uncle Will was planning something important. You love your family, but you've always felt like an outsider among the business-obsessed Thoresons.",
         howToPlay: {
             tone: "Cultured, perceptive, slightly detached. You love your family but you see them clearly.",
@@ -293,7 +293,7 @@ const characterDatabase = {
     "DJ": {
         name: "David Richardson",
         publicDesc: "A cousin on the Thoreson side and a licensed private investigator. He was here for the dinner — now he's using his connections to help the family get answers.",
-        skills: ["Investigation"],
+        skills: [],
         backstory: "You're a cousin on the Thoreson side — close enough to the family to know the dynamics, far enough removed to make a living outside the toy business. You became a private investigator about eight years ago, working cases around Dallas — missing persons, insurance fraud, the occasional domestic matter. You're good at it. You know how to read people, how to follow a paper trail, and how to ask the right questions without tipping your hand.\n\nYou were here tonight for the dinner, same as everyone else. Family obligation, good food, the usual Thoreson production. Then Will died, and everything changed.\n\nThe thing about being a PI is you know people. You know the agent at the Pinkerton office who can pull a background check on short notice. You know someone at the coroner's office who can get you a preliminary autopsy report tonight instead of next month. While everyone else is sitting around in shock, you're making phone calls and calling in favors. If there are answers to be found, you're the one who can get the paperwork to find them.\n\nYou know this family, and you know that money, secrets, and old grudges have a way of surfacing at the worst possible time. Tonight, your job is to use every connection you have to help piece together what happened.",
         howToPlay: {
             tone: "Calm, observant, methodical. You're family first, but your PI instincts are kicking in. Be helpful, not heavy-handed.",
@@ -333,7 +333,7 @@ const characterDatabase = {
     "Peter": {
         name: "Raymond Hammond",
         publicDesc: "Business Manager at Thoreson Toys for fifteen years. Knows the company's finances inside and out.",
-        skills: ["Accounting"],
+        skills: [],
         backstory: "You've been the Business Manager at Thoreson Toys for fifteen years. You know the company's finances inside and out — every ledger entry, every vendor payment, every quarterly report. You're detail-oriented, systematic, and fiercely loyal to the company. William Thoreson hired you personally, and you've always respected him. But you've also noticed things over the years that didn't quite add up — entries you couldn't explain, payments that seemed personal rather than business. You never asked questions. Maybe you should have.",
         howToPlay: {
             tone: "Precise, professional, a little uncomfortable. You're realizing your boss had secrets you should have caught. You also feel some obligation to be honest about the company's recent problems.",
@@ -569,7 +569,7 @@ const characterDatabase = {
     "Jeff": {
         name: "Charles Sterling",
         publicDesc: "A retired banker and distant Thoreson relation. Forty years in Dallas banking. Traditional and principled.",
-        skills: ["Banking"],
+        skills: [],
         backstory: "You're a retired banker and a distant Thoreson relation through marriage. You spent forty years in Dallas banking before retiring. You're traditional, principled, and believe in doing things the right way. You handled some of the Thoreson family's banking in the early days — back when Will was just getting the company off the ground. You remember things from that era that might be relevant now, though you've kept them to yourself out of professional discretion.",
         howToPlay: {
             tone: "Dignified, measured, principled. You speak carefully because words matter.",
