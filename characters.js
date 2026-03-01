@@ -277,10 +277,10 @@ const characterDatabase = {
             { text: "You've been away for years and are still catching up on family dynamics.", unlockedBy: null }
         ],
         canShare: [
-            { text: "I speak fluent French. If there's anything written in French, I can translate it.", unlockedBy: null },
-            { text: "I remember my mother mentioning someone named 'Hartley' years ago. She got very quiet after and wouldn't explain.", unlockedBy: "stolenCompany" },
             { text: "Uncle Will always seemed like he was carrying something heavy. I assumed it was just the pressure of business.", unlockedBy: null },
-            { text: "Living in Europe gives you perspective. Families over there have complicated histories too — affairs, disputed inheritances, hidden children. It's more common than people think.", unlockedBy: "affair" }
+            { text: "I don't know most of these people. Scott and Brian are my cousins, and Aunt Eleanor practically raised me some summers — but the rest of these guests? I couldn't tell you who half of them are.", unlockedBy: null },
+            { text: "That journalist — Walter — seems very interested in this family for someone who's supposed to be here for an announcement. He's asking a lot of questions.", unlockedBy: null },
+            { text: "Miranda has been watching everything tonight. She's quiet, but it's not shyness. She's paying attention.", unlockedBy: null }
         ],
         goals: [
             "Use your French skills to help the investigation",
