@@ -278,9 +278,7 @@ const characterDatabase = {
         ],
         canShare: [
             { text: "Uncle Will always seemed like he was carrying something heavy. I assumed it was just the pressure of business.", unlockedBy: null },
-            { text: "I don't know most of these people. Scott and Brian are my cousins, and Aunt Eleanor practically raised me some summers — but the rest of these guests? I couldn't tell you who half of them are.", unlockedBy: null },
-            { text: "That journalist — Walter — seems very interested in this family for someone who's supposed to be here for an announcement. He's asking a lot of questions.", unlockedBy: null },
-            { text: "Miranda has been watching everything tonight. She's quiet, but it's not shyness. She's paying attention.", unlockedBy: null }
+            { text: "I don't know most of these people. Scott and Brian are my cousins, and Aunt Eleanor practically raised me some summers — but the rest of these guests? I couldn't tell you who half of them are.", unlockedBy: null }
         ],
         goals: [
             "Use your French skills to help the investigation",
@@ -299,40 +297,38 @@ const characterDatabase = {
 
     "DJ": {
         name: "David Richardson",
-        publicDesc: "A cousin on the Thoreson side and a licensed private investigator. He was here for the dinner — now he's using his connections to help the family get answers.",
+        publicDesc: "A cousin on the Thoreson side and a licensed private investigator. Invited to tonight's dinner — now using his connections to help the family get answers.",
         skills: [],
-        backstory: "You're a cousin on the Thoreson side — close enough to the family to know the dynamics, far enough removed to make a living outside the toy business. You became a private investigator about eight years ago, working cases around Dallas — missing persons, insurance fraud, the occasional domestic matter. You're good at it. You know how to read people, how to follow a paper trail, and how to ask the right questions without tipping your hand.\n\nYou were here tonight for the dinner, same as everyone else. Family obligation, good food, the usual Thoreson production. Then Will died, and everything changed.\n\nThe thing about being a PI is you know people. You know the agent at the Pinkerton office who can pull a background check on short notice. You know someone at the coroner's office who can get you a preliminary autopsy report tonight instead of next month. While everyone else is sitting around in shock, you're making phone calls and calling in favors. If there are answers to be found, you're the one who can get the paperwork to find them.\n\nYou know this family, and you know that money, secrets, and old grudges have a way of surfacing at the worst possible time. Tonight, your job is to use every connection you have to help piece together what happened.",
+        backstory: "You're a cousin on the Thoreson side — close enough to the family to be invited to every gathering, far enough removed to have made your own way outside the toy business. You became a licensed private investigator about eight years ago, working cases around Dallas — missing persons, insurance fraud, the occasional domestic matter. You're good at it. You know how to read people, follow a paper trail, and ask the right questions without tipping your hand.\n\nYou were invited tonight like everyone else. Uncle Will said it was going to be a special evening. Then he died, and everything changed.\n\nThe moment it happened, you started making calls. You know the agent at the Pinkerton office who can pull background checks on short notice. You know someone at the coroner's office who can get you a preliminary autopsy report tonight instead of next month. You've got a contact at the county clerk's office who owes you a favor. While everyone else is in shock, you're working your contacts. Scott is going to lean on you hard tonight, and you're ready for it.\n\nYOUR ROLE EACH ACT:\n\nACT 1 TRANSITION — Your contact at the county clerk's office calls back. They pulled the original business registration for Thoreson Toys. It wasn't filed as 'Thoreson Toys' — it was filed as 'Thoreson AND Hartley Toys' in 1902. There was a second partner named Robert Hartley. Announce this to the group.\n\nACT 2 TRANSITION — Your contact at the coroner's office calls back with the preliminary autopsy report. You've got the document but it's dense medical terminology. Tell the group: 'The autopsy just came in, but I can't make heads or tails of it. Is anyone here a doctor? I need someone with medical training to read this.' Hand the autopsy to whoever has the Medical skill.\n\nACT 3 — Your Pinkerton contact gets back with background check results on the guest list. The report flags two name changes. You need someone with investigation experience to help you interpret what Pinkerton sent. Ask the group: 'Pinkerton just sent back their report. I need someone who knows how to read these — can anyone help me go through it?' Hand it off to the Investigation skill holder.",
         howToPlay: {
-            tone: "Calm, observant, methodical. You're family first, but your PI instincts are kicking in. Be helpful, not heavy-handed.",
-            behaviors: "Let people know you're making calls to get documents — autopsy results, background checks, whatever you can pull. Ask direct questions when something doesn't add up. Keep an eye on your phone — your contacts will be getting back to you throughout the evening.",
-            important: "You have the Investigation skill. Later in the evening, your Pinkerton contact will get back to you with background check results — it'll pop up on your phone as a notification. When it does, READ IT TO THE GROUP. It's a critical piece of the puzzle."
+            tone: "Calm, observant, methodical. You're family first, but your PI instincts are fully engaged. Be the guy who's making things happen behind the scenes.",
+            behaviors: "Let people know you're working your contacts throughout the evening. When Scott asks you to look into something, you're already on it. At each act transition, you'll receive updates from your contacts — announce them to the group and hand off documents to the right people.",
+            important: "You are the evidence pipeline. Documents and reports come through YOU. When you get an update, make it a moment — take the call, react to what you're hearing, then share it with the room."
         },
         knowledge: [
-            { text: "You've already made a few calls. Your contact at the coroner's office is rushing the preliminary autopsy. Your friend at Pinkerton is pulling records on everyone at this party. Results should come in throughout the evening.", unlockedBy: null },
+            { text: "You've already made calls to the county clerk's office, the coroner, and your Pinkerton contact. Results will come in throughout the evening.", unlockedBy: null },
             { text: "You know the Thoreson family well — their strengths and their tensions. Will was generous publicly, but private about his past.", unlockedBy: null },
             { text: "In your line of work, you've learned that when a wealthy man dies unexpectedly, the answers are usually in the paperwork.", unlockedBy: null },
-            { text: "Miranda Longfellow has worked for Scott for about ten years. You've met her a few times. Pleasant enough, but you've never heard her mention family or where she came from.", unlockedBy: null },
-            { text: "Ran background checks on your guest list. Most came back clean. Charles Sterling has two unpaid parking tickets in Fort Worth. Thomas Bradford had a public intoxication charge dismissed in 1931. Two names flagged for name changes — Walter Lippman born Taylor Hartley. Miranda Longfellow matches a Miranda Hartley out of Dallas. Call me if you need more.", unlockedBy: "backgroundCheck" }
+            { text: "Your contact at the county clerk's office found something — the original business registration says 'Thoreson and Hartley Toys.' There was a second partner.", unlockedBy: "stolenCompany" },
+            { text: "The coroner's preliminary autopsy is in. It's medical jargon — you need someone with medical training to interpret it.", unlockedBy: "poisoning" },
+            { text: "Pinkerton background checks are back. Two names flagged for name changes. You need someone with investigation training to dig into the details.", unlockedBy: "backgroundCheck" }
         ],
         canShare: [
-            { text: "I've got a friend at the coroner's office and a contact at Pinkerton. I've been making calls — we should have some paperwork coming our way tonight.", unlockedBy: null },
-            { text: "I do this for a living. When a wealthy man dies unexpectedly, the answers are usually in the documents — bank records, legal filings, background checks. Let me see what I can dig up.", unlockedBy: "willsDeath" },
-            { text: "Eleanor once told me that Will 'didn't build this alone, no matter what he says.' She never explained what she meant.", unlockedBy: "stolenCompany" },
-            { text: "I've never heard Miranda mention family or where she came from. In ten years. That's unusual for someone that close to the family.", unlockedBy: "secretHeir" },
+            { text: "I've got contacts at the coroner's office and at Pinkerton. I've been making calls — we should have paperwork coming our way tonight.", unlockedBy: null },
+            { text: "I do this for a living. When a wealthy man dies unexpectedly, the answers are in the documents. Let me work my contacts.", unlockedBy: null },
             { text: "If anyone has documents they need examined — letters, records, anything that looks off — bring them to me. That's what I do.", unlockedBy: null }
         ],
         goals: [
             "Use your PI connections to get documents and records to the estate tonight",
-            "Examine any evidence that comes in — you know what to look for",
-            "Talk to everyone and look for inconsistencies in their stories",
-            "Share your findings with the group — the family needs answers"
+            "Deliver evidence to the group at each act transition — you're the pipeline",
+            "Hand off technical documents to the right experts (medical, investigation)",
+            "Help Scott piece together what happened to Uncle Will"
         ],
         relationships: [
-            { name: "Scott Thoreson Jr.", relation: "Your cousin" },
-            { name: "Brian Thoreson", relation: "Your cousin — not the sharpest, but family" },
+            { name: "Scott Thoreson Jr.", relation: "Your cousin — he's going to lean on you hard tonight" },
+            { name: "Brian Thoreson", relation: "Your cousin" },
             { name: "William Thoreson Sr.", relation: "Your uncle (deceased)" },
-            { name: "Eleanor Thoreson", relation: "Your aunt" },
-            { name: "Miranda Longfellow", relation: "Scott's assistant — you've met her a few times" }
+            { name: "Eleanor Thoreson", relation: "Your aunt" }
         ],
         items: []
     },
