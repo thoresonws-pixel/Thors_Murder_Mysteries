@@ -335,41 +335,38 @@ const characterDatabase = {
 
     "Peter": {
         name: "Raymond Hammond",
-        publicDesc: "Business Manager at Thoreson Toys for fifteen years. Knows the company's finances inside and out.",
+        publicDesc: "Business Manager at Thoreson Toys for fifteen years. Handles operations, vendor relationships, and day-to-day management.",
         skills: [],
-        backstory: "You've been the Business Manager at Thoreson Toys for fifteen years. You know the company's finances inside and out — every ledger entry, every vendor payment, every quarterly report. You're detail-oriented, systematic, and fiercely loyal to the company. William Thoreson hired you personally, and you've always respected him. But you've also noticed things over the years that didn't quite add up — entries you couldn't explain, payments that seemed personal rather than business. You never asked questions. Maybe you should have.",
+        backstory: "You've been the Business Manager at Thoreson Toys for fifteen years. You handle operations — vendor relationships, shipping logistics, staffing, day-to-day management. You're detail-oriented, systematic, and loyal to the company. William Thoreson hired you personally and you've always respected him.\n\nBut here's the thing — Will always insisted on doing the books himself. He kept the financial ledgers locked in his office and handled all the accounting personally. You thought it was just a control thing — the man built this company, he wanted to keep his hands on the money. You never pushed it. In fifteen years, you've never had full access to the company's financial records.\n\nWhat you do know is that about six months ago, a European distribution deal went bad. Will had been expanding into overseas markets and something collapsed — you're not sure of the exact details, but you know the company took a significant loss. Will was stressed about it. He got quieter, more private. You could tell something was weighing on him beyond just business.",
         howToPlay: {
-            tone: "Precise, professional, a little uncomfortable. You're realizing your boss had secrets you should have caught. You also feel some obligation to be honest about the company's recent problems.",
-            behaviors: "Early in Act 1, when people are asking why everyone is here, mention the failed European deal and that the investors are angry. You're not being malicious — you're the numbers guy and you think people should know the full picture. When the ledger appears, step up — this is your moment. Explain what you find in clear terms for non-accountants.",
-            important: "You play two roles: first, you're the one who puts the investors under suspicion by revealing the failed deal. Second, your Accounting skill lets you decode the QR code on the financial ledger. Both are key Act 1 moments."
+            tone: "Precise, professional, a little uneasy. You're realizing there's a lot about this company you were deliberately kept away from.",
+            behaviors: "Be the operations guy — you know how the company runs day to day. When financial documents appear, be honest that Will kept you out of the books. Mention the European deal going bad when it comes up naturally. You're not hiding anything — you just genuinely don't know the financial details.",
+            important: "Your value is what you DIDN'T know. The fact that Will kept you out of the books for fifteen years is itself a clue — why would he do that unless he had something to hide?"
         },
         knowledge: [
-            { text: "You manage the company's books and know the financials better than anyone.", unlockedBy: null },
-            { text: "Six months ago, Will authorized a $40,000 European distribution deal that collapsed. You warned him it was risky. He did it anyway.", unlockedBy: null },
-            { text: "The investors — Marcus and Victoria — have been furious. They've been demanding a meeting for months.", unlockedBy: null },
-            { text: "There are recurring entries in the older ledgers that never had proper documentation — small amounts, always the same, always authorized directly by Will.", unlockedBy: null },
-            { text: "The company is extremely profitable, but some of the historical records are... incomplete.", unlockedBy: null },
-            { text: "Will was generous with employees but secretive about certain financial matters.", unlockedBy: null },
-            { text: "You have the accounting expertise to analyze financial documents in detail.", unlockedBy: null }
+            { text: "You handle operations at Thoreson Toys — vendors, logistics, staffing. The day-to-day.", unlockedBy: null },
+            { text: "Will always insisted on doing the books himself. In fifteen years, you never had full access to the company's financial records. He kept the ledgers locked in his office.", unlockedBy: null },
+            { text: "About six months ago, a European distribution deal went bad. The company took a significant loss. Will was stressed about it but wouldn't share details.", unlockedBy: null },
+            { text: "The company is extremely profitable — or at least it has been. Will never let you see the full picture.", unlockedBy: null },
+            { text: "Will was generous with employees but secretive about the money side. You always assumed it was just how he operated.", unlockedBy: null }
         ],
         canShare: [
-            { text: "I've managed these books for fifteen years. If there's something in a financial document, I can find it.", unlockedBy: null },
-            { text: "I should probably mention — the investors, Marcus and Victoria? They're not here for dinner. Will lost $40,000 of their money on a European deal that collapsed six months ago. They've been demanding a meeting ever since. Tonight was supposed to be that meeting.", unlockedBy: null },
-            { text: "I'll be honest — there have always been entries in the older books I couldn't explain. Small payments, no documentation, authorized by Will personally. I assumed they were personal charity.", unlockedBy: "ledger" },
-            { text: "The company has always been called Thoreson Toys. In fifteen years, I've never seen any other name on official documents.", unlockedBy: "stolenCompany" },
-            { text: "Whoever set up those T.H. payments knew exactly how to bury them. They're structured to look like routine disbursements — you'd have to be an accountant to spot the pattern.", unlockedBy: "ledger" }
+            { text: "I've worked at Thoreson Toys for fifteen years, but I have to be honest — Will always did the books himself. Kept the ledgers locked in his office. I never had access.", unlockedBy: null },
+            { text: "Something happened about six months ago — a European deal fell apart. Will took a big loss. He got real quiet after that, more secretive than usual.", unlockedBy: null },
+            { text: "The company has always been called Thoreson Toys. In fifteen years, I've never seen any other name on anything.", unlockedBy: "stolenCompany" },
+            { text: "If Will was hiding payments in those books, I wouldn't have known. He made sure of that.", unlockedBy: "ledger" }
         ],
         goals: [
-            "Use your financial expertise to analyze any documents found",
-            "Help the group understand the company's financial history",
-            "Come to terms with what you may have overlooked",
+            "Help the group understand how the company operated day to day",
+            "Be honest about what Will kept from you",
+            "Come to terms with what was happening under your nose",
             "Protect the company's future even as its past is revealed"
         ],
         relationships: [
             { name: "William Thoreson Sr.", relation: "Your employer — hired you personally" },
             { name: "Scott Thoreson Jr.", relation: "Family attorney — you work together on company matters" },
-            { name: "Marcus Brennan", relation: "Investor you report to periodically" },
-            { name: "Victoria Ashworth", relation: "Investor you report to periodically" }
+            { name: "Marcus Brennan", relation: "Investor — you've seen him at company functions" },
+            { name: "Victoria Ashworth", relation: "Investor — you've seen her at company functions" }
         ],
         items: []
     },
