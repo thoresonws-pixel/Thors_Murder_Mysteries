@@ -287,6 +287,7 @@ const characterDatabase = {
             "See the family clearly — with love, but without illusions"
         ],
         relationships: [
+            { name: "Theodore 'Teddy' Winslow", relation: "Your boyfriend — you brought him tonight" },
             { name: "Scott Thoreson Jr.", relation: "Your cousin" },
             { name: "Brian Thoreson", relation: "Your cousin" },
             { name: "William Thoreson Sr.", relation: "Your uncle (deceased)" },
@@ -819,6 +820,42 @@ const characterDatabase = {
             { name: "Patricia Chamberlain", relation: "Your guardian — you're deeply loyal to her" },
             { name: "William Chamberlain", relation: "Fellow ward — you look out for him" },
             { name: "James Sterling", relation: "Fellow young person at the gathering" }
+        ],
+        items: []
+    },
+
+    "Dylan": {
+        name: "Theodore 'Teddy' Winslow",
+        publicDesc: "Vivienne's boyfriend and an accounting student at SMU. Quiet until someone puts numbers in front of him.",
+        skills: ["Accounting"],
+        backstory: "You're an accounting student at Southern Methodist University, about a year from finishing your degree. You're here tonight because your girlfriend Vivienne invited you. She said it was a family dinner — her uncle's estate, nice food, good company. You said yes because you love her and because you've never been inside a house this big.\n\nYou don't know these people. You've met Scott and Brian once or twice, and Eleanor seems nice. Everyone else is a stranger. You figured you'd shake some hands, eat some good food, and try not to embarrass yourself in front of Vivienne's family.\n\nThen her uncle died, and now you're at a crime scene.\n\nHere's the thing — you may not know anyone here, but you know numbers. You're top of your class. You can read a ledger the way most people read a newspaper. If someone puts a financial document in front of you, you'll know exactly what it says and what it's hiding. You've been waiting for a chance to prove you're more than just Vivienne's boyfriend. Tonight might be that chance.",
+        howToPlay: {
+            tone: "Eager, sharp, a little out of his depth socially but completely in his element with numbers. You're the guy who finally gets to show what he can do.",
+            behaviors: "Be a bit quiet early on — you don't know anyone and this is your girlfriend's family. But the moment financial documents show up, step forward. This is YOUR moment. Read the ledger, explain what you find, and make it clear you know what you're talking about.",
+            important: "You have the Accounting skill. When the financial ledger QR code is scanned, YOU are the one who can decode it. Read it aloud to the group. Explain it in plain English. This is your big contribution to the investigation."
+        },
+        knowledge: [
+            { text: "You're here as Vivienne's date. You don't know most of these people.", unlockedBy: null },
+            { text: "You're studying accounting at SMU. You can read financial documents better than most professionals.", unlockedBy: null },
+            { text: "Vivienne mentioned her uncle Will was wealthy and ran a toy company. That's about all you know.", unlockedBy: null }
+        ],
+        canShare: [
+            { text: "I may not know anyone here, but I know numbers. If there's a financial document, let me see it.", unlockedBy: null },
+            { text: "I'm studying accounting at SMU. Top of my class. Ledgers, balance sheets, payment records — that's what I do.", unlockedBy: null },
+            { text: "These payments in the ledger — they're structured to look routine, but they're not. Someone set this up deliberately to hide where the money was going.", unlockedBy: "ledger" },
+            { text: "Whoever buried these 'T.H.' payments knew exactly what they were doing. This isn't sloppy bookkeeping — it's intentional concealment.", unlockedBy: "ledger" }
+        ],
+        goals: [
+            "Prove yourself — show Vivienne's family you're more than just her boyfriend",
+            "Use your accounting skills to decode any financial documents",
+            "Help the investigation however you can",
+            "Be there for Vivienne during a difficult night"
+        ],
+        relationships: [
+            { name: "Vivienne Ashford", relation: "Your girlfriend — you're here for her" },
+            { name: "Scott Thoreson Jr.", relation: "Vivienne's cousin — met him once or twice" },
+            { name: "Brian Thoreson", relation: "Vivienne's cousin" },
+            { name: "Eleanor Thoreson", relation: "Vivienne's aunt — seems kind" }
         ],
         items: []
     }
