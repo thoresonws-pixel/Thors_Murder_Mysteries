@@ -41,33 +41,6 @@ const skillsDatabase = {
         `
     },
 
-    "Botany": {
-        title: "Wolfsbane Identified",
-        password: "open",
-        lockedTitle: "Botanical Inquiry",
-        lockedSubtitle: "This requires knowledge of plants and herbology",
-        errorMsg: "Incorrect password. Find someone with botanical knowledge.",
-        badge: "Botanical Analysis",
-        header: "Regarding Wolfsbane (Aconitum) — Expert Report",
-        summary: "Wolfsbane (Aconitum) is one of the deadliest plants in the world. It does <strong>not grow in Texas</strong> — it requires the cool mountain climates of the <strong>Swiss Alps</strong>. Someone would have had to travel to Europe to obtain it.",
-        expert: `
-            <p>If the toxicology report indicates Aconitine as the cause of death, then we are dealing with one of the most dangerous plants known to science. Wolfsbane — also called Monkshood or Aconitum — has been used as a poison for centuries, dating back to ancient Greece and Rome.</p>
-            
-            <div class="reveal-highlight">
-                The plant produces Aconitine, an extraordinarily potent alkaloid toxin. All parts of the plant are poisonous, but the roots contain the highest concentration. Even handling the plant with bare hands can cause tingling and numbness. A lethal dose can be extracted by drying and grinding the root into a fine powder — easily dissolved into food or drink without detection.
-            </div>
-            
-            <p>Here is the critical detail: Wolfsbane does <strong>not grow in Texas</strong>, nor anywhere in the American South or Southwest. It requires cool, moist, mountainous climates with rich soil — conditions found at higher elevations in temperate Europe.</p>
-            
-            <div class="reveal-highlight">
-                The primary natural habitat for Wolfsbane is the <strong>European Alps</strong> — specifically the mountain regions of <strong>Switzerland, Austria, and Northern Italy</strong>. It grows wild along hiking trails, in alpine meadows, and near mountain streams. It is distinctive, with tall purple hooded flowers, and anyone with botanical knowledge would recognize it immediately.
-            </div>
-            
-            <p>This poison cannot be purchased commercially and is not found in any apothecary. Someone would need to physically travel to the Alpine regions of Europe, identify the plant in the wild, and harvest the roots themselves — or have a knowledgeable contact willing to do so.</p>
-
-            <p><strong>The question is clear:</strong> Has anyone in this household recently traveled to the Swiss Alps, or had reason to be in that part of Europe?</p>
-        `
-    },
 
     "French": {
         title: "Margaret's Letter (Translated)",

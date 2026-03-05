@@ -545,7 +545,8 @@ const characterDatabase = {
         knowledge: [
             { text: "You know Dallas society inside and out — who's connected to whom, and where the bodies are buried (figuratively).", unlockedBy: null },
             { text: "In your experience, the most respected families usually have the darkest secrets.", unlockedBy: null },
-            { text: "Your social network is a powerful investigative tool.", unlockedBy: null }
+            { text: "Your social network is a powerful investigative tool.", unlockedBy: null },
+            { text: "🌿 BOTANICAL MEMORY: Aconitine. You know that plant. Wolfsbane — Aconitum. You encountered it years ago on a trip through the Swiss Alps. Beautiful purple flowers growing wild along the mountain trails, almost deceptively pretty. Every part of the plant is lethal — the roots especially. You remember your guide warning you not to even touch them. It does not grow in Texas. It does not grow anywhere in America. Whoever used this poison had to travel to Europe to obtain it — specifically the Alpine region. Switzerland, Austria, that area. This was not something you could purchase at an apothecary. Someone carried it back deliberately.", unlockedBy: "poisoning" }
         ],
         canShare: [
             { text: "In my circles, there were always whispers about a woman named Margaret connected to the Thoresons. Nobody knew the details.", unlockedBy: "affair" },
