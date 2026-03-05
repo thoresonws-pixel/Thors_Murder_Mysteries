@@ -3,12 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#c9a227">
-    <meta name="description" content="An interactive 1930s murder mystery dinner party experience">
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Thoreson Estate">
     <title>The Thoreson Estate Dinner</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <style>
@@ -368,7 +362,7 @@
         }
         .menu-container {
             width: 100%;
-            max-width: 550px;
+            max-width: 450px;
             background: linear-gradient(145deg, #f5f0e6 0%, #e8e0d0 50%, #d4c9b5 100%);
             border: 2px solid #8b7355;
             box-shadow: 
@@ -377,8 +371,7 @@
                 0 0 0 6px #8b7355,
                 0 15px 40px rgba(0,0,0,0.4);
             padding: 40px;
-            text-align: left;
-            margin: 0;
+            text-align: center;
         }
         .menu-section {
             margin-bottom: 10px;
@@ -477,50 +470,15 @@
         /* Responsive */
         @media (max-width: 600px) {
             nav ul {
-                gap: 6px;
-                flex-wrap: wrap;
-                padding: 6px 3px;
-                justify-content: center;
+                gap: 15px;
             }
             nav a {
-                font-size: 9px;
-                letter-spacing: 0.2px;
-            }
-            nav {
-                padding: 6px 0;
+                font-size: 12px;
+                letter-spacing: 1px;
             }
             section {
                 padding: 80px 15px 40px;
             }
-        }
-
-        @media (max-width: 400px) {
-            nav ul {
-                gap: 3px;
-                padding: 4px 2px;
-            }
-            nav a {
-                font-size: 7px;
-                letter-spacing: 0px;
-            }
-            nav {
-                padding: 5px 0;
-            }
-        }
-
-        @media (max-width: 350px) {
-            nav ul {
-                gap: 2px;
-                padding: 3px 1px;
-            }
-            nav a {
-                font-size: 6px;
-                letter-spacing: 0px;
-            }
-            nav li {
-                flex: 0 1 auto;
-            }
-        }
             .invitation-card {
                 padding: 25px 20px;
             }
@@ -605,48 +563,6 @@
             .guest-name {
                 font-size: 18px;
             }
-            .guest-item {
-                padding: 12px 0;
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .guest-toggle {
-                font-size: 14px;
-            }
-            .guest-info {
-                width: 100% !important;
-            }
-        }
-
-        @media (max-width: 400px) {
-            nav a {
-                font-size: 8px;
-                letter-spacing: 0.1px;
-            }
-            nav ul {
-                gap: 4px;
-                padding: 4px 2px;
-            }
-            nav li:last-child {
-                display: none;
-            }
-            .section-title {
-                font-size: 20px;
-            }
-            .invitation-card {
-                padding: 20px 15px;
-            }
-        }
-
-        @media (max-width: 350px) {
-            nav a {
-                font-size: 7px;
-                letter-spacing: 0px;
-            }
-            nav ul {
-                gap: 3px;
-                padding: 3px 2px;
-            }
         }
     </style>
 </head>
@@ -654,15 +570,14 @@
     <nav>
         <ul>
             <li><a href="#invitation">Invitation</a></li>
+            <li><a href="#rsvp">RSVP</a></li>
             <li><a href="#cocktails">Cocktails</a></li>
             <li><a href="#guests">Guests</a></li>
-            <li><a href="login.html">Login</a></li>
-
         </ul>
     </nav>
 
     <!-- INVITATION SECTION -->
-    <section id="invitation" style="display: none;">
+    <section id="invitation">
         <div class="invitation-card">
             <div class="corner corner-tl"></div>
             <div class="corner corner-tr"></div>
@@ -670,7 +585,7 @@
             <div class="corner corner-br"></div>
             
             <div class="invite-content">
-                <div class="ornament">✦</div>
+                <div class="ornament">âœ¦</div>
                 
                 <div>
                     <div class="estate-name">The Thoreson Estate</div>
@@ -716,13 +631,13 @@
                     <div class="host-name">Mr. William Thoreson</div>
                 </div>
                 
-                <div class="bottom-ornament">✦ ✦ ✦</div>
+                <div class="bottom-ornament">âœ¦ âœ¦ âœ¦</div>
             </div>
         </div>
     </section>
 
     <!-- RSVP SECTION -->
-    <section id="rsvp" style="display: none;">
+    <section id="rsvp">
         <h2 class="section-title">RSVP</h2>
         <p class="section-subtitle">Kindly respond by February 1st</p>
         
@@ -802,7 +717,7 @@
     </section>
 
     <!-- COCKTAIL MENU SECTION -->
-    <section id="cocktails" style="display: none;">
+    <section id="cocktails">
         <h2 class="section-title">Cocktail Menu</h2>
         <p class="section-subtitle">Libations for the evening</p>
         
@@ -831,7 +746,7 @@
                 </div>
             </div>
             
-            <div class="menu-divider">✦</div>
+            <div class="menu-divider">âœ¦</div>
             
             <div class="menu-section">
                 <div class="menu-header">Temperance</div>
@@ -855,7 +770,7 @@
     </section>
 
     <!-- GUEST LIST SECTION -->
-    <section id="guests" style="display: none;">
+    <section id="guests">
         <h2 class="section-title">Expected Guests</h2>
         <p class="section-subtitle">Those who have answered the summons</p>
         
@@ -867,7 +782,7 @@
     </section>
 
     <footer>
-        The Thoreson Estate — 1935
+        The Thoreson Estate â€” 1935
     </footer>
 
     <script>
@@ -945,33 +860,27 @@
             buttonText.textContent = 'Send Response';
         });
         
-        // Guest List Data - Character Names with IRL Names and Descriptions
-        const charactersList = [
-            { id: "scott-thoreson-jr", name: "Scott Thoreson Jr.", irlName: "Scott", publicDesc: "Eldest son and family attorney. Built a successful career managing both business and legal affairs. Professional and measured, though the weight of responsibility often shows." },
-            { id: "frederick-brian-thoreson", name: "Frederick Brian T. Thoreson", irlName: "BrianT", publicDesc: "Younger son who pursued a different path. Lives comfortably but remains uninvolved in family business. Prefers leisure and social life over corporate matters." },
-            { id: "charlotte-clara-waverly", name: "Charlotte Clara Waverly", irlName: "Clara", publicDesc: "Household manager and bartender of seven years. Manages the estate operations with quiet efficiency. A widow who found stability in her work. Observant and knowledgeable about house operations." },
-            { id: "leanna-midday-miranda-hartley", name: "Miranda Leanna Hartley", irlName: "Leanna", publicDesc: "Scott's legal assistant for over a decade. Competent and professional in her role. Daughter of a Dallas family with business connections. Discrete and reliable." },
-            { id: "walter-lippman", name: "Walter Lippman", irlName: "Marc", publicDesc: "Journalist covering Dallas society and business for the Herald. Known for thorough research and compelling writing. Recently married to Sophie. Interested in understanding prominent local families." },
-            { id: "maisy-maan-de-kok-sophie", name: "Sophie Vanderpool", irlName: "Maisy", publicDesc: "Assistant to Walter Lippman at the Dallas Herald. Intelligent and energetic. Comes from a merchant family background. Works on various journalistic projects and research." },
-            { id: "vivienne-ashford", name: "Vivienne Ashford", irlName: "Hannah", publicDesc: "Thoreson cousin, recently returned from extended time in France. Educated abroad, fluent in French, and brings a European perspective. Spirited and independent-minded." },
-            { id: "dj-strickland-david", name: "David Richardson", irlName: "DJ", publicDesc: "Family cousin with various business interests. Well-connected and personable. Handles special projects and family matters. Known for his ability to manage complex situations." },
-            { id: "peter-hammann-raymond", name: "Raymond Hammond", irlName: "Peter", publicDesc: "Business Manager at Thoreson Toys for fifteen years. Expert in company operations and finance. Detail-oriented and systematic. Integral to the company's day-to-day success." },
-            { id: "arash-fan-marcus", name: "Marcus Brennan", irlName: "Arash", publicDesc: "Major investor in Thoreson Toys for several years. Successful businessman with diverse holdings. Analytical and measured in his approach to investments and partnerships." },
-            { id: "becky-piroga-victoria", name: "Victoria Ashworth", irlName: "Becky", publicDesc: "Fellow investor alongside Marcus in Thoreson Toys. Sharp business acumen and keen observation skills. Active in social circles and local philanthropic efforts." },
-            { id: "thomas-bradford", name: "Thomas Bradford", irlName: "BrianS", publicDesc: "Competitor in the toy manufacturing industry with his own successful business. Charming and ambitious. Participates in Dallas business community and social events." },
-            { id: "margaret-ashford", name: "Margaret Ashford", irlName: "Katie", publicDesc: "Long-time friend of the Thoreson family spanning three decades. Warm and practical. Active in society circles. Values loyalty and family bonds." },
-            { id: "dorothy-wells", name: "Dorothy Wells", irlName: "Michelle", publicDesc: "Prominent society figure and businesswoman. Intelligent and perceptive observer of people. Involved in various business and charitable endeavors. Well-connected in Dallas." },
-            { id: "charles-sterling", name: "Charles Sterling", irlName: "Jeff", publicDesc: "Retired banker and distant family relation. Traditional in values and conduct. Maintains an interest in family matters and local business community. Concerned with propriety." },
-            { id: "patricia-chamberlain", name: "Patricia Chamberlain", irlName: "Casey", publicDesc: "Independent widow with considerable means. Guardian to two young men. Protective and caring toward those under her care. Maintains an active social and personal life." },
-            { id: "victoria-grant", name: "Victoria Grant", irlName: "Krystal", publicDesc: "Wife of a successful businessman with investments in various enterprises. Sophisticated and knowledgeable about commerce. Active in cultural and social circles." },
-            { id: "elizabeth-monroe", name: "Elizabeth Monroe", irlName: "Lindsey", publicDesc: "Family matriarch with deep knowledge of local history and family matters. Organized and methodical in approach. Respected for her wisdom and perspective on family affairs." },
-            { id: "james-sterling", name: "James Sterling", irlName: "Bradey", publicDesc: "Young member of the Sterling family. Ambitious and eager to establish himself in business and society. Son of Charles Sterling. Still developing his place in the world." },
-            { id: "william-chamberlain", name: "William Chamberlain", irlName: "Alexander", publicDesc: "Young ward under Patricia Chamberlain's guardianship. Intelligent and thoughtful. Interested in business and current events. Working to establish his own path." },
-            { id: "robert-chamberlain", name: "Robert Chamberlain", irlName: "Jesse", publicDesc: "Oldest of the younger generation. Close to Patricia Chamberlain. Thoughtful and observant. Loyal to those he cares about. Developing his own business interests." }
-        ];
-        
-        function loadGuests() {
-            displayGuests(charactersList);
+        // Guest list loading
+        async function loadGuests() {
+            const guestListEl = document.getElementById('guestList');
+            
+            // Google Sheets published as CSV
+            const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTKMK7nky8MuzT4zmeFx47hR5XwI0WKd1D9DtVDQnE-DacjWFdpl-prigF70MgIW9JxbrzHA3ad0zLP/pub?gid=228313978&single=true&output=csv';
+            
+            try {
+                const response = await fetch(SHEET_CSV_URL);
+                const csvText = await response.text();
+                const rows = csvText.split('\n').slice(1); // Skip header
+                
+                const guests = rows
+                    .map(row => row.trim())
+                    .filter(name => name && name.length > 0);
+                
+                displayGuests(guests);
+            } catch (error) {
+                console.error('Error loading guests:', error);
+                guestListEl.innerHTML = '<div class="loading">Unable to load guest list</div>';
+            }
         }
         
         function displayGuests(guests) {
@@ -983,72 +892,11 @@
             }
             
             guestListEl.innerHTML = guests
-                .map(character => `
-                    <div class="guest-item" onclick="toggleGuestInfo(this)" style="cursor: pointer;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            <div>
-                                <span class="guest-bullet">✦</span>
-                                <span class="guest-name">${character.name} (${character.irlName})</span>
-                            </div>
-                            <span class="guest-toggle" style="transition: transform 0.3s; color: #8b7355;">▼</span>
-                        </div>
-                        <div class="guest-info" style="display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid #d4c9b5;">
-                            <div style="font-size: 14px; color: #5a5340; line-height: 1.6; font-style: italic;">${character.publicDesc}</div>
-                        </div>
-                    </div>
-                `)
+                .map(name => `<div class="guest-item"><span class="guest-bullet">âœ¦</span><span class="guest-name">${name}</span></div>`)
                 .join('');
         }
-
-        function toggleGuestInfo(element) {
-            const info = element.querySelector('.guest-info');
-            const toggle = element.querySelector('.guest-toggle');
-            if (info.style.display === 'none') {
-                info.style.display = 'block';
-                toggle.style.transform = 'rotate(180deg)';
-            } else {
-                info.style.display = 'none';
-                toggle.style.transform = 'rotate(0deg)';
-            }
-        }
         
-        // Handle section navigation
-        document.querySelectorAll('nav a').forEach(link => {
-            link.addEventListener('click', function(e) {
-                const href = this.getAttribute('href');
-                if (href && href.startsWith('#')) {
-                    e.preventDefault();
-                    // Hide all sections
-                    document.querySelectorAll('section').forEach(section => {
-                        section.style.display = 'none';
-                    });
-                    // Show clicked section
-                    const sectionId = href.substring(1);
-                    const section = document.getElementById(sectionId);
-                    if (section) {
-                        section.style.display = 'block';
-                        window.scrollTo(0, 0);
-                    }
-                }
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            loadGuests();
-            // Show invitation by default
-            document.getElementById('invitation').style.display = 'block';
-        });
-    </script>
-    <script>
-        // Register service worker for PWA functionality
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(registrations => {
-                registrations.forEach(r => r.unregister());
-            });
-            if ('caches' in window) {
-                caches.keys().then(names => names.forEach(n => caches.delete(n)));
-            }
-        }
+        document.addEventListener('DOMContentLoaded', loadGuests);
     </script>
 </body>
 </html>
