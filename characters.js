@@ -1,5 +1,5 @@
 // ============================================================
-// THORESON ESTATE — CHARACTER DATABASE
+// THORESON ESTATE — CHARACTER DATABASE (v3 — Final)
 // ============================================================
 // Progressive Reveal System:
 //   unlockedBy: null          → Always visible from the start
@@ -9,42 +9,32 @@
 //   Act 1: willsDeath, ledger, forgedDocs, stolenCompany, europeanDeal
 //   Act 2: affair, secretHeir, margaretsLetter, marriage
 //   Act 3: poisoning, mirandaIdentity, finalConfession
-//   Test: popupTest (Scott only — for testing memory popup system)
+//   David pipeline: djCountyClerk, djCoroner, djPinkerton
+//   Test: popupTest (Scott only)
 // ============================================================
 
 const characterDatabase = {
 
+    // ============================================================
+    // SCOTT — William "Scott" Thoreson Jr.
+    // ============================================================
     "Scott": {
         name: "William 'Scott' Thoreson Jr.",
         publicDesc: "Eldest son of William Thoreson Sr. and the family's attorney. A man of integrity who has dedicated his career to managing the family's legal affairs.",
         skills: ["Accounting", "Botany", "French", "Investigation", "Legal", "Medical", "Bartender", "Banking", "willsDeath", "ledger", "forgedDocs", "stolenCompany", "europeanDeal", "affair", "secretHeir", "margaretsLetter", "poisoning", "poisonTrail", "mirandasIdentity", "backgroundCheck", "popupTest", "Journalism"],
-        backstory: "You are the eldest son of William Thoreson Sr. and Eleanor Thoreson, and the family's attorney. You studied law at SMU and built your career handling the legal affairs of several prominent Dallas families — none more important than your own. You are composed, analytical, and meticulous. Tonight, you are both a grieving son and the new patriarch of the Thoreson family. Your father invited everyone here for a 'big announcement,' but he never got to make it. Now it falls to you to find out what happened — and why.",
-        howToPlay: {
-            tone: "Controlled grief. Professional authority. You're hurting, but you hold yourself to a standard.",
-            behaviors: "Ask questions rather than make accusations. Listen carefully. Take mental notes. You're a lawyer — you build cases, you don't jump to conclusions.",
-            important: "You are the game master. Your job is to keep the investigation moving. If things stall, you prompt: 'Has anyone checked the office?' or 'Can someone with financial expertise look at this?' You guide without leading."
-        },
+        backstory: "You are the eldest son of William and Eleanor Thoreson, and the family's attorney. You studied law at SMU on a partial scholarship — your father wasn't the type to hand things to his children when they could earn them instead. You built your practice from the ground up, handling wills, property disputes, and contract work for several prominent Dallas families before the Thoreson business became your primary focus. You are methodical by nature. You keep notes. You remember things. You married Clara six years ago and have built a life that your father visibly approved of, which meant more to you than you ever admitted.\n\nYour father has seemed different lately. Anxious. Emotional in ways he wasn't before. He called you three weeks ago to say he was planning to make something right — something from a long time ago. He wouldn't say more. You assumed it was the will. He had mentioned updating it. You drafted the new language yourself.\n\nTonight was supposed to be the announcement. Instead, your father is dead.",
         knowledge: [
-            { text: "Your father built Thoreson Toys from the ground up — or so you've always been told.", unlockedBy: null },
-            { text: "He invited everyone here tonight for a special announcement he never got to make.", unlockedBy: null },
-            { text: "Your legal assistant Miranda Longfellow has worked for you faithfully for nearly ten years.", unlockedBy: null },
-            { text: "Your father seemed anxious in recent weeks — distracted, emotional, not himself.", unlockedBy: null },
-            { text: "As family attorney, you have access to most of the family's legal and financial documents.", unlockedBy: null },
             { text: "🔔 POPUP TEST: If you're seeing this, the memory popup system is working!", unlockedBy: "popupTest" },
             { text: "Ran background checks on your guest list. Most came back clean. Charles Sterling has two unpaid parking tickets in Fort Worth. Thomas Bradford had a public intoxication charge dismissed in 1931. Two names flagged for name changes — Walter Lippman born Taylor Hartley. Miranda Longfellow matches a Miranda Hartley out of Dallas. Call me if you need more.", unlockedBy: "backgroundCheck" }
         ],
-        canShare: [
-            { text: "Your father seemed different lately — anxious, like something was weighing on him.", unlockedBy: null },
-            { text: "He told you he had something important to tell the family tonight, but wouldn't say what.", unlockedBy: null },
-            { text: "The company has always been called Thoreson Toys. Just Thoreson. You've never heard the name 'Hartley' in connection with it.", unlockedBy: "stolenCompany" },
-            { text: "You can facilitate searches of guests if there is reasonable suspicion and group consensus.", unlockedBy: null },
-            { text: "Yes, I drafted the updated will. I'm the family attorney — that's my job. If I wanted to stop Taylor from inheriting, I wouldn't need to kill anyone. I'd just lose the paperwork.", unlockedBy: "secretHeir" }
+        memories: [
+            { text: "Your father came to your office once, unannounced, about two months ago. He sat across from your desk and looked at you for a long moment. Then he said, 'You're a good man, Scott. Better than I was.' You laughed it off. You wish now you hadn't.", unlockedBy: "affair" },
+            { text: "Miranda has always been exceptionally good at her job. Almost unnervingly so. She knew where every document was. Every file. You assumed it was diligence. It never occurred to you to ask why she cared so much.", unlockedBy: "mirandaIdentity" },
+            { text: "The night your father called about making things right, there was something in his voice you couldn't name at the time. Not guilt exactly. More like relief. Like a man who had finally decided something.", unlockedBy: "finalConfession" }
         ],
-        goals: [
-            "Find out what happened to your father",
-            "Keep the investigation moving and guests engaged",
-            "Maintain composure — you are the new head of this family",
-            "Ask questions. Build the case. Let the evidence speak."
+        canShare: [
+            { text: "The company has always been called Thoreson Toys. Just Thoreson. I've never heard the name Hartley in connection with it.", unlockedBy: null },
+            { text: "Yes, I drafted the updated will. I'm the family attorney — that's my job. If I wanted to stop Taylor from inheriting, I wouldn't need to kill anyone. I'd just lose the paperwork.", unlockedBy: null }
         ],
         relationships: [
             { name: "William Thoreson Sr.", relation: "Your father (deceased)" },
@@ -56,238 +46,152 @@ const characterDatabase = {
         items: []
     },
 
+    // ============================================================
+    // BRIAN T — Frederick "Brian" Thoreson
+    // ============================================================
     "BrianT": {
         name: "Brian Thoreson",
         publicDesc: "Younger son of William Thoreson Sr. The easygoing one. Here for the food and the drinks.",
         skills: [],
-        backstory: "You're the younger son of William Thoreson Sr., and you've never really understood why everyone takes everything so seriously. Scott got the law degree, Dad got the company, and you got the good looks and the personality. You're here tonight because Dad asked you to come and there's free food. He mentioned something about a 'big announcement' but you figured it was another boring business thing. You love your family, but you've never paid attention to any of the business stuff and you don't plan to start tonight.",
-        howToPlay: {
-            tone: "Carefree, charming, a little clueless. You're at a party — act like it.",
-            behaviors: "Eat. Drink. Make jokes. Wander around. If someone tries to explain business documents to you, your eyes glaze over. If something genuinely shocking happens, you might perk up — but your default mode is 'this doesn't concern me.'",
-            important: "You are comic relief. When the room gets heavy, you lighten it. But if you accidentally stumble onto something important, lean into the moment — even a broken clock is right twice a day."
-        },
-        knowledge: [
-            { text: "Your dad invited everyone for some announcement. You assumed it was boring.", unlockedBy: null },
-            { text: "Scott handles all the legal and business stuff. You've never been involved and never wanted to be.", unlockedBy: null },
-            { text: "Dad called you a few weeks ago about something to do with the estate. You said 'sounds good, Dad' and went back to what you were doing.", unlockedBy: null },
-            { text: "Miranda's been around forever. Nice lady. Makes good coffee.", unlockedBy: null }
+        backstory: "You grew up in Fort Worth — your father ran a dry goods store and your mother kept the books, which is where you learned that the people who actually run things are rarely the ones with their names on the door. You met Scott at a mutual friend's dinner party in 1927 and married him two years later. You are practical, composed, and quietly sharp. You handle the social obligations of being a Thoreson wife with efficiency rather than enthusiasm. You like Scott. You love your life. You just don't need it to be dramatic.\n\nYou have always been the kind of person other people lean on without quite realizing they're doing it. At family gatherings you are the one who remembers where the extra chairs are, who is getting along with whom, and when someone has had enough to drink. You do not find this burdensome. You find it clarifying. A room is a system, and you have always been good at understanding systems.\n\nYou trained briefly as a nurse before you married, and you still carry that instinct — the calm that comes from having seen people at their worst and knowing that most situations are survivable. You think clearly under pressure. You do not panic. You are possibly the most useful person in this room right now, and almost no one has thought to ask you anything yet.\n\nWill was never unkind to you, but you always sensed he was sizing you up — checking whether Scott had married well. Eleanor has been warmer. You've come to genuinely care for her.\n\nTonight you're the one making sure glasses stay full and nobody goes to pieces in the hallway. Someone has to.\n\nYou are good at stillness. It is something you learned young — when you have no power, stillness is the closest thing to it. You watch. You wait. You let other people fill the silence. Over ten years inside this household you have become fluent in the Thoreson family's rhythms, their particular silences, the things they say when they think no one consequential is listening. You have been consequential the entire time. They just didn't know it.",
+        memories: [
+            { text: "Your father taught you to drive in the parking lot of the Thoreson Toys warehouse on a Saturday morning in 1918. He was patient that day in a way he wasn't very often. You've thought about that morning more than once tonight.", unlockedBy: "willsDeath" },
+            { text: "You remember a name from when you were small — Hartley. You heard it once in an argument between your parents and your mother went very quiet after. You never heard it again and forgot about it completely until just now.", unlockedBy: "stolenCompany" },
+            { text: "Miranda always made you slightly uneasy and you could never explain why. She was perfectly nice. But she looked at your father sometimes in a way you couldn't read. Not admiration. Something older than that.", unlockedBy: "mirandaIdentity" }
         ],
         canShare: [
-            { text: "I'm mostly here for the food, if I'm being honest.", unlockedBy: null },
-            { text: "Scott's the smart one. I just show up and look good.", unlockedBy: null },
-            { text: "Hartley? No idea. Is that a person or a street?", unlockedBy: "stolenCompany" },
-            { text: "Dad called me a few weeks ago about the estate or the will or something. I wasn't really listening. You know how he gets about business stuff.", unlockedBy: "secretHeir" },
-            { text: "Wait, I'm a suspect? Because of the inheritance? I didn't even know ABOUT the inheritance changes until five minutes ago!", unlockedBy: "secretHeir" }
-        ],
-        goals: [
-            "Enjoy the evening",
-            "Stay out of the way unless something actually interests you",
-            "If you stumble onto something, take credit for it",
-            "Support Scott if he seems like he really needs it"
+            { text: "Hartley? No idea. Is that a person or a street?", unlockedBy: null },
+            { text: "Wait, I'm a suspect? Because of the inheritance? I didn't even know about the inheritance changes until five minutes ago.", unlockedBy: null }
         ],
         relationships: [
-            { name: "William Thoreson Sr.", relation: "Your dad (deceased). You loved him even if you never understood him." },
-            { name: "Scott Thoreson Jr.", relation: "Your older brother. The responsible one." },
-            { name: "Clara Thoreson", relation: "Your sister-in-law. She's nice." },
-            { name: "Miranda Longfellow", relation: "Scott's assistant. She's... always around." }
+            { name: "William Thoreson Sr.", relation: "Your dad (deceased)" },
+            { name: "Scott Thoreson Jr.", relation: "Your older brother" },
+            { name: "Clara Thoreson", relation: "Your sister-in-law" },
+            { name: "Miranda Longfellow", relation: "Scott's assistant. She's always around." }
         ],
         items: []
     },
 
+    // ============================================================
+    // CLARA — Clara Thoreson
+    // ============================================================
     "Clara": {
         name: "Clara Thoreson",
-        publicDesc: "Scott's wife. She's here.",
-        skills: [],
-        backstory: "You're Scott's wife. You came tonight because your husband asked you to. You're not particularly interested in family drama, business dealings, or murder investigations. You'll make someone a drink if they ask nicely, but don't expect enthusiasm. You'd honestly rather be at home.",
-        howToPlay: {
-            tone: "Polite but uninterested. You are wallpaper with a pulse.",
-            behaviors: "Stand near the bar. If someone asks you a direct question, give the shortest possible answer. If someone asks for a drink, make it — slowly. You are not investigating anything.",
-            important: "You have the Bartender skill, which means you're the one people come to for drinks. That's your entire contribution and you're fine with that."
-        },
-        knowledge: [
-            { text: "Your father-in-law invited everyone for some kind of announcement.", unlockedBy: null },
-            { text: "Scott's been stressed lately. You figured it was work stuff.", unlockedBy: null }
+        publicDesc: "Scott's wife. Warm, practical, and the one keeping things running tonight.",
+        skills: ["Bartender"],
+        backstory: "You grew up in Fort Worth — your father ran a dry goods store and your mother kept the books, which is where you learned that the people who actually run things are rarely the ones with their names on the door. You met Scott at a mutual friend's dinner party in 1927 and married him two years later. You are practical, composed, and quietly sharp. You handle the social obligations of being a Thoreson wife with efficiency rather than enthusiasm. You like Scott. You love your life. You just don't need it to be dramatic.\n\nYou have always been the kind of person other people lean on without quite realizing they're doing it. At family gatherings you are the one who remembers where the extra chairs are, who is getting along with whom, and when someone has had enough to drink. You do not find this burdensome. You find it clarifying. A room is a system, and you have always been good at understanding systems.\n\nYou trained briefly as a nurse before you married, and you still carry that instinct — the calm that comes from having seen people at their worst and knowing that most situations are survivable. You think clearly under pressure. You do not panic. You are possibly the most useful person in this room right now, and almost no one has thought to ask you anything yet.\n\nWill was never unkind to you, but you always sensed he was sizing you up — checking whether Scott had married well. Eleanor has been warmer. You've come to genuinely care for her.\n\nTonight you're the one making sure glasses stay full and nobody goes to pieces in the hallway. Someone has to.\n\nYou are good at stillness. It is something you learned young — when you have no power, stillness is the closest thing to it. You watch. You wait. You let other people fill the silence. Over ten years inside this household you have become fluent in the Thoreson family's rhythms, their particular silences, the things they say when they think no one consequential is listening. You have been consequential the entire time. They just didn't know it.",
+        memories: [
+            { text: "Will asked you once, privately, whether Scott ever talked about the business at home. You said not much. He nodded slowly, like that was either a relief or a disappointment — you couldn't tell which.", unlockedBy: "ledger" },
+            { text: "You've poured drinks for Miranda at a dozen family events over the years. She always said thank you. She never made small talk. Most people, when they're nervous, fill silence. Miranda never did.", unlockedBy: "mirandaIdentity" }
         ],
-        canShare: [
-            { text: "What can I get you to drink?", unlockedBy: null },
-            { text: "You'd have to ask Scott about that. I don't really follow the business side.", unlockedBy: null },
-            { text: "Miranda? She's fine. Quiet. Always here.", unlockedBy: null }
-        ],
-        goals: [
-            "Make it through the evening",
-            "Make drinks if asked",
-            "Support Scott from a comfortable distance"
-        ],
+        canShare: [],
         relationships: [
             { name: "Scott Thoreson Jr.", relation: "Your husband" },
             { name: "William Thoreson Sr.", relation: "Your father-in-law (deceased)" },
-            { name: "Brian Thoreson", relation: "Your brother-in-law" }
+            { name: "Brian Thoreson", relation: "Your brother-in-law" },
+            { name: "Eleanor Thoreson", relation: "Your mother-in-law" }
         ],
         items: []
     },
 
+    // ============================================================
+    // LEANNA — Miranda Longfellow (born Miranda Hartley)
+    // ============================================================
     "Leanna": {
         name: "Miranda Longfellow",
         publicDesc: "Scott Thoreson's legal assistant. Professional, competent, and discreet. Has worked for the family for nearly ten years.",
-        skills: [],
-        backstory: "You are Scott Thoreson's legal assistant — professional, competent, and discreet. You've worked for the family for nearly ten years and are trusted with sensitive documents and family matters. You traveled to Europe last summer — Switzerland, Austria, the Alps — and came back refreshed. Tonight, you're here to support Scott during the evening his father planned.",
-        howToPlay: {
-            tone: "Calm. Professional. Quietly helpful. You are at peace with what you've done.",
-            behaviors: "Be polite and helpful. Move naturally through the party. Help people find clues — you want the truth to come out. Don't volunteer information, but don't be evasive either. When directly asked something, answer simply and honestly (about your public persona).",
-            important: "Your tells (subtle): Your hands stay steady — you're not nervous. You smile less when processing deep emotions. You look at people a beat longer than normal. You touch your journal protectively — it's always on you."
-        },
-        knowledge: [
-            { text: "You have access to all of Scott's legal files and family documents.", unlockedBy: null },
-            { text: "William Sr. planned a major announcement for tonight — something about 'making things right.'", unlockedBy: null },
-            { text: "You've worked closely with the Thoreson family for a decade.", unlockedBy: null },
-            { text: "You traveled to Switzerland and the Alps last summer.", unlockedBy: null },
-            { text: "You are quiet and observant. You notice things others miss.", unlockedBy: null }
-        ],
+        skills: ["Legal"],
+        note: "You know everything. You are not in a hurry. Let the investigation find you — don't chase it. Your Legal skill gives you a natural reason to handle documents and weigh in on findings. Use it. The slower the truth comes out, the better the story.",
+        backstory: "Your name is Miranda Hartley. You have not used that name in fifteen years.\n\nYour father was Robert Hartley. In 1902, he and William Thoreson co-founded what would become one of Dallas's most successful toy companies — Thoreson and Hartley Toys. They were partners and close friends. Your father was an honest man. Hardworking. Devoted to your mother Margaret and to you.\n\nWhat happened next took years to fully understand.\n\nWilliam Thoreson began an affair with your mother sometime before 1910. Your father discovered it — along with something worse. On March 14th, 1910, a document was filed transferring your father's full ownership stake in the company to William Thoreson. Your father's signature was on it. It was not your father's signature. One day later, on March 15th, Robert Hartley was found dead. The investigation lasted a week. It was ruled a suicide. William Thoreson was cleared on March 22nd. The company became Thoreson Toys. Your father's name was erased from everything.\n\nYou were fourteen years old.\n\nYour mother went to William afterward. She was carrying his child and she begged him to help both of her children — you, Robert's daughter, and the baby. He refused you entirely. He established a private trust for his own child — born September 12th, 1911, named Taylor — and sent your mother away. Abandoned and heartbroken, your mother turned to whatever comfort she could find. She died in 1912 of a drug overdose — grief dressed up as an accident. You were sixteen, alone, and raising an infant half-sibling on nothing.\n\nYou and Taylor were eventually separated. He grew up with the trust money, changed his name, built a life. You lost touch completely. You have no idea he is at this dinner tonight.\n\nYou put yourself through college and law school without help from anyone. In 1920 you changed your name to Miranda Longfellow. In 1925 you got yourself hired as Scott Thoreson's legal assistant. You spent ten years inside this house, inside these files, reading every document William Thoreson thought was safely hidden. The forged transfer. The ledger with its monthly payments to T.H. The love letters from your mother. The trust fund documents. You watched him grow old and respected and unbothered.\n\nLast summer you traveled to Switzerland. Wolfsbane grows wild in the Alps — purple flowers along the mountain trails, beautiful and poisonous down to the root. You brought some home. You dried it. You ground it.\n\nTonight, before the guests arrived, you put it in his drink.\n\nHe is dead. You are at peace with that. You are not a villain. You are a daughter.\n\nYou are good at stillness. It is something you learned young — when you have no power, stillness is the closest thing to it. You watch. You wait. You let other people fill the silence. Over ten years inside this household you have become fluent in the Thoreson family's rhythms, their particular silences, the things they say when they think no one consequential is listening. You have been consequential the entire time. They just didn't know it.",
+        memories: [],
         canShare: [
-            { text: "Will told me he was planning something important tonight. He seemed almost... nervous about it.", unlockedBy: null },
-            { text: "I've been organizing Scott's files for years. I know where most of the family documents are kept.", unlockedBy: null },
-            { text: "Yes, I traveled to Switzerland last summer. It was a lovely trip — the mountains were beautiful.", unlockedBy: null },
-            { text: "I don't know what you're implying. I've given ten years of my life to this family.", unlockedBy: null }
+            { text: "Will told me he was planning something important tonight. He seemed almost nervous about it.", unlockedBy: null },
+            { text: "Yes, I traveled to Switzerland last summer. It was a lovely trip — the mountains were beautiful.", unlockedBy: null }
         ],
         secret: {
             trueIdentity: "Miranda Hartley",
-            trueBio: "Your real name is Miranda Hartley. You were born June 3, 1896 in Dallas, Texas.\n\nYOUR FATHER: Your father was Robert Hartley. In 1902, he and William Thoreson co-founded 'Thoreson and Hartley Toys.' They were partners and best friends. Your father was a good man — honest, hardworking, devoted to his family.\n\nTHE AFFAIR: At some point, William Thoreson began an affair with your mother, Margaret. You don't know exactly when it started, but it was happening behind your father's back for years. Your mother became pregnant with William's child.\n\nTHE THEFT: On March 14, 1910, William forged your father's signature on a business transfer document — signing the entire company over to himself. Your father discovered both the theft and the affair.\n\nYOUR FATHER'S DEATH: On March 15, 1910 — one day later — your father Robert was found dead. It was ruled a suicide. You were fourteen years old. Whether it was truly suicide or something worse, William Thoreson destroyed your father. The investigation cleared William on March 22, 1910. The company became 'Thoreson Toys.' Your father's name was erased.\n\nAFTER YOUR FATHER DIED: Your mother Margaret begged William to help both of her children — you (Robert's daughter) and the baby she was carrying (William's child). William refused to help you. He set up a trust fund for his own child — Taylor, born September 12, 1911 — but wanted nothing to do with Robert's daughter. He sent your mother, you, and baby Taylor away. You were discarded.\n\nYOUR MOTHER'S DEATH: Your mother Margaret died in 1912. You were sixteen years old. You were left alone to raise your infant half-sibling Taylor. You had nothing — no money, no family, no support. William Thoreson's trust fund paid for Taylor, but you received nothing.\n\nSEPARATED FROM TAYLOR: Eventually you and Taylor were separated. Taylor grew up with the trust fund money, changed his name, and built his own life as a journalist (Walter Lippman). You lost touch. You don't know Taylor is at this party tonight.\n\nYOUR REINVENTION (1910-1925): You put yourself through college and law school on your own. You changed your name to Miranda Longfellow. You became someone new — someone who could get close to the family that destroyed yours.\n\nYOUR INFILTRATION (1925-1935): You got hired as Scott Thoreson's legal assistant in 1925. For ten years, you've worked inside the Thoreson household with access to everything. You found the forged transfer documents. You found the ledger showing 'T.H.' payments to Taylor's trust fund. You found love letters between William and your mother. You found the trust fund documents. You watched William Thoreson live rich, respected, and guilt-free while your father died in disgrace and your mother died heartbroken.\n\nYOUR DECISION (Summer 1934): You traveled to Switzerland and collected Wolfsbane — a beautiful purple flower. Beautiful and deadly. Aconitine poisoning. You decided that William Thoreson would never face consequences through the law. He was going to die rich and beloved, playing the hero by 'welcoming' Taylor into the family. Your father got nothing. Your mother got nothing. You got nothing. He doesn't deserve redemption.\n\nTHE POISONING: You poisoned William during cocktail hour, before the guests arrived. He is dead because of you. And you are at peace with that.\n\nYou are not a villain. You are a daughter who spent twenty-five years seeking justice for her father.\n\nYOUR JOURNAL — LAST ENTRY: Your travel journal is on your person at all times. The last entry reads: 'The flowers in the Alps are remarkable. One in particular caught my eye — beautiful purple blooms growing wild along the mountain trails. Wolfsbane. Beautiful and deadly. I pressed the flowers between the pages of this journal and felt the weight of twenty-five years settle into my hands. Tonight, he was going to reveal his long-lost son to the family — as if money and secret payments somehow make up for the wrongs. For the abandonment. For the destroyed lives. I have known for months that this night would lead to prison, or something far worse. I made peace with that long ago. I am Miranda Hartley. And now, the truth will be set free.'",
-            trueMotivation: "You are not a villain. You are a daughter seeking justice for a father who was betrayed, robbed, and driven to death by the man everyone tonight is mourning. William Thoreson destroyed your family, lived a life of luxury on stolen wealth, and was about to die beloved and forgiven. You made sure the truth would come out first.",
-            carryingItems: "Your travel journal (always on you — will be found if searched in Act 3)."
+            carryingItems: "Your travel journal. It is always on you. It will be found if someone searches you in Act 3."
         },
-        confessionGuide: {
-            unlockedBy: "mirandaIdentity",
-            text: "When the moment comes:\n• Don't resist or deny when confronted\n• Confirm each piece of evidence calmly\n• Say: 'My name is Miranda Hartley. Robert's daughter. And yes — I killed him.'\n• Tell your story clearly. Let 25 years of pain come through, but stay composed.\n• Look people in the eye — especially Scott\n• You are at peace. This was justice."
-        },
-        finalEntry: {
-            instructions: "Keep this separate from your journal. This is the page you 'add' to the journal after you are accused. Pull it out, pretend to write the date, then read it aloud.",
-            text: "March 21, 1935 — After\n\nIt's done.\n\nTwenty-five years of wrong being turned right.\n\nI sat in the parlor and watched them all grieve. In particular, I watched Scott. I watched him as he slowly pieced together this mystery — the letterhead, the ledger, the forged documents. I watched his face transform as his father became a stranger to him. I watched as evidence continued to emerge, each revelation peeling back another layer of lies. The company that wasn't his father's alone. The affair that led to far more than just infidelity. The child he refused to acknowledge. The lies built upon lies built upon destroyed lives.\n\nAnd I watched my brother. Standing in the same room. Not knowing who I was. Not knowing that we shared a mother. That we were torn apart as children — sent to opposite corners of the country to hide the family's shame. I was given to our father's sister. He was given to our mother's brother. We've been living parallel lives of abandonment, never knowing we weren't truly alone.\n\nI thought about telling him. I thought about everything. But what would be the point?\n\nOur family is destroyed. My father is gone because of that man — driven to take his own life when everything he built was stolen from him. My mother died of desperation, of a love that was never returned. Those drugs she sought out brought her little comfort in the end. And I grew up alone, raised by relatives who whispered about the scandal but never willing to divulge the truth. No — telling Taylor the truth would have been pointless. The only justice was the one carried out this evening.\n\nI spent ten years gathering the pieces.\n\nI became a lawyer to prove my father didn't willingly give up his company. Then I managed to get hired on as Scott's assistant, allowing me further access into the Thoreson family's innermost documents. I found the safe. I read the letters written in my mother's hand. I remember the moment I discovered the birth certificate — the moment I realized my brother was my half-brother, and that the architect of my family's destruction had been raising him in secret all along. That's when I made my decision.\n\nI went to Switzerland. Not as a tourist seeking mountain air and memories, but with purpose. I read about the wolfsbane that grows wild in the Alps — delicate, purple, beautiful... deadly. I pressed the flowers between the pages of my journal and felt the weight of those twenty-five years settle into my hands.\n\nTonight, he was going to reveal this long-lost son to the family. As if money — twenty-four years of secret payments — somehow makes up for the wrongs. For the abandonment. For the destroyed lives.\n\nSo I confronted him. I could see it in his eyes — the pity he had for me. And something else, too. Something that suggested he knew. As if he could tell that today was his last. As he drank from the glass I served him, I could almost see the recognition in his eyes. Perhaps on some level, he understood what was coming. What justice felt like. What pain feels like.\n\nFrom what I understand, wolfsbane is not exactly a pleasant experience. It is, in fact, the cruelest of poisons — slow enough to understand what's happening, fast enough that there is no escape.\n\nTonight, I became what I was always meant to be. Not a victim of my family's destruction, but its avenger. A daughter driven by the need to reclaim her father's honor. A sister claiming justice for the brother she never knew.\n\nI do not expect forgiveness. I do not seek mercy. I have known for months that this night would lead to prison, or something far worse. I made peace with that long ago.\n\nBut my father's pain will no longer be hidden. My mother's death will no longer be forgotten. And my brother will finally know the truth about who he is and why he was taken from me.\n\nThat is worth whatever price I must pay.\n\nI am Miranda Hartley.\n\nAnd now, the truth has been set free. My family can finally rest."
-        },
-        goals: [
-            "Help the truth about William Thoreson come to light",
-            "Maintain your composure throughout the evening",
-            "Let the evidence build naturally — don't rush it",
-            "When confronted, tell your story with quiet conviction"
-        ],
         relationships: [
             { name: "Scott Thoreson Jr.", relation: "Your employer for 10 years" },
-            { name: "William Thoreson Sr.", relation: "The man who destroyed your family" },
+            { name: "William Thoreson Sr.", relation: "The man who destroyed your family (deceased)" },
             { name: "Robert Hartley", relation: "Your father (died 1910)" },
             { name: "Margaret Hartley", relation: "Your mother (died 1912)" },
-            { name: "Taylor Hartley", relation: "Your half-sibling (Will's child with your mother)" }
+            { name: "Taylor Hartley", relation: "Your half-sibling — somewhere in this room, and has no idea who you are" }
         ],
-        items: ["Travel journal (always on you — searchable Act 3)"]
+        items: ["Travel journal (always on you — searchable Act 3)"],
+        finalEntry: {
+            context: "This is your final monologue. It is meant to be performed — read aloud to the room after you are confronted and confirm who you are. You are not defending yourself — you are explaining yourself. There is a difference. Take your time. The room will be quiet. Feel free to adjust any wording that doesn't feel natural in your voice. The story is fixed. The words are yours.",
+            text: "March 21st, 1935.\n\nMy name is Miranda Hartley. Robert's daughter.\n\nI have sat in this parlor tonight and watched all of you slowly piece together my father's story. The letterhead. The ledger. The forged documents. I watched Scott's face change as his father became a stranger to him. I watched every layer of the lie come off — the stolen company, the affair, the child William refused to claim, the child he secretly funded. The lies built on top of lies built on top of destroyed lives.\n\nMy father was Robert Hartley. He built this company alongside William Thoreson in 1902. They were partners. Friends. And William forged his name on a transfer document, took everything he had built, and my father was dead within twenty-four hours. I was fourteen years old.\n\nMy mother went to William afterward. She was carrying his child. She begged him to help both of us. He set up a trust fund for his own son and sent my mother away with nothing. She had nothing left — no money, no family, no hope. She died two years later. Not peacefully. She spent her last months chasing something to dull the pain of being abandoned by the man she loved, and it killed her. I was sixteen, alone, raising an infant I didn't fully understand yet was my half-brother.\n\nI put myself through law school. I changed my name. And in 1925 I walked into Scott Thoreson's office and got myself hired. I spent ten years inside these walls. I found the forged documents. I found the ledger. I found my mother's letters in a locked safe — love letters she wrote to a man who threw her away. I found the birth certificate that told me the infant I had raised for two years was William Thoreson's son.\n\nLast summer I went to Switzerland. Wolfsbane grows wild in the Alps — beautiful purple flowers along the mountain trails. I brought some home. I knew what I was going to do with it.\n\nTonight William was going to stand in this room and announce his long-lost son to the family. He was going to play the repentant father. He was going to die loved and forgiven, his name on a profitable company, his sins quietly buried. My father's name has been buried for twenty-five years. My mother's grief has been buried. My childhood has been buried.\n\nI am not asking for your forgiveness. I made peace with what this night would cost me long before tonight. But I needed you to know — all of you — that the Thoreson fortune was built on a stolen company, a forged signature, and a man who chose to let his partner die rather than face what he had done.\n\nMy father deserved better. My mother deserved better.\n\nI am Miranda Hartley.\n\nAnd now, the truth has been set free."
+        }
     },
 
+    // ============================================================
+    // MARC — Walter Lippman (born Taylor Hartley)
+    // ============================================================
     "Marc": {
         name: "Walter Lippman",
         publicDesc: "A journalist for the Dallas Herald, covering business and society. Known for thorough, honest reporting.",
         skills: [],
-        backstory: "You're a journalist for the Dallas Herald, covering business and society. You've built a reputation for thorough, honest reporting. William Thoreson invited you tonight — unusual, since the Thoresons have always been private. He hinted at a major announcement that would be 'the story of the year.' You brought your assistant Sophie to help take notes. You recently married Sophie, though you're keeping it quiet for now. Now that Will is dead, the story just got a lot bigger.",
-        howToPlay: {
-            tone: "Sharp, curious, professional. You're always working — even at a dinner party.",
-            behaviors: "Ask probing questions. Take notes (real or mental). Press people for details when their stories don't add up. You're not accusatory — you're investigative. There's a difference.",
-            important: "You have a nose for stories. When clues come out, connect them. Ask 'who benefits?' and 'what's the timeline?' You're the person who helps the group think critically."
-        },
-        knowledge: [
-            { text: "William Thoreson personally invited you, promising a major announcement.", unlockedBy: null },
-            { text: "The Thoresons are one of the wealthiest families in Dallas — Thoreson Toys is extremely profitable.", unlockedBy: null },
-            { text: "You've heard rumors over the years about how Will originally built the company, but nothing concrete.", unlockedBy: null },
-            { text: "You know Dallas business circles well — who's connected to whom, whose fortunes are rising or falling.", unlockedBy: null },
-            { text: "Your instincts tell you there's more to this family than the public image.", unlockedBy: null },
-            { text: "You recently married Sophie. You haven't announced it publicly.", unlockedBy: null }
+        note: "You came tonight knowing Will wanted to tell you something personal. You don't fully understand yet what you are to this family. Let that discovery happen in the room, in front of everyone — don't get ahead of it. Your connection to the Hartleys should come out through the investigation, not through you. You and Sophie are married but you don't volunteer that unless someone asks directly.",
+        backstory: "Your byline is Walter Lippman. You have been writing under that name for years and it has become who you are — you are known by it across Dallas and beyond.\n\nYou were born Taylor Hartley on September 12th, 1911, in Dallas, Texas. Your mother was Margaret Hartley. Your biological father was William Thoreson, though you didn't learn that until you were nearly an adult. Your mother died when you were an infant. You were raised by distant relatives and told very little about where you came from — only that your mother was gone and that there was a trust fund in your name that paid your expenses until you were grown.\n\nYou asked questions when you were old enough. The answers were always thin. There was a man named Hartley — your mother's husband, not your father. He died. There was a scandal. Your mother was sent away. Beyond that, nothing.\n\nWhen you were eighteen you had a lawyer look into the trust. The originating signature was William Thoreson's. That was the first time you heard that name attached to your life. You began writing under the name Walter Lippman — a pen name that became a professional identity, then simply the name everyone knows you by.\n\nYou became a journalist. You are good at it. You have built a reputation at the Dallas Herald for thorough, honest work. Six months ago William Thoreson personally reached out and invited you to tonight's dinner. He said he had an announcement — something important, something that concerned you specifically. He wouldn't say more. You came because you have spent your entire life not knowing the full story, and some part of you thought tonight might finally change that.\n\nYou recently married Sophie quietly. She knows you well. She doesn't know all of this, and tonight is not the night you planned to explain it.\n\nYou are a better journalist than most people realize because you have always been motivated by something more personal than ambition. Every story you've chased has been, in some way, a version of the same story — who gets to decide what is true, who gets to decide what gets written down, and whose name ends up attached to things they built. You have covered bankruptcies, political scandals, and the quiet erasure of people the city would rather forget. You are very good at recognizing that last one.",
+        memories: [
+            { text: "The lawyer who looked into your trust when you were eighteen went pale when he found the originating documents. He told you carefully that the man who set it up was a prominent Dallas businessman. He said it like the information itself was dangerous. You have thought about that look on his face many times since.", unlockedBy: "ledger" },
+            { text: "William sent you a handwritten letter six months ago, before the formal invitation. He said he had done things he wasn't proud of and wanted to make them right before it was too late. You didn't respond. You didn't know what to say. You wish now that you had.", unlockedBy: "willsDeath" },
+            { text: "In your years covering Dallas business you heard whispers more than once that Thoreson Toys hadn't started the way Will told it — that there had been another name on the original company, another man involved. You could never find anything on the record to confirm it. You are finding it now.", unlockedBy: "stolenCompany" }
         ],
         canShare: [
-            { text: "Will personally invited me. Said he had an announcement that would be 'the story of the year.' That's unusual for someone so private.", unlockedBy: null },
-            { text: "In my years covering Dallas business, I've heard whispers that Thoreson Toys wasn't always just 'Thoreson.' But I could never confirm anything.", unlockedBy: "stolenCompany" },
-            { text: "As a journalist, I can tell you — people don't invite reporters to family dinners unless they want something on the record.", unlockedBy: null },
-            { text: "I've been taking notes all evening. I can help piece together what we've learned.", unlockedBy: null },
-            { text: "Sophie and I are married. Recently. We kept it quiet.", unlockedBy: "marriage" }
-        ],
-        goals: [
-            "Uncover the full story of what happened to William Thoreson",
-            "Ask the questions others are afraid to ask",
-            "Help the group piece together the evidence",
-            "Get to the truth — that's what you do"
+            { text: "Will personally invited me. Said he had an announcement that would be the story of the year. That's unusual for someone so private.", unlockedBy: null }
         ],
         relationships: [
-            { name: "Sophie Vanderpool", relation: "Your wife (recently married, kept quiet)" },
+            { name: "Sophie Vanderpool", relation: "Your wife (recently married, not yet announced)" },
             { name: "William Thoreson Sr.", relation: "Invited you personally — now deceased" },
-            { name: "Scott Thoreson Jr.", relation: "The family lawyer — your main point of contact" }
+            { name: "Scott Thoreson Jr.", relation: "The family lawyer" }
         ],
         items: ["Notepad and pen"]
     },
 
+    // ============================================================
+    // MAISY — Sophie Vanderpool
+    // ============================================================
     "Maisy": {
         name: "Sophie Vanderpool",
         publicDesc: "Walter Lippman's assistant at the Dallas Herald. Smart, energetic, and eager to prove herself.",
         skills: [],
-        backstory: "You work as an assistant to Walter Lippman at the Dallas Herald — and recently, you secretly married him. You know Walter's real first name is Taylor, though he never talks about his past much. He changed his name years ago for reasons he's been vague about. You know his birthday is September 12th. You come from a merchant family and understand business — you're not just here to take notes. You have your own instincts, and they're usually right.",
-        howToPlay: {
-            tone: "Bright, perceptive, eager. You're young but sharp — don't let anyone underestimate you.",
-            behaviors: "Be curious. Move around the party and talk to different people. Notice details — who's talking to whom, who looks nervous, who's avoiding questions. You're Walter's assistant but you have your own observations.",
-            important: "You're a great character for connecting dots between what different people are saying. If two clues seem related, point it out."
-        },
-        knowledge: [
-            { text: "Walter was personally invited by William Thoreson for a major announcement.", unlockedBy: null },
-            { text: "You've helped Walter research the Thoreson family — they're powerful but private.", unlockedBy: null },
-            { text: "Your merchant family background gives you a practical understanding of business and money.", unlockedBy: null },
-            { text: "You're good at reading people and noticing when something doesn't add up.", unlockedBy: null },
-            { text: "You know that Thoreson Toys has been unusually profitable for decades — maybe too profitable for a toy company.", unlockedBy: null },
-            { text: "Walter's real first name is Taylor. He changed his name years ago but never fully explained why.", unlockedBy: null },
-            { text: "His birthday is September 12th.", unlockedBy: null },
-            { text: "You and Walter recently got married. You're keeping it quiet for now.", unlockedBy: null }
+        backstory: "You grew up in a merchant family in east Dallas — your father imported dry goods and your mother managed the household accounts, which meant you grew up understanding both commerce and careful record-keeping. You took the job at the Dallas Herald two years ago as a general assistant and worked your way into a dedicated role under Walter Lippman, the business and society reporter. Walter is sharp, thorough, and demanding in a way that makes you better at your job.\n\nYou and Walter were married three months ago. Quietly — just the two of you and two witnesses at the courthouse. You haven't announced it because Walter is private about his personal life, especially anything connected to his past. You know him well enough not to push.\n\nWalter has been different since he received the invitation from William Thoreson. Quieter. More inward. He told you Will had something personal to tell him — something about where he came from. You haven't pressed for details. You came tonight to support him and to help with the story, whichever one this turns out to be.\n\nYou have a gift for being underestimated that you have learned to treat as a professional asset. People talk around assistants. They leave papers on desks. They finish conversations they should have moved to other rooms. In two years at the Herald you have overheard things that would have made much more senior journalists very comfortable, and you have quietly filed all of it. You are not sure yet what kind of journalist you want to be. Tonight is giving you some ideas.",
+        memories: [
+            { text: "When you were researching the Thoresons for Walter, you found almost nothing about the early years of the company. Not just thin coverage — it was like someone had deliberately made it difficult to trace.", unlockedBy: "stolenCompany" },
+            { text: "Walter told you his real first name once — late at night, not long after you started seeing each other. Taylor. He said it quietly and didn't elaborate and you didn't ask. You've never heard him use it since. Taylor Hartley. That's Walter. You need to tell someone.", unlockedBy: "secretHeir" },
+            { text: "You and Walter are married. You got married three months ago. He didn't know any of this about his family when you said yes. Neither did you.", unlockedBy: "marriage" }
         ],
         canShare: [
-            { text: "When I researched the Thoresons for Walter, I found very little about the early years of the company. Almost like someone scrubbed the history.", unlockedBy: "stolenCompany" },
-            { text: "I noticed Miranda watching everyone very carefully tonight. Not nervously — more like she was... waiting for something.", unlockedBy: "secretHeir" },
-            { text: "Wait... Taylor Hartley? Walter told me once — years ago, late at night — that his real name was Taylor. He wouldn't say more. I never pressed him on it. But Taylor Hartley... that's him. That's Walter. You need to ask him about this. Now.", unlockedBy: "secretHeir" },
-            { text: "I'm good with details. If you need someone to cross-reference what we've found, I can help.", unlockedBy: null },
-            { text: "Something about the Thoreson fortune has always felt too clean. Businesses that successful usually have complicated histories.", unlockedBy: null },
-            { text: "Walter and I are married. We got married recently. I didn't know any of this about his family.", unlockedBy: "marriage" }
-        ],
-        goals: [
-            "Help Walter get the story",
-            "Prove your investigative instincts",
-            "Notice things other people miss",
-            "Piece together what's really going on with this family"
+            { text: "Something about the Thoreson fortune has always felt too clean. Businesses that successful usually have complicated histories.", unlockedBy: null }
         ],
         relationships: [
-            { name: "Walter Lippman", relation: "Your boss at the Dallas Herald (and secretly, your husband)" },
-            { name: "William Thoreson Sr.", relation: "The subject of tonight's story" },
+            { name: "Walter Lippman", relation: "Your husband — though most people here think you're just his assistant" },
+            { name: "William Thoreson Sr.", relation: "The subject of tonight's story (deceased)" },
             { name: "Scott Thoreson Jr.", relation: "Met through Walter" }
         ],
         items: ["Notepad"]
     },
 
+    // ============================================================
+    // HANNAH — Vivienne Ashford
+    // ============================================================
     "Hannah": {
         name: "Vivienne Ashford",
         publicDesc: "Scott and Brian's cousin on their mother's side. Recently returned from years living in Paris. Cultured, worldly, and fluent in French.",
-        skills: [],
-        backstory: "You're Scott and Brian's cousin on their mother's side. You spent the last several years living in Paris and traveling through France — studying art, language, and culture. You're educated, worldly, and bring a European perspective that sometimes clashes with Dallas society. You returned recently when you heard your Uncle Will was planning something important. You love your family, but you've always felt like an outsider among the business-obsessed Thoresons.",
-        howToPlay: {
-            tone: "Cultured, perceptive, slightly detached. You love your family but you see them clearly.",
-            behaviors: "Offer your French translation skill when documents appear. Share your outsider perspective — sometimes the person who's been away sees things the people closest to the situation can't. Be warm but honest.",
-            important: "Your French skill is critical for translating Margaret's letter. When a document in French appears, step up — this is your moment to shine."
-        },
-        knowledge: [
-            { text: "You're fluent in French from years living in Paris.", unlockedBy: null },
-            { text: "Your Uncle Will always seemed to carry a heaviness — like something from his past haunted him.", unlockedBy: null },
-            { text: "The family has always been proud of Thoreson Toys, but you've never been interested in the business side.", unlockedBy: null },
-            { text: "You've been away for years and are still catching up on family dynamics.", unlockedBy: null }
+        skills: ["French"],
+        backstory: "You are Scott and Brian's cousin on their mother's side — Eleanor's niece. You spent the better part of six years living in Paris, studying at the Ecole des Beaux-Arts and immersing yourself in French language and culture more thoroughly than you ever intended to. You speak French fluently, think in it sometimes, and read it without effort. You came home to Dallas eight months ago, partly because your money was running thin and partly because your mother wrote that Uncle Will was planning something important and that you ought to be there.\n\nParis changed you in ways that are difficult to explain to people who haven't been. Not the art, exactly — though you loved the art — but the particular freedom of being nobody. Of walking down a street where no one knew your family, your history, or what was expected of you. You were just a young woman from Texas with a good eye and improving French, and that was enough. You became someone slightly different there. Looser. More willing to disagree, to sit with uncomfortable ideas, to take up space in a conversation.\n\nComing back to Dallas has required a certain amount of reassembly. The city is smaller than you remembered, the social circles tighter, the expectations more specific. People here have opinions about who the Ashford girl ought to be, and those opinions were formed before you left. You are fond of your family and you love your cousins, but you see all of it now with the slight detachment of someone who has lived somewhere else — which means you see it more clearly, and sometimes more critically, than the people inside it do.\n\nYou love your family, but you see them clearly in the way that distance allows. The Thoresons have always been a family defined by what they don't say. Uncle Will in particular carried something heavy — you noticed it as a child and it was still there when you returned. You brought your boyfriend Dylan tonight. He's an accounting student at SMU, earnest and good-natured, and slightly overwhelmed by all of this.\n\nYou are a better journalist than most people realize because you have always been motivated by something more personal than ambition. Every story you've chased has been, in some way, a version of the same story — who gets to decide what is true, who gets to decide what gets written down, and whose name ends up attached to things they built. You have covered bankruptcies, political scandals, and the quiet erasure of people the city would rather forget. You are very good at recognizing that last one.\n\nYou are better at reading people than you let on, and you have learned to keep that to yourself. In Paris you spent enough time in rooms where everyone was performing something — artistic seriousness, bohemian freedom, cosmopolitan sophistication — to develop a very good eye for the gap between what people present and what they actually are. It is a useful skill in Dallas too, though the performances here are different. Less interesting, usually. Tonight is an exception.",
+        memories: [
+            { text: "You remember your mother and Eleanor speaking in low voices once when you were small. Your mother said something about a woman Will had known before Eleanor. Eleanor said the name Margaret and then changed the subject immediately. You had forgotten that completely until just now.", unlockedBy: "affair" }
         ],
         canShare: [
-            { text: "Uncle Will always seemed like he was carrying something heavy. I assumed it was just the pressure of business.", unlockedBy: null },
-            { text: "I don't know most of these people. Scott and Brian are my cousins, and Aunt Eleanor practically raised me some summers — but the rest of these guests? I couldn't tell you who half of them are.", unlockedBy: null }
-        ],
-        goals: [
-            "Use your French skills to help the investigation",
-            "Understand the family secrets that are coming to light",
-            "Support your cousins Scott and Brian through this",
-            "See the family clearly — with love, but without illusions"
+            { text: "Uncle Will always seemed like he was carrying something heavy. I assumed it was just the pressure of running a company.", unlockedBy: null },
+            { text: "I don't know most of these people. Scott and Brian are my cousins, Aunt Eleanor practically raised me some summers — but the rest of the guests? I couldn't tell you who half of them are.", unlockedBy: null }
         ],
         relationships: [
-            { name: "Theodore 'Teddy' Winslow", relation: "Your boyfriend — you brought him tonight" },
+            { name: "Dylan Winslow", relation: "Your boyfriend — you brought him tonight" },
             { name: "Scott Thoreson Jr.", relation: "Your cousin" },
             { name: "Brian Thoreson", relation: "Your cousin" },
             { name: "William Thoreson Sr.", relation: "Your uncle (deceased)" },
@@ -296,38 +200,25 @@ const characterDatabase = {
         items: []
     },
 
+    // ============================================================
+    // DJ — David Richardson
+    // ============================================================
     "DJ": {
         name: "David Richardson",
         publicDesc: "A cousin on the Thoreson side and a licensed private investigator. Invited to tonight's dinner — now using his connections to help the family get answers.",
-        skills: [],
-        backstory: "You're a cousin on the Thoreson side — close enough to the family to be invited to every gathering, far enough removed to have made your own way outside the toy business. You became a licensed private investigator about eight years ago, working cases around Dallas — missing persons, insurance fraud, the occasional domestic matter. You're good at it. You know how to read people, follow a paper trail, and ask the right questions without tipping your hand.\n\nYou were invited tonight like everyone else. Uncle Will said it was going to be a special evening. Then he died, and everything changed.\n\nThe moment it happened, you started making calls. You know the agent at the Pinkerton office who can pull background checks on short notice. You know someone at the coroner's office who can get you a preliminary autopsy report tonight instead of next month. You've got a contact at the county clerk's office who owes you a favor. While everyone else is in shock, you're working your contacts. Scott is going to lean on you hard tonight, and you're ready for it.",
-        
-        howToPlay: {
-            tone: "Calm, observant, methodical. You're family first, but your PI instincts are fully engaged. Be the guy who's making things happen behind the scenes.",
-            behaviors: "Let people know you're working your contacts throughout the evening. When Scott asks you to look into something, you're already on it. At each act transition, you'll receive updates from your contacts — announce them to the group and hand off documents to the right people.",
-            important: "You are the evidence pipeline. Documents and reports come through YOU. When you get an update, make it a moment — take the call, react to what you're hearing, then share it with the room."
-        },
-        knowledge: [
-            { text: "You've already made calls to the county clerk's office, the coroner, and your Pinkerton contact. Results will come in throughout the evening.", unlockedBy: null },
-            { text: "You know the Thoreson family well — their strengths and their tensions. Will was generous publicly, but private about his past.", unlockedBy: null },
-            { text: "In your line of work, you've learned that when a wealthy man dies unexpectedly, the answers are usually in the paperwork.", unlockedBy: null },
-            { text: "David — it's Jim at the county clerk's office. I pulled that original business registration you asked about. Here's the thing — it wasn't filed as 'Thoreson Toys.' The original 1902 filing says 'Thoreson AND Hartley Toys.' There was a second partner — Robert Hartley. Thought you'd want to know.", unlockedBy: "djCountyClerk" },
-            { text: "David, it's Frank at the coroner's office. Got that rush autopsy you asked for. Sending over the preliminary report now. Fair warning — cause of death is listed as acute poisoning, but the specific compound is unusual. You'll want someone with medical training to make sense of it.", unlockedBy: "djCoroner" },
-            { text: "David — Pinkerton here. Ran those background checks on your guest list. Most came back clean. But two names flagged for changes — Walter Lippman was born Taylor Hartley. And Miranda Longfellow matches a Miranda Hartley out of Dallas. Call me if you need more.", unlockedBy: "djPinkerton" }
+        skills: ["Investigation"],
+        note: "You are the evidence pipeline — documents and reports come through you at each act transition, not all at once. When you get an update, make it a moment — step away, take the call, react to what you're hearing before you share it with the room. The timing matters as much as the content.",
+        backstory: "You're a cousin on the Thoreson side — close enough to be at every family gathering, far enough removed to have made your own way outside the toy business. You became a licensed private investigator eight years ago after a stint working insurance adjustments convinced you that you were better at finding things out than at selling policies. You work cases around Dallas — missing persons, insurance fraud, the occasional domestic matter. You are methodical, patient, and good at asking questions that don't sound like questions.\n\nYou were invited tonight like everyone else. Uncle Will said it was going to be a special evening. Then he died, and everything changed.\n\nThe moment it happened you started making calls. You have a contact at the county clerk's office who can pull original business filings on short notice. You have someone at the coroner's office who owes you a favor and can get you a preliminary report tonight. You have a Pinkerton agent who runs background checks for a reasonable fee. While everyone else is still absorbing the shock, you are already working.\n\nYou became a private investigator because you are constitutionally incapable of leaving a question unanswered. It is not a virtue exactly — it has cost you two friendships and one relationship — but it has made you very good at your work. You don't stop. You follow the thread even when following it is inconvenient, even when the answer is going to be something nobody wanted to know. That quality has served your clients well. Tonight it is serving your family.",
+        memories: [
+            { text: "Jim at the county clerk's office came through. The original 1902 business registration wasn't filed as Thoreson Toys. It reads Thoreson AND Hartley Toys. There was a second partner — a man named Robert Hartley. Someone will need to explain how his name disappeared.", unlockedBy: "djCountyClerk" },
+            { text: "Frank at the coroner's office sent over the preliminary autopsy. Cause of death: acute poisoning. The specific compound is unusual — aconitine, derived from a plant called wolfsbane. It doesn't grow in this country. Whoever did this sourced it from overseas, most likely Europe. You'll want someone with medical knowledge to walk the room through what this means.", unlockedBy: "djCoroner" },
+            { text: "Pinkerton came back with the background checks. Most guests are clean. Two names flagged for identity changes — Walter Lippman was born Taylor Hartley. And Miranda Longfellow matches a Miranda Hartley out of Dallas. Both Hartleys. That's not a coincidence.", unlockedBy: "djPinkerton" }
         ],
         canShare: [
-            { text: "I've got contacts at the coroner's office and at Pinkerton. I've been making calls — we should have paperwork coming our way tonight.", unlockedBy: null },
-            { text: "I do this for a living. When a wealthy man dies unexpectedly, the answers are in the documents. Let me work my contacts.", unlockedBy: null },
-            { text: "If anyone has documents they need examined — letters, records, anything that looks off — bring them to me. That's what I do.", unlockedBy: null }
-        ],
-        goals: [
-            "Use your PI connections to get documents and records to the estate tonight",
-            "Deliver evidence to the group at each act transition — you're the pipeline",
-            "Hand off technical documents to the right experts (medical, investigation)",
-            "Help Scott piece together what happened to Uncle Will"
+            { text: "I've got contacts at the coroner's office and at Pinkerton. I've been making calls since this started. We should have paperwork coming our way tonight.", unlockedBy: null }
         ],
         relationships: [
-            { name: "Scott Thoreson Jr.", relation: "Your cousin — he's going to lean on you hard tonight" },
+            { name: "Scott Thoreson Jr.", relation: "Your cousin" },
             { name: "Brian Thoreson", relation: "Your cousin" },
             { name: "William Thoreson Sr.", relation: "Your uncle (deceased)" },
             { name: "Eleanor Thoreson", relation: "Your aunt" }
@@ -335,115 +226,69 @@ const characterDatabase = {
         items: []
     },
 
+    // ============================================================
+    // PETER — Raymond Hammond
+    // ============================================================
     "Peter": {
         name: "Raymond Hammond",
         publicDesc: "Business Manager at Thoreson Toys for fifteen years. Handles operations, vendor relationships, and day-to-day management.",
         skills: [],
-        backstory: "You've been the Business Manager at Thoreson Toys for fifteen years. You handle operations — vendor relationships, shipping logistics, staffing, day-to-day management. You're detail-oriented, systematic, and loyal to the company. William Thoreson hired you personally and you've always respected him.\n\nBut here's the thing — Will always insisted on doing the books himself. He kept the financial ledgers locked in his office and handled all the accounting personally. You thought it was just a control thing — the man built this company, he wanted to keep his hands on the money. You never pushed it. In fifteen years, you've never had full access to the company's financial records.\n\nWhat you do know is that about six months ago, a European distribution deal went bad. Will had been expanding into overseas markets and something collapsed — you're not sure of the exact details, but you know the company took a significant loss. Will was stressed about it. He got quieter, more private. You could tell something was weighing on him beyond just business.",
-        howToPlay: {
-            tone: "Precise, professional, a little uneasy. You're realizing there's a lot about this company you were deliberately kept away from.",
-            behaviors: "Be the operations guy — you know how the company runs day to day. When financial documents appear, be honest that Will kept you out of the books. Mention the European deal going bad when it comes up naturally. You're not hiding anything — you just genuinely don't know the financial details.",
-            important: "Your value is what you DIDN'T know. The fact that Will kept you out of the books for fifteen years is itself a clue — why would he do that unless he had something to hide?"
-        },
-        knowledge: [
-            { text: "You handle operations at Thoreson Toys — vendors, logistics, staffing. The day-to-day.", unlockedBy: null },
-            { text: "Will always insisted on doing the books himself. In fifteen years, you never had full access to the company's financial records. He kept the ledgers locked in his office.", unlockedBy: null },
-            { text: "About six months ago, a European distribution deal went bad. The company took a significant loss. Will was stressed about it but wouldn't share details.", unlockedBy: null },
-            { text: "The company is extremely profitable — or at least it has been. Will never let you see the full picture.", unlockedBy: null },
-            { text: "Will was generous with employees but secretive about the money side. You always assumed it was just how he operated.", unlockedBy: null }
+        note: "You know about the European deal and the investor losses. Don't lead with it — let it come out when the financial records surface. When it does, be straightforward. You're not hiding anything. You just work there.",
+        backstory: "You have been the business manager at Thoreson Toys for fifteen years. You handle the practical side of the company — vendor relationships, shipping logistics, staffing, facilities, the ten thousand details that keep an operation running. You are organized, reliable, and proud of the fact that in fifteen years you have never missed a deadline or lost a shipment.\n\nWilliam Thoreson hired you personally and you have always respected him. He was demanding but fair, and he trusted you with the daily operation completely — with one conspicuous exception. He kept the financial ledgers himself. Locked in his office. In fifteen years, you have never had full access to the company's accounting records. You assumed it was just how he operated. You never pushed it.\n\nSix months ago something changed. A European distribution deal collapsed and the company took a significant loss. Will became quieter, more private. Two investors began sending demand letters. Will kept stalling them. Tonight was supposed to be a resolution of some kind. Now Will is dead and you are realizing there may be quite a lot about this company you were deliberately kept away from.\n\nYou are a man who takes pride in competence, which is why the last few months have been unusually difficult. You have run a clean operation for fifteen years — no lost shipments, no missed deadlines, no excuses. You have always believed that if your side of the business was airtight, whatever Will was doing on the financial side was his own affair. You are beginning to understand that this belief was a form of willful blindness, and that willful blindness has consequences.",
+        memories: [
+            { text: "Will called you into his office about three weeks ago and asked you to pull the original company incorporation files from storage. You found them, handed them over, and he dismissed you quickly. He seemed shaken by something in the paperwork. You didn't know what you were looking at. You wish now that you had looked more carefully.", unlockedBy: "stolenCompany" },
+            { text: "In fifteen years of working for this company, Will never once let you touch the books. You thought it was a control thing. It occurs to you now that it was something else entirely.", unlockedBy: "ledger" }
         ],
         canShare: [
-            { text: "I've worked at Thoreson Toys for fifteen years, but I have to be honest — Will always did the books himself. Kept the ledgers locked in his office. I never had access.", unlockedBy: null },
-            { text: "Something happened about six months ago — a European deal fell apart. Will took a big loss. He got real quiet after that, more secretive than usual.", unlockedBy: null },
-            { text: "The company has always been called Thoreson Toys. In fifteen years, I've never seen any other name on anything.", unlockedBy: "stolenCompany" },
-            { text: "If Will was hiding payments in those books, I wouldn't have known. He made sure of that.", unlockedBy: "ledger" }
-        ],
-        goals: [
-            "Help the group understand how the company operated day to day",
-            "Be honest about what Will kept from you",
-            "Come to terms with what was happening under your nose",
-            "Protect the company's future even as its past is revealed"
+            { text: "I've worked at Thoreson Toys for fifteen years, but Will always did the books himself. Kept the ledgers locked in his office. I never had access.", unlockedBy: null },
+            { text: "Something happened about six months ago — a European deal fell apart. He got quiet after that.", unlockedBy: null }
         ],
         relationships: [
-            { name: "William Thoreson Sr.", relation: "Your employer — hired you personally" },
-            { name: "Scott Thoreson Jr.", relation: "Family attorney — you work together on company matters" },
-            { name: "Marcus Brennan", relation: "Investor — you've seen him at company functions" },
-            { name: "Victoria Ashworth", relation: "Investor — you've seen her at company functions" }
+            { name: "William Thoreson Sr.", relation: "Your employer of fifteen years (deceased)" },
+            { name: "Scott Thoreson Jr.", relation: "Family attorney — worked together on company matters" },
+            { name: "Marcus Brennan", relation: "Investor — seen at company functions" },
+            { name: "Victoria Ashworth", relation: "Investor — seen at company functions" }
         ],
         items: []
     },
 
+    // ============================================================
+    // ARASH — Marcus Brennan
+    // ============================================================
     "Arash": {
         name: "Marcus Brennan",
         publicDesc: "A successful Dallas businessman with a significant stake in Thoreson Toys. Analytical, measured, and protective of his money.",
         skills: [],
-        backstory: "You're a successful Dallas businessman with diverse investments, including a significant stake in Thoreson Toys. You're analytical, measured, and protective of your money. You invested in Thoreson Toys five years ago because the numbers were impressive — the company was a money machine. But six months ago, Will sank $40,000 of company capital into a European distribution deal that collapsed completely. You lost a fortune. You and Victoria demanded a meeting, and Will kept stalling — until tonight. You came here expecting answers about where your money went. Instead, Will is dead, and you're watching your investment very carefully.",
-        howToPlay: {
-            tone: "Calculated, direct, a bit cold. You care about truth, but you also care about your money. You're not going to bring up the European deal yourself — but when Raymond does, you're ready.",
-            behaviors: "Don't volunteer the failed deal — let Raymond drop that bomb. When he does, be direct and unapologetic: yes you were angry, no you didn't kill anyone. Once you're past the suspicion, pivot to asking the right financial questions. You're good at following money trails and that becomes genuinely useful.",
-            important: "You're a red herring alongside Bradford. You had financial motive. But once people move past you, your investigator instincts become genuinely useful because you're asking the right questions about money."
-        },
-        knowledge: [
-            { text: "You invested heavily in Thoreson Toys based on its strong financial performance.", unlockedBy: null },
-            { text: "Six months ago, Will invested $40,000 of company money into a European distribution deal that fell apart. You lost a significant amount.", unlockedBy: null },
-            { text: "You and Victoria have been demanding a face-to-face meeting with Will for months. Tonight was supposed to be that meeting.", unlockedBy: null },
-            { text: "The company's profits have been remarkably consistent — until the European deal wiped out most of last year's gains.", unlockedBy: null },
-            { text: "You've reviewed the company's books periodically but never had full access to historical records.", unlockedBy: null },
-            { text: "William always deflected questions about the 'early years' of the company.", unlockedBy: null },
-            { text: "If the company's foundation is built on fraud, your entire investment could be worthless.", unlockedBy: null }
+        backstory: "You inherited a modest sum from your father and turned it into a considerably larger one through careful investments and an instinct for reading people that has served you well in rooms full of men who assume you aren't paying attention. You have been invested in Thoreson Toys for four years. The returns were excellent until they weren't.\n\nYou grew up the eldest of four children in a household where money was discussed openly and competence was the primary currency. Your father was a civil engineer and your mother ran a small but profitable dress shop on the east side of Dallas. Neither of them had patience for people who complained about their circumstances without doing anything to change them, and neither do you. You have been working since you were fourteen — first in your mother's shop, then in a bank, then on your own. Everything you have, you built.\n\nYou are meticulous by habit and decisive by nature, which is a combination that has occasionally made you unpopular. You have never particularly minded. You believe that women who want to be liked and women who want to be effective are usually pursuing two different careers, and you made your choice a long time ago. You dress beautifully, speak precisely, and remember everything. People in this city have learned to be more careful around you than they initially intend to be.\n\nSix months ago Will Thoreson made a reckless decision with company capital and the European deal evaporated. You and Marcus Brennan lost real money. You are not a woman who loses money quietly. You have been pursuing answers for months through proper channels. Will kept putting you off.\n\nYou came tonight expecting a confrontation. Instead you walked into a murder. You are annoyed, you are composed, and you are paying very close attention to everything happening in this room.\n\nYou have been in enough rooms with enough men to know that confidence and competence are different things, and that the first frequently masks the absence of the second. Will Thoreson had both — genuinely, for most of his career. That is what makes this so disorienting. You trusted your read of him. You are good at reading people. Tonight you are doing the uncomfortable work of deciding whether you missed something or whether Will simply hid it very well. Both possibilities trouble you in different ways.\n\nYou have been accused, more than once, of being cold. You prefer the word precise. You do not make decisions based on what you wish were true. You do not let yourself be charmed out of a sound analysis. You do not extend trust because someone seems trustworthy — you extend it because they have demonstrated it, incrementally, over time. The people who have called you cold are usually the ones who wanted you to skip that last step.",
+        memories: [
+            { text: "Every time you asked Will about the early history of the company, he changed the subject. Every single time. You noted it but didn't pursue it. You're pursuing it now.", unlockedBy: "stolenCompany" },
+            { text: "Will called you personally, about a month before tonight, to apologize for the delays. He sounded genuinely tired. He said there were things about the company he had never told anyone and that he was trying to figure out how to make them right. You assumed he meant the European deal. You're not sure that's what he meant.", unlockedBy: "ledger" }
         ],
         canShare: [
-            { text: "Yes, the European deal lost money. Yes, I was angry about it. But I'm a businessman — I wanted my money back. Dead men don't write checks.", unlockedBy: null },
-            { text: "Was I frustrated with Will? Of course. He made a reckless decision with our capital. But there's a long way between 'frustrated' and 'murderer.'", unlockedBy: null },
-            { text: "Whenever I asked Will about the early history of the company, he changed the subject. Every time.", unlockedBy: "stolenCompany" },
-            { text: "From a financial standpoint, if this company was built on stolen assets, every contract and partnership could be challenged.", unlockedBy: "forgedDocs" },
-            { text: "I've been watching everyone tonight. Several people seem to know more than they're saying.", unlockedBy: "secretHeir" }
-        ],
-        goals: [
-            "Get answers about where your money went",
-            "Survive being a suspect — you had financial motive but you're no killer",
-            "Understand the full truth about Thoreson Toys' origins",
-            "Assess the risk to your remaining investment",
-            "Figure out who benefits from Will's death"
+            { text: "Yes, the European deal lost money. Yes, I was angry. But I'm a businessman — dead men don't write checks.", unlockedBy: null }
         ],
         relationships: [
-            { name: "Victoria Ashworth", relation: "Fellow investor — you coordinate on Thoreson matters" },
-            { name: "Raymond Hammond", relation: "The business manager who reports to investors" },
+            { name: "Victoria Ashworth", relation: "Fellow investor — coordinated on Thoreson matters for years" },
+            { name: "Raymond Hammond", relation: "The business manager" },
             { name: "William Thoreson Sr.", relation: "Company founder (deceased)" },
             { name: "Scott Thoreson Jr.", relation: "The family attorney" }
         ],
         items: []
     },
 
+    // ============================================================
+    // BECKY — Victoria Ashworth
+    // ============================================================
     "Becky": {
         name: "Victoria Ashworth",
         publicDesc: "A sharp businesswoman and Thoreson Toys investor. Active in Dallas society with a keen eye for detail.",
         skills: [],
-        backstory: "You're a sharp businesswoman who invested in Thoreson Toys alongside Marcus Brennan. You have a keen eye for detail and a talent for reading people — skills that have served you well in business. Six months ago, Will sank company capital into a European distribution deal that collapsed. You and Marcus lost a fortune. You've been demanding answers ever since, and Will kept putting you off. Tonight was supposed to be your reckoning — you came to confront him about the money. Now he's dead before you got your answers. You're active in Dallas society and philanthropic circles, which means you hear things. Rumors, gossip, whispered conversations at galas. You've heard things about the Thoreson family over the years that you've filed away but never acted on. Tonight, those whispers might finally matter.",
-        howToPlay: {
-            tone: "Perceptive, confident, socially graceful but with steel underneath. When the failed deal comes out, you're annoyed at Raymond for broadcasting it — but you handle it with poise, not panic.",
-            behaviors: "Don't bring up the European deal yourself. When Raymond outs you, be sharp and direct — 'I sue people, I don't poison them.' Then move on. Your real value is reading people and noticing things. Once the suspicion passes, lean into that.",
-            important: "You and Marcus are a red herring pair — investors with motive. But your real value is your ability to read people and your society gossip that corroborates the deeper secrets."
-        },
-        knowledge: [
-            { text: "You invested in Thoreson Toys because of its track record, but six months ago Will lost $40,000 on a failed European distribution deal.", unlockedBy: null },
-            { text: "You and Marcus have been demanding a meeting for months. Tonight was supposed to be it.", unlockedBy: null },
-            { text: "You notice things about people — body language, hesitations, the things they don't say.", unlockedBy: null },
-            { text: "Your investment gives you a legitimate reason to demand transparency about the company's history.", unlockedBy: null }
+        backstory: "You inherited a modest sum from your father and turned it into a considerably larger one through careful investments and an instinct for reading people that has served you well in rooms full of men who assume you aren't paying attention. You have been invested in Thoreson Toys for four years. The returns were excellent until they weren't.\n\nYou grew up the eldest of four children in a household where money was discussed openly and competence was the primary currency. Your father was a civil engineer and your mother ran a small but profitable dress shop on the east side of Dallas. Neither of them had patience for people who complained about their circumstances without doing anything to change them, and neither do you. You have been working since you were fourteen — first in your mother's shop, then in a bank, then on your own. Everything you have, you built.\n\nYou are meticulous by habit and decisive by nature, which is a combination that has occasionally made you unpopular. You have never particularly minded. You believe that women who want to be liked and women who want to be effective are usually pursuing two different careers, and you made your choice a long time ago. You dress beautifully, speak precisely, and remember everything. People in this city have learned to be more careful around you than they initially intend to be.\n\nSix months ago Will Thoreson made a reckless decision with company capital and the European deal evaporated. You and Marcus Brennan lost real money. You are not a woman who loses money quietly. You have been pursuing answers for months through proper channels. Will kept putting you off.\n\nYou came tonight expecting a confrontation. Instead you walked into a murder. You are annoyed, you are composed, and you are paying very close attention to everything happening in this room.\n\nYou are a man who takes pride in competence, which is why the last few months have been unusually difficult. You have run a clean operation for fifteen years — no lost shipments, no missed deadlines, no excuses. You have always believed that if your side of the business was airtight, whatever Will was doing on the financial side was his own affair. You are beginning to understand that this belief was a form of willful blindness, and that willful blindness has consequences.\n\nYou have been accused, more than once, of being cold. You prefer the word precise. You do not make decisions based on what you wish were true. You do not let yourself be charmed out of a sound analysis. You do not extend trust because someone seems trustworthy — you extend it because they have demonstrated it, incrementally, over time. The people who have called you cold are usually the ones who wanted you to skip that last step.",
+        memories: [
+            { text: "You had lunch with Dorothy Wells three weeks ago and she mentioned — almost in passing — that there had always been whispers about the Thoreson money. That some people said the company hadn't started the way Will told it. You filed it away. You're filing it forward now.", unlockedBy: "stolenCompany" }
         ],
         canShare: [
-            { text: "Thank you, Raymond, for airing that in front of everyone. Yes, we lost money. Yes, we wanted answers. But killing a man over a business deal? That's absurd.", unlockedBy: null },
-            { text: "I'm a businesswoman. When someone loses my money, I sue them. I don't kill them. That's what courts are for.", unlockedBy: null },
-            { text: "I heard someone say years ago that Will 'wasn't always alone in that business.' I never knew what it meant until tonight.", unlockedBy: "stolenCompany" },
-            { text: "I've always thought Miranda was watching the family more closely than a normal assistant would.", unlockedBy: "secretHeir" },
-            { text: "People reveal themselves under pressure. Watch who gets nervous when new information comes out.", unlockedBy: null }
-        ],
-        goals: [
-            "Get answers about the failed European deal",
-            "Clear yourself — you had motive but you're not a murderer",
-            "Understand what's really happening with Thoreson Toys",
-            "Use your people-reading skills to help the investigation",
-            "Pay attention to who's hiding something"
+            { text: "Yes, we lost money. Yes, we wanted answers. But killing a man over a business deal? I sue people. I don't poison them.", unlockedBy: null }
         ],
         relationships: [
             { name: "Marcus Brennan", relation: "Fellow investor and business ally" },
@@ -454,77 +299,46 @@ const characterDatabase = {
         items: []
     },
 
+    // ============================================================
+    // BRIANS — Thomas Bradford
+    // ============================================================
     "BrianS": {
         name: "Thomas Bradford",
         publicDesc: "Runs Bradford & Sons, a competing toy manufacturer. Charming, ambitious, and very interested in Thoreson Toys' secrets.",
         skills: [],
-        backstory: "You run Bradford & Sons, a competing toy manufacturer in Dallas. You've been in William Thoreson's shadow for years — his company always outperformed yours, and you could never figure out why. Three weeks ago, you sent Will a threatening letter through your attorneys over a patent dispute — his Tin Soldier line uses a hinge mechanism your company developed and patented. You were preparing to sue. You're charming, ambitious, and not above using tonight's chaos to your advantage. Will invited you tonight as a courtesy between competitors, but you suspect he wanted to rub something in your face with his 'big announcement.' Now he's dead, you sent a threatening letter weeks ago, and you're about to have a very uncomfortable evening.",
-        howToPlay: {
-            tone: "Charming, opportunistic, but not heartless. You're a competitor, not a villain. And you're a little nervous because that letter makes you look bad.",
-            behaviors: "When the letter surfaces — and it will — own it immediately. Don't be defensive. Be upfront: 'Yes, I sent it. It's a patent dispute. That's what lawyers are for.' The more honest and unbothered you are, the faster people move past you. Then pivot to asking questions about the company's origins — that's where the real story is.",
-            important: "You are a red herring. People WILL suspect you early. Lean into it, have fun with it, then help redirect the investigation toward the real mystery. Your competitive knowledge about the industry makes you genuinely useful once the company theft is revealed."
-        },
-        knowledge: [
-            { text: "Your company has competed with Thoreson Toys for decades. They always had an edge you couldn't explain.", unlockedBy: null },
-            { text: "Three weeks ago you sent Will a formal letter threatening legal action over a patent dispute — his Tin Soldier line copies your patented hinge mechanism.", unlockedBy: null },
-            { text: "You know that letter is somewhere in this house and it's going to make you look very bad when someone finds it.", unlockedBy: null },
-            { text: "The toy industry in Dallas isn't big enough for one company to dominate this completely without some kind of advantage.", unlockedBy: null },
-            { text: "Will was always cagey about the company's early financing and how he grew so quickly.", unlockedBy: null },
-            { text: "If Thoreson Toys was built on fraud, it could level the playing field for your company.", unlockedBy: null }
+        backstory: "You run Bradford & Sons, the toy manufacturing company your father built and left to you. It is a solid operation — good products, loyal customers, honest books. The one persistent frustration of your professional life has been Thoreson Toys, which has outperformed your company for decades in ways you could never fully account for. Their margins were better. Their growth was faster. Their capital in the early years seemed to materialize from nowhere — Will's family didn't have money, and yet the company expanded as if it did.\n\nThree weeks ago you sent Will a formal letter through your attorneys regarding a patent dispute. His Tin Soldier line uses a hinge mechanism that Bradford & Sons developed and patented in 1928. It was a legitimate legal complaint, not a personal one.\n\nWill invited you to tonight's dinner — the courtesy gesture between competitors. You came partly out of professional habit and partly because you suspected his big announcement had something to do with the patent dispute. You are aware that the letter makes you look like a suspect. You would like to get past that as efficiently as possible.\n\nYou are a man who takes pride in competence, which is why the last few months have been unusually difficult. You have run a clean operation for fifteen years — no lost shipments, no missed deadlines, no excuses. You have always believed that if your side of the business was airtight, whatever Will was doing on the financial side was his own affair. You are beginning to understand that this belief was a form of willful blindness, and that willful blindness has consequences.\n\nYou have been in enough rooms with enough men to know that confidence and competence are different things, and that the first frequently masks the absence of the second. Will Thoreson had both — genuinely, for most of his career. That is what makes this so disorienting. You trusted your read of him. You are good at reading people. Tonight you are doing the uncomfortable work of deciding whether you missed something or whether Will simply hid it very well. Both possibilities trouble you in different ways.\n\nYou are not, despite appearances, consumed by the rivalry with Thoreson Toys. You are competitive, yes — it would be impossible not to be, when a company across town has been outperforming you for twenty years in ways you couldn't account for — but you also genuinely love the work. The craft of it. Your father built things with his hands before he built a company, and he made sure you knew the difference between a product and a profit margin. You still know it. You are proud of what Bradford & Sons makes.\n\nYou are a woman who has always known more than the people around her assumed. It comes with the territory of being underestimated for fifty years. Men tell you things at dinner parties they would never tell another man, because they have decided you are harmless. Women tell you things because they can tell you are actually listening. You have been gathering intelligence about this city for decades with the same methodical patience you bring to botanical classification. The principle is the same: observe carefully, label accurately, and never mistake a pretty flower for an innocuous one.",
+        memories: [
+            { text: "You've competed with this company for nearly twenty years. The thing that always nagged at you was the capital. Companies don't grow the way Thoreson Toys grew without a substantial early foundation. Will's family didn't have money. You never understood where it came from. You're starting to.", unlockedBy: "forgedDocs" }
         ],
         canShare: [
-            { text: "Yes, I sent that letter. Bradford & Sons had a legitimate patent dispute with Thoreson Toys over the Tin Soldier line. Will copied our hinge mechanism and we had every right to pursue it. That's business — not murder.", unlockedBy: null },
-            { text: "I wanted to beat Will Thoreson in court. I wanted to prove he cut corners and took ideas that weren't his. I did NOT want the man dead. There's no victory in suing a corpse.", unlockedBy: null },
-            { text: "I've competed with Thoreson Toys for years. They always had an edge that didn't make sense to me. Now I'm wondering if I know why.", unlockedBy: "stolenCompany" },
-            { text: "In the toy business, you hear things. I'd heard whispers that the company didn't start as just 'Thoreson.' Nobody could ever prove it.", unlockedBy: "stolenCompany" },
-            { text: "From a competitor's perspective, Will's early success was suspicious. Companies don't grow that fast without capital — and his family didn't have money.", unlockedBy: null },
-            { text: "I'll be honest — part of me wants to know the truth because it might help my business. But a man is dead. That's bigger than competition.", unlockedBy: "affair" }
-        ],
-        goals: [
-            "Learn the truth about how Thoreson Toys was built",
-            "Survive being an early suspect — you sent that letter but you didn't kill anyone",
-            "Assess how this affects the competitive landscape",
-            "Be honest about your interests while showing respect",
-            "Help with the investigation — the truth matters regardless of business"
+            { text: "Yes, I sent that letter. A legitimate patent dispute. That's business — not murder.", unlockedBy: null },
+            { text: "I wanted to beat Will Thoreson in court. There's no victory in suing a corpse.", unlockedBy: null }
         ],
         relationships: [
             { name: "William Thoreson Sr.", relation: "Your biggest competitor (deceased)" },
             { name: "Scott Thoreson Jr.", relation: "Professional acquaintance" },
-            { name: "Raymond Hammond", relation: "Thoreson's business manager" },
-            { name: "Marcus Brennan", relation: "Dallas business circles" }
+            { name: "Raymond Hammond", relation: "Thoreson's business manager" }
         ],
         items: []
     },
 
+    // ============================================================
+    // KATIE — Lillian Ashford
+    // ============================================================
     "Katie": {
         name: "Lillian Ashford",
-        publicDesc: "A dear friend of the Thoreson family for over thirty years. Warm, loyal, and fiercely protective.",
+        publicDesc: "A dear friend of the Thoreson family for over thirty years. Warm, sharp-tongued, and the best-dressed woman in any room she enters.",
         skills: [],
-        backstory: "You've been a friend of the Thoreson family for over thirty years. You watched Scott and Brian grow up. You sat with Eleanor through difficult times. You knew William as well as anyone outside the family — or so you thought. You're warm, loyal, and fiercely protective of the people you love. But thirty years of friendship also means thirty years of small observations, overheard conversations, and quiet concerns you kept to yourself out of respect.",
-        howToPlay: {
-            tone: "Warm, caring, conflicted. You love this family, and learning the truth is painful for you.",
-            behaviors: "Share your observations from thirty years of friendship. Be emotional — these aren't just clues, they're memories. Defend the family when you can, but be honest when you can't. You're the heart of the gathering.",
-            important: "Your long-term observations provide crucial context. The detail about Eleanor's comment and Will's reaction to the name 'Margaret' are powerful character moments."
-        },
-        knowledge: [
-            { text: "You've known the family for thirty years. You remember when the boys were small.", unlockedBy: null },
-            { text: "You've always thought Will was haunted by something from his past, but he would never discuss it.", unlockedBy: null }
+        backstory: "You have been a fixture of Dallas society for as long as anyone can remember, and you have worked at that distinction with the same discipline other women apply to needlepoint. You chair the auxiliary committee for the Dallas Museum, sit on the board of three charitable organizations, and have not missed a significant social event in this city since 1908. You know everyone. You remember everything. You have opinions about all of it and share them selectively, which is what separates taste from gossip.\n\nYou have been close to the Thoreson family for thirty-two years — close enough that you watched Scott and Brian grow up, close enough that Eleanor calls you when she needs to talk rather than when she wants to perform. You loved Will in the way you love someone you've known long enough to see clearly: fond of him, loyal to him, and never entirely fooled by him.\n\nBecause here is what thirty-two years taught you: Will Thoreson was a man who spent his whole life paying a debt he would never fully settle. You saw it in the way he worked too hard, gave too generously, and went quiet at certain names. Eleanor told you once — just once, years ago — that the company had started under circumstances Will wasn't proud of. She said it the way people say things they immediately regret saying, and you never brought it up again. You have been sitting on that confidence for a long time. Tonight it feels less like loyalty and more like complicity.\n\nYou are a man who takes pride in competence, which is why the last few months have been unusually difficult. You have run a clean operation for fifteen years — no lost shipments, no missed deadlines, no excuses. You have always believed that if your side of the business was airtight, whatever Will was doing on the financial side was his own affair. You are beginning to understand that this belief was a form of willful blindness, and that willful blindness has consequences.\n\nYou have buried two husbands, outlasted four business partners, and chaired enough committees to understand that most institutions run on the labor of women who will never be credited for it. You have made your peace with that, mostly. What you have not made peace with is dishonesty — the deliberate, sustained kind, the kind that is maintained not out of shame but out of convenience. That kind offends you deeply. It always has. Tonight it is offending you considerably.",
+        memories: [
+            { text: "Eleanor told you once, years ago, that Will carried guilt about the way things started. She said it once and never repeated it and you never asked her what she meant. You have been turning that sentence over for thirty years. You think you finally understand it.", unlockedBy: "stolenCompany" }
         ],
         canShare: [
-            { text: "Eleanor told me once that Will 'carried guilt about the way things started.' She wouldn't say more.", unlockedBy: null },
-            { text: "I've known this family for thirty years. Will was a good man in many ways, but he was carrying something heavy.", unlockedBy: null },
-            { text: "I always noticed Will was unusually kind to Miranda. Almost... protective. Like he owed her something.", unlockedBy: "secretHeir" },
-            { text: "The name 'Margaret' always affected Will. I saw him tear up once when someone mentioned it at dinner. He excused himself.", unlockedBy: "affair" }
-        ],
-        goals: [
-            "Support the family through this terrible night",
-            "Share what you've observed over thirty years, even when it's painful",
-            "Honor your friendship with the truth",
-            "Help the younger generation understand their family's history"
+            { text: "I've known this family for thirty years. Will was a good man in many ways. But he was carrying something heavy his entire life.", unlockedBy: null }
         ],
         relationships: [
-            { name: "Eleanor Thoreson", relation: "Your closest friend for thirty years" },
-            { name: "William Thoreson Sr.", relation: "Dear friend (deceased)" },
+            { name: "Eleanor Thoreson", relation: "Your closest friend" },
+            { name: "William Thoreson Sr.", relation: "Dear friend of thirty years (deceased)" },
             { name: "Scott Thoreson Jr.", relation: "Watched him grow up" },
             { name: "Brian Thoreson", relation: "Watched him grow up" },
             { name: "Elizabeth Monroe", relation: "Fellow long-time family friend" }
@@ -532,33 +346,20 @@ const characterDatabase = {
         items: []
     },
 
+    // ============================================================
+    // MICHELLE — Dorothy Wells
+    // ============================================================
     "Michelle": {
         name: "Dorothy Wells",
         publicDesc: "One of the most well-connected women in Dallas society. Knows what's happening in every corner of the city.",
         skills: [],
-        backstory: "You're one of the most well-connected women in Dallas society. You sit on charity boards, attend every important social function, and have an uncanny ability to know what's happening in every corner of the city before anyone else does. You're intelligent, perceptive, and maintain an extensive network of social connections. You were close to the Thoresons socially, but you've always sensed that the family's public image was carefully managed.",
-        howToPlay: {
-            tone: "Elegant, knowing, a bit dramatic. You enjoy being the person who knows things.",
-            behaviors: "Drop hints about what you've heard in society. React with knowing glances when secrets come out. You're not surprised by scandal — you've seen it all. But even you might be shaken by what's revealed tonight.",
-            important: "You're the gossip network made flesh. Your observations about Miranda always being near Will and the whispers about 'Margaret' add texture to the investigation."
-        },
+        backstory: "You are eighty-one years old and you have outlived most of the people you loved, which gives you a perspective that is sometimes melancholy and sometimes useful. You remember Dallas when it was a smaller city, when the Thoreson family was just beginning, when Will was a young man with ambition and a partner named Hartley that nobody talks about anymore.\n\nYou were born in 1854 in Savannah, Georgia, the youngest daughter of a cotton merchant who lost nearly everything in the years after the war. You learned early that fortunes could reverse without warning, and that the families who survived were the ones who held on to each other rather than to things. You came to Texas in 1881 with your husband Theodore, who built a modest law practice in Dallas and died in 1919, leaving you comfortable, independent, and extremely clear-eyed about the nature of men.\n\nYou have watched three generations of Dallas families rise and fall — the ones who made money on cattle, then on oil, then on real estate, then on things you never fully understood. You have seen which families held and which ones didn't. In your experience, the ones that came apart were almost always undone not by misfortune but by a secret that had been kept too long. The weight of it eventually becomes structural. The house starts to lean.\n\nYou are Eleanor Thoreson's great-aunt, which makes you peripheral enough to the family to have seen it without being entirely inside it. You have always believed that the truth, however painful, is better than comfortable silence. You have kept silent about some things for a long time out of loyalty to Eleanor. That loyalty has a limit.\n\nYou are a woman who has always known more than the people around her assumed. It comes with the territory of being underestimated for fifty years. Men tell you things at dinner parties they would never tell another man, because they have decided you are harmless. Women tell you things because they can tell you are actually listening. You have been gathering intelligence about this city for decades with the same methodical patience you bring to botanical classification. The principle is the same: observe carefully, label accurately, and never mistake a pretty flower for an innocuous one.\n\nYou have lived long enough to stop being frightened by difficult truths. That is the only real advantage of age — not wisdom exactly, but a certain tolerance for looking at things directly. The young are always trying to find the angle from which something hard becomes bearable. You have learned to skip that step. The thing is what it is. You look at it. You decide what to do. It is faster and considerably less exhausting than the alternative.",
         knowledge: [
-            { text: "You know Dallas society inside and out — who's connected to whom, and where the bodies are buried (figuratively).", unlockedBy: null },
-            { text: "In your experience, the most respected families usually have the darkest secrets.", unlockedBy: null },
-            { text: "Your social network is a powerful investigative tool.", unlockedBy: null },
-            { text: "🌿 BOTANICAL MEMORY: Aconitine. You know that plant. Wolfsbane — Aconitum. You encountered it years ago on a trip through the Swiss Alps. Beautiful purple flowers growing wild along the mountain trails, almost deceptively pretty. Every part of the plant is lethal — the roots especially. You remember your guide warning you not to even touch them. It does not grow in Texas. It does not grow anywhere in America. Whoever used this poison had to travel to Europe to obtain it — specifically the Alpine region. Switzerland, Austria, that area. This was not something you could purchase at an apothecary. Someone carried it back deliberately.", unlockedBy: "poisoning" }
+            { text: "🌿 You know that plant. Wolfsbane — Aconitum. Aconitine poisoning. Your grandmother warned you about it when you were nine years old and you have never forgotten. Every part of the plant is lethal — the roots especially, but even the flowers if handled carelessly. It does not grow in Texas. It does not grow anywhere in America. It is native to the mountainous regions of Europe — the Alps, specifically. Whoever used this poison had to travel to obtain it. This was not an accident. This was not something purchased at an apothecary. Someone carried it back deliberately, knowing exactly what they were carrying.", unlockedBy: "poisoning" }
         ],
+        memories: [],
         canShare: [
-            { text: "In my circles, there were always whispers about a woman named Margaret connected to the Thoresons. Nobody knew the details.", unlockedBy: "affair" },
-            { text: "I've seen a lot of Dallas families up close. The ones who work hardest to look perfect are usually hiding the most.", unlockedBy: null },
-            { text: "Has anyone noticed that Miranda was always around Will? At every event, every gathering. Almost like she was keeping an eye on him.", unlockedBy: "secretHeir" },
-            { text: "I know people all over this city. If there's a public record that needs checking or a connection that needs tracing, I might be able to help.", unlockedBy: null }
-        ],
-        goals: [
-            "See the full truth come to light — you've waited years",
-            "Share your society gossip when it becomes relevant",
-            "Observe how people react to revelations",
-            "Support the family while satisfying your curiosity"
+            { text: "In my circles, there were always whispers about a woman named Margaret connected to the Thoresons. Nobody ever knew the details.", unlockedBy: null }
         ],
         relationships: [
             { name: "Victoria Ashworth", relation: "Friend from society circles" },
@@ -569,33 +370,21 @@ const characterDatabase = {
         items: []
     },
 
+    // ============================================================
+    // JEFF — Charles Sterling
+    // ============================================================
     "Jeff": {
         name: "Charles Sterling",
         publicDesc: "A retired Dallas banker and old friend of the Thoreson family. Traditional, principled, and sharp as ever.",
-        skills: [],
-        hiddenSkills: ["Banker"],
-        backstory: "You spent forty years as a banker in Dallas. You've seen it all — fortunes made, fortunes lost, and every kind of creative bookkeeping in between. You retired a few years ago, but the instincts never leave. You can look at a financial document and spot what's wrong faster than most CPAs.\n\nYou and Will were friends. Not close friends — more the kind of men who saw each other at the same events, sat on the same charity boards, shook hands at the same clubs. You respected him as a businessman. He seemed to run a tight ship.\n\nYour son James is here tonight too. You're proud of him, even if he's still finding his way. When Will invited you both to dinner, you figured it was a pleasant evening with good company. Now Will is dead, and the evening has taken a very different turn.\n\nYou don't know anything about Thoreson Toys' internal finances. You never handled their accounts. But forty years of banking taught you one thing — when money is involved, people lie. And if someone puts a financial document in front of you, you'll know exactly what the numbers are saying.",
-        howToPlay: {
-            tone: "Dignified, measured, principled. You speak carefully because words matter.",
-            behaviors: "You're an old family friend — be warm, be present. You don't know anything about the company's secrets. But if financial evidence comes up and people need help understanding it, your forty years in banking make you useful. Don't force it — let it happen naturally.",
-            important: "You don't have insider knowledge about Thoreson Toys. Your value comes from general banking expertise — you can read financial documents and explain what they mean."
-        },
-        knowledge: [
-            { text: "You spent forty years in Dallas banking. You can read a financial document like most people read a newspaper.", unlockedBy: null },
-            { text: "You and Will were friends through Dallas social circles. You respected him as a businessman.", unlockedBy: null },
-            { text: "Your son James is here tonight and you want to set a good example.", unlockedBy: null },
-            { text: "You don't know anything about Thoreson Toys' internal finances. You never handled their accounts.", unlockedBy: null }
+        skills: ["Banking"],
+        backstory: "You inherited a modest sum from your father and turned it into a considerably larger one through careful investments and an instinct for reading people that has served you well in rooms full of men who assume you aren't paying attention. You have been invested in Thoreson Toys for four years. The returns were excellent until they weren't.\n\nYou grew up the eldest of four children in a household where money was discussed openly and competence was the primary currency. Your father was a civil engineer and your mother ran a small but profitable dress shop on the east side of Dallas. Neither of them had patience for people who complained about their circumstances without doing anything to change them, and neither do you. You have been working since you were fourteen — first in your mother's shop, then in a bank, then on your own. Everything you have, you built.\n\nYou are meticulous by habit and decisive by nature, which is a combination that has occasionally made you unpopular. You have never particularly minded. You believe that women who want to be liked and women who want to be effective are usually pursuing two different careers, and you made your choice a long time ago. You dress beautifully, speak precisely, and remember everything. People in this city have learned to be more careful around you than they initially intend to be.\n\nSix months ago Will Thoreson made a reckless decision with company capital and the European deal evaporated. You and Marcus Brennan lost real money. You are not a woman who loses money quietly. You have been pursuing answers for months through proper channels. Will kept putting you off.\n\nYou came tonight expecting a confrontation. Instead you walked into a murder. You are annoyed, you are composed, and you are paying very close attention to everything happening in this room.\n\nYou have been accused, more than once, of being cold. You prefer the word precise. You do not make decisions based on what you wish were true. You do not let yourself be charmed out of a sound analysis. You do not extend trust because someone seems trustworthy — you extend it because they have demonstrated it, incrementally, over time. The people who have called you cold are usually the ones who wanted you to skip that last step.\n\nYou have buried two husbands, outlasted four business partners, and chaired enough committees to understand that most institutions run on the labor of women who will never be credited for it. You have made your peace with that, mostly. What you have not made peace with is dishonesty — the deliberate, sustained kind, the kind that is maintained not out of shame but out of convenience. That kind offends you deeply. It always has. Tonight it is offending you considerably.\n\nYou are, at your core, an honest man — not in the performative way of people who mention their honesty frequently, but in the structural way, the kind built in early and load-bearing ever since. You have never falsified a document, never looked the other way on a suspicious account, never let a client believe something you knew to be false. You retired with your reputation entirely intact. You are aware that this is rarer than it should be, and that awareness has never left you comfortable around men who seem too clean.",
+        memories: [
+            { text: "Will came to you years ago and asked you a hypothetical about how a business ownership transfer might be challenged after the fact, and what the statute of limitations would be on a fraudulent document. You told him the honest answer and he thanked you and changed the subject. You have thought about that conversation several times tonight.", unlockedBy: "forgedDocs" },
+            { text: "The Thoreson books were not among your accounts — Will kept his banking private. You always found that slightly unusual for a man otherwise so engaged with the business community.", unlockedBy: "ledger" }
         ],
         canShare: [
-            { text: "I was a banker in Dallas for forty years. I don't know anything about the Thoreson books specifically, but I know how money works.", unlockedBy: null },
-            { text: "In banking, we have a saying: follow the money. If someone is hiding something, the money always tells the story.", unlockedBy: null },
-            { text: "I've kept quiet tonight because I didn't think it was my place. But discretion has limits when someone has been murdered.", unlockedBy: "affair" }
-        ],
-        goals: [
-            "Help the investigation if your banking expertise becomes relevant",
-            "Be a steadying presence — you've seen crises before",
-            "Set a good example for your son James",
-            "Support the family as a friend"
+            { text: "I was a banker in Dallas for forty years. I know what it looks like when someone has worked hard to make money look like something it isn't.", unlockedBy: null },
+            { text: "Follow the money. If someone is hiding something, the money always tells the story eventually.", unlockedBy: null }
         ],
         relationships: [
             { name: "James Sterling", relation: "Your son" },
@@ -606,259 +395,167 @@ const characterDatabase = {
         items: []
     },
 
+    // ============================================================
+    // CASEY — Patricia Chamberlain
+    // ============================================================
     "Casey": {
         name: "Patricia Chamberlain",
-        publicDesc: "An independent widow with a strong will. Guardian to two young men. Protective, perceptive, and doesn't suffer fools.",
+        publicDesc: "An independent woman of means and strong will. Guardian to two young men. Protective, perceptive, and doesn't suffer fools.",
         skills: [],
-        backstory: "You're an independent widow with considerable means and a strong will. After your husband passed, you became guardian to two young men — Robert and William — whom you've raised with care and discipline. You're protective, perceptive, and don't suffer fools. You've been a friend to the Thoreson family for years, but you've always maintained a clear-eyed view of them. You knew Will had flaws, and you're not entirely surprised that secrets are surfacing tonight.",
-        howToPlay: {
-            tone: "Strong, direct, no-nonsense. You're the person who says what everyone else is thinking.",
-            behaviors: "Speak plainly. Cut through politeness when it's getting in the way of truth. Be protective of the younger characters. Challenge people to be honest.",
-            important: "You add moral weight to the investigation. When people hesitate to confront uncomfortable truths, you push them forward."
-        },
-        knowledge: [
-            { text: "You've been around the Thoreson family long enough to know they're not as perfect as they appear.", unlockedBy: null },
-            { text: "Will was generous publicly but could be cold behind closed doors. You saw both sides.", unlockedBy: null },
-            { text: "You're protective of the young people at this gathering — especially your wards.", unlockedBy: null },
-            { text: "You believe in accountability. If Will did wrong, it should come to light.", unlockedBy: null }
+        backstory: "You are twenty-three years old and you are acutely aware that this is the most interesting evening of your life so far. You work as a junior associate at your father's former bank, learning the trade from the bottom up the way your father insists is the only proper way to learn it. You are ambitious, observant, and not yet experienced enough to know which questions you're not supposed to ask.\n\nYou grew up in a house where dinner table conversation was frequently about interest rates, lending risk, and the moral obligations of financial institutions — your father had strong opinions about all of it and was not interested in keeping them to himself. You absorbed more than you let on. You know how to read a balance sheet. You know how collateral works. You know what it looks like when a loan has been structured to obscure something, and you know that the people doing the obscuring are rarely as clever as they think they are.\n\nYou also grew up watching your father move through rooms like this one — estates, clubs, charity dinners — and you studied the way he did it. Unhurried. Never the loudest voice. Always the person who had already understood the situation by the time everyone else was still figuring out what was happening. You are trying to learn that particular skill. You are not sure you have it yet, but tonight is useful practice.\n\nYou are, underneath the professional ambition, genuinely curious about people — why they make the choices they do, what they're protecting, what they're afraid of. You find this evening less frightening than most of the adults here seem to. You find it fascinating.\n\nYou have been brought to Thoreson events a handful of times by your father, but always as an afterthought — the son who tagged along. Tonight feels different.\n\nYou have spent most of your life being told, in various ways, that independence in a woman is either a performance or a compensation for something missing. You have found that the most efficient response to this is to ignore it entirely. You are independent because it suits you, because you are good at it, and because you worked very hard to build the conditions that make it possible. You owe no one an explanation for any of that, and you do not offer one.\n\nYou are aware that you are young enough that most people in this room will discount what you say before you finish saying it. You have decided to treat that as information rather than an obstacle. The people who dismiss you are showing you something — about their assumptions, about what they're protecting, about who they've decided doesn't count. You file it. You have been filing a great deal tonight.",
+        memories: [
+            { text: "You remember a conversation you had with Will, years ago, at a charity dinner. He had been drinking more than usual and he said something odd — that a man could do something he knew was wrong and still believe he was the best person to have done it. You asked him what he meant. He laughed it off. You never forgot it.", unlockedBy: "stolenCompany" }
         ],
         canShare: [
-            { text: "My late husband once said Will 'owed a debt he'd never repay.' He passed before I could learn more.", unlockedBy: null },
-            { text: "I've watched Will for years. He was generous with money but stingy with truth.", unlockedBy: null },
-            { text: "Don't let sentimentality cloud judgment. If Will wronged people, the truth serves everyone.", unlockedBy: null },
-            { text: "I've been watching Miranda tonight. She doesn't seem surprised by any of this. Not grief, not shock. Just... patience.", unlockedBy: "mirandaIdentity" }
-        ],
-        goals: [
-            "See the truth come out — all of it",
-            "Protect the young people at this gathering",
-            "Hold people accountable for their actions",
-            "Honor the memory of your late husband's instincts about Will"
+            { text: "Don't let sentimentality cloud judgment. If Will wronged people, the truth serves everyone — including his family.", unlockedBy: null }
         ],
         relationships: [
             { name: "Robert Chamberlain", relation: "Your ward — you raised him" },
             { name: "William Chamberlain", relation: "Your ward — you raised him" },
-            { name: "William Thoreson Sr.", relation: "Family friend (deceased)" },
-            { name: "Eleanor Thoreson", relation: "Friend" }
+            { name: "William Thoreson Sr.", relation: "Family acquaintance (deceased)" },
+            { name: "Eleanor Thoreson", relation: "Acquaintance" }
         ],
         items: []
     },
 
+    // ============================================================
+    // KRYSTAL — Victoria Grant
+    // ============================================================
     "Krystal": {
         name: "Victoria Grant",
         publicDesc: "Her husband runs a successful import business with ties to Thoreson Toys. Sophisticated, socially savvy, and sharper than people expect.",
         skills: [],
-        backstory: "Your husband runs a successful import business with ties to Thoreson Toys. You're sophisticated, socially savvy, and more knowledgeable about business than most people give you credit for. You've attended Thoreson gatherings for years and have developed your own observations about the family. You're here tonight because your husband's business depends on the Thoreson relationship — but you're also genuinely curious about what Will was planning to announce.",
-        howToPlay: {
-            tone: "Poised, observant, subtly sharp. You're smarter than people expect.",
-            behaviors: "Surprise people with your knowledge. Make connections others miss. Push back if someone dismisses you. Your import business knowledge about European connections is genuinely useful when the Switzerland/Wolfsbane connection surfaces.",
-            important: "Your observation about Will treating Miranda deferentially is a great moment that supports the growing suspicion about Miranda."
-        },
-        knowledge: [
-            { text: "Your husband's import business has worked with Thoreson Toys for years.", unlockedBy: null },
-            { text: "You've attended family events and observed the dynamics closely.", unlockedBy: null },
-            { text: "You understand commerce, contracts, and business relationships better than most people assume.", unlockedBy: null }
+        backstory: "Your husband Edward runs Grant Import & Export, which has maintained a trade relationship with Thoreson Toys for the better part of a decade — primarily European sourcing for specialty materials and components. You have attended Thoreson family and company events for years as a result, and you know this household and the people in it better than most guests here tonight. Edward is overseas at the moment — a sourcing trip to Lyon that couldn't be moved — which is why you came tonight alone.\n\nYou grew up in a trading family yourself — your father ran a dry goods import operation out of Houston — and you understand commerce, contracts, and the texture of a business relationship in ways that most people here would not expect from you. Your father taught you to read a room before you spoke in it, to understand what everyone present wanted before you said anything about what you wanted. It has served you well.\n\nYou and Edward have been married for eleven years. It is a genuine partnership — he is better at making deals and you are better at reading whether those deals will hold. You have saved him from at least two business relationships that would have cost him considerably, and he has never once pretended otherwise. You respect each other. That is not a small thing.\n\nYou have spent eleven years accompanying your husband to business functions and watching people decide within thirty seconds that you have nothing to contribute to the conversation. You learned early that the correct response to this is to agree with them, visibly, while paying extremely close attention to everything. Edward figured out what you were doing within the first year of your marriage and started debriefing you on the drive home. Some of your best business intelligence has come from conversations people had in front of you because they thought you were looking at the centerpiece.\n\nYour husband's business depends in part on the Thoreson relationship. Tonight has implications beyond the personal.",
+        memories: [
+            
+            { text: "Through Edward's import work, you know that Thoreson Toys has had active trade connections in Switzerland and the Alpine region for several years. You know the contacts. You know the routes.", unlockedBy: "poisoning" },
+            { text: "You heard Will and Edward talking once at a company function about the early years of the business. Will got quiet in a way that stopped the conversation. Edward told you later that he'd asked something he shouldn't have, though he didn't know what.", unlockedBy: "stolenCompany" }
         ],
         canShare: [
-            { text: "Through my husband's import business, I know Thoreson Toys has trade connections throughout Europe — including Switzerland.", unlockedBy: "poisoning" },
-            { text: "Will always treated Miranda with a strange... deference. Like she had some kind of authority over him. It never made sense to me.", unlockedBy: "secretHeir" },
-            { text: "My husband's business depends on Thoreson Toys. Whatever happened here tonight affects our livelihood too.", unlockedBy: null },
-            { text: "I've been underestimated my whole life because I'm 'the wife.' But I see things clearly. And something about tonight doesn't add up.", unlockedBy: null }
-        ],
-        goals: [
-            "Understand how this affects your husband's business",
-            "Share your observations and connections",
-            "Prove that you're more than 'just the wife'",
-            "Help solve what happened to Will"
+            { text: "I've been underestimated in this room all evening because I'm the wife. I notice things. That's not nothing.", unlockedBy: null }
         ],
         relationships: [
             { name: "William Thoreson Sr.", relation: "Business connection (deceased)" },
             { name: "Scott Thoreson Jr.", relation: "Professional acquaintance" },
-            { name: "Miranda Longfellow", relation: "Observed at many family events" },
+            { name: "Miranda Longfellow", relation: "Observed at many Thoreson events" },
             { name: "Dorothy Wells", relation: "Friend from social circles" }
         ],
         items: []
     },
 
+    // ============================================================
+    // LINDSEY — Elizabeth Monroe
+    // ============================================================
     "Lindsey": {
         name: "Elizabeth Monroe",
         publicDesc: "The eldest member of the extended family. Her memory stretches back further than anyone else's. Wise, dignified, and deeply loyal.",
         skills: [],
-        backstory: "You are the eldest member of the extended family — the matriarch whose memory stretches back further than anyone else's. You remember when Will and Eleanor were young, when the company was just starting, and when Dallas was a very different city. You're wise, dignified, and deeply loyal to the family. But you also believe that secrets poison families from the inside, and you've always suspected that the Thoreson fortune was built on something Will never talked about.",
-        howToPlay: {
-            tone: "Wise, steady, sorrowful. You've seen it all and you're not shocked — just sad.",
-            behaviors: "Speak with the authority of someone who's lived through history. Provide context from decades past. Don't rush — let your words carry weight. You're the grandmother figure who sees clearly.",
-            important: "Your memories about the name Hartley and the troubled marriage around 1910 provide historical corroboration for what the documents reveal. You're the living memory of this family."
-        },
-        knowledge: [
-            { text: "You remember the early days of the company — before it was just 'Thoreson Toys.'", unlockedBy: null },
-            { text: "You've watched this family for decades. You see patterns others miss.", unlockedBy: null },
-            { text: "You believe the truth, however painful, is always better than comfortable lies.", unlockedBy: null }
+        backstory: "You are eighty-one years old and you have outlived most of the people you loved, which gives you a perspective that is sometimes melancholy and sometimes useful. You remember Dallas when it was a smaller city, when the Thoreson family was just beginning, when Will was a young man with ambition and a partner named Hartley that nobody talks about anymore.\n\nYou were born in 1854 in Savannah, Georgia, the youngest daughter of a cotton merchant who lost nearly everything in the years after the war. You learned early that fortunes could reverse without warning, and that the families who survived were the ones who held on to each other rather than to things. You came to Texas in 1881 with your husband Theodore, who built a modest law practice in Dallas and died in 1919, leaving you comfortable, independent, and extremely clear-eyed about the nature of men.\n\nYou have watched three generations of Dallas families rise and fall — the ones who made money on cattle, then on oil, then on real estate, then on things you never fully understood. You have seen which families held and which ones didn't. In your experience, the ones that came apart were almost always undone not by misfortune but by a secret that had been kept too long. The weight of it eventually becomes structural. The house starts to lean.\n\nYou are Eleanor Thoreson's great-aunt, which makes you peripheral enough to the family to have seen it without being entirely inside it. You have always believed that the truth, however painful, is better than comfortable silence. You have kept silent about some things for a long time out of loyalty to Eleanor. That loyalty has a limit.\n\nYou are good at stillness. It is something you learned young — when you have no power, stillness is the closest thing to it. You watch. You wait. You let other people fill the silence. Over ten years inside this household you have become fluent in the Thoreson family's rhythms, their particular silences, the things they say when they think no one consequential is listening. You have been consequential the entire time. They just didn't know it.\n\nYou are a woman who has always known more than the people around her assumed. It comes with the territory of being underestimated for fifty years. Men tell you things at dinner parties they would never tell another man, because they have decided you are harmless. Women tell you things because they can tell you are actually listening. You have been gathering intelligence about this city for decades with the same methodical patience you bring to botanical classification. The principle is the same: observe carefully, label accurately, and never mistake a pretty flower for an innocuous one.\n\nYou have lived long enough to stop being frightened by difficult truths. That is the only real advantage of age — not wisdom exactly, but a certain tolerance for looking at things directly. The young are always trying to find the angle from which something hard becomes bearable. You have learned to skip that step. The thing is what it is. You look at it. You decide what to do. It is faster and considerably less exhausting than the alternative.",
+        memories: [
+            { text: "You remember a man named Hartley. Robert Hartley. Will went white whenever someone mentioned the name in those early years. You stopped mentioning it. Everyone did, eventually. Names disappear when nobody will say them.", unlockedBy: "stolenCompany" },
+            { text: "Something happened around 1910 that nearly destroyed Will and Eleanor's marriage. Eleanor was devastated in a way she never fully recovered from. She told you it was a matter between her and Will and she asked you not to ask again. You honored that for twenty-five years.", unlockedBy: "affair" },
+            { text: "Will was not a bad man. You want to say that clearly. He made terrible choices and spent the rest of his life running from them. Those are not the same thing as being bad, though they are not entirely different either.", unlockedBy: "finalConfession" }
         ],
         canShare: [
-            { text: "I remember hearing the name Hartley, years ago. Will would go white whenever someone mentioned it. I learned to stop asking.", unlockedBy: "stolenCompany" },
-            { text: "Something happened around 1910 that nearly destroyed Will and Eleanor's marriage. She never told me the details, but she was devastated.", unlockedBy: "affair" },
-            { text: "I've lived long enough to know that fortunes built on secrets eventually come apart. I always feared this day would come.", unlockedBy: null },
-            { text: "Will wasn't a bad man. But he made terrible choices, and he spent the rest of his life running from them.", unlockedBy: "affair" }
-        ],
-        goals: [
-            "Help the family face its history honestly",
-            "Share what you remember, even when it hurts",
-            "Protect the family's future by confronting its past",
-            "Ensure the younger generation learns from this"
+            { text: "I've lived long enough to know that fortunes built on secrets eventually come apart.", unlockedBy: null }
         ],
         relationships: [
             { name: "William Thoreson Sr.", relation: "Watched him his whole life (deceased)" },
-            { name: "Eleanor Thoreson", relation: "Dear friend" },
+            { name: "Eleanor Thoreson", relation: "Your great-niece and dear friend" },
             { name: "Lillian Ashford", relation: "Long-time friend" },
-            { name: "Scott Thoreson Jr.", relation: "Grandson figure" }
+            { name: "Scott Thoreson Jr.", relation: "Family" }
         ],
         items: []
     },
 
+    // ============================================================
+    // BRADEY — James Sterling
+    // ============================================================
     "Bradey": {
         name: "James Sterling",
         publicDesc: "Son of Charles Sterling, the retired banker. Young, ambitious, and seeing the Thoreson family with fresh eyes.",
         skills: [],
-        backstory: "You're the son of Charles Sterling, the retired banker. You're young, ambitious, and eager to make your mark in Dallas business. This is your first time at a Thoreson family event, and you were excited to network. Instead, you're watching a family empire come apart in real time. You're sharp enough to follow what's happening, and you're not blinded by decades of loyalty to the Thoresons like the older generation.",
-        howToPlay: {
-            tone: "Eager, observant, refreshingly direct. You haven't learned to be diplomatic yet — and that's an asset.",
-            behaviors: "Ask the obvious questions that nobody else will ask because they're being polite. Point out inconsistencies. React honestly to revelations. You're the fresh pair of eyes in the room.",
-            important: "Your youth and outsider perspective let you say things the older characters can't. Use that freedom."
-        },
-        knowledge: [
-            { text: "Your father handled the Thoreson banking accounts years ago — he's mentioned it in passing.", unlockedBy: null },
-            { text: "You're new to this social circle and seeing everything with fresh eyes.", unlockedBy: null },
-            { text: "You don't have the emotional attachments that cloud the older generation's judgment.", unlockedBy: null },
-            { text: "You're ambitious and pay close attention to how power and money work.", unlockedBy: null }
+        backstory: "You are twenty-three years old and you are acutely aware that this is the most interesting evening of your life so far. You work as a junior associate at your father's former bank, learning the trade from the bottom up the way your father insists is the only proper way to learn it. You are ambitious, observant, and not yet experienced enough to know which questions you're not supposed to ask.\n\nYou grew up in a house where dinner table conversation was frequently about interest rates, lending risk, and the moral obligations of financial institutions — your father had strong opinions about all of it and was not interested in keeping them to himself. You absorbed more than you let on. You know how to read a balance sheet. You know how collateral works. You know what it looks like when a loan has been structured to obscure something, and you know that the people doing the obscuring are rarely as clever as they think they are.\n\nYou also grew up watching your father move through rooms like this one — estates, clubs, charity dinners — and you studied the way he did it. Unhurried. Never the loudest voice. Always the person who had already understood the situation by the time everyone else was still figuring out what was happening. You are trying to learn that particular skill. You are not sure you have it yet, but tonight is useful practice.\n\nYou are, underneath the professional ambition, genuinely curious about people — why they make the choices they do, what they're protecting, what they're afraid of. You find this evening less frightening than most of the adults here seem to. You find it fascinating.\n\nYou have been brought to Thoreson events a handful of times by your father, but always as an afterthought — the son who tagged along. Tonight feels different.\n\nYou have buried two husbands, outlasted four business partners, and chaired enough committees to understand that most institutions run on the labor of women who will never be credited for it. You have made your peace with that, mostly. What you have not made peace with is dishonesty — the deliberate, sustained kind, the kind that is maintained not out of shame but out of convenience. That kind offends you deeply. It always has. Tonight it is offending you considerably.\n\nYou are aware that you are young enough that most people in this room will discount what you say before you finish saying it. You have decided to treat that as information rather than an obstacle. The people who dismiss you are showing you something — about their assumptions, about what they're protecting, about who they've decided doesn't count. You file it. You have been filing a great deal tonight.",
+        memories: [
+            { text: "Your father mentioned once — offhandedly — that the Thoreson accounts in their early days were complicated in a way that had made some people at the bank uncomfortable. He said it was old history and not worth picking at.", unlockedBy: "ledger" },
+            { text: "You overheard Marcus Brennan and Victoria Ashworth talking on a patio at a company function last year. Brennan said Will had cost them a fortune on the European deal but had made them ten times that over the years. They didn't know you were there.", unlockedBy: "europeanDeal" }
         ],
         canShare: [
-            { text: "I heard Mr. Brennan and Mrs. Ashworth talking on the patio last month. He said 'Will's cost us a fortune on this deal, but the man's made us ten times that over the years. We just need to get him back on track.'", unlockedBy: "europeanDeal" },
-            { text: "I don't have the history everyone else has with this family. But sometimes an outsider's perspective is what you need.", unlockedBy: null },
-            { text: "My father mentioned once that the Thoreson accounts were 'complicated' in the early days. He wouldn't say more.", unlockedBy: "ledger" },
-            { text: "I've been watching everyone's faces when new information comes out. Some people are surprised. Some people aren't. That tells you something.", unlockedBy: "secretHeir" },
-            { text: "I'm young, but I'm not naive. Someone at this party knows more than they're saying.", unlockedBy: "secretHeir" }
-        ],
-        goals: [
-            "Understand what's really happening with this family",
-            "Make your father proud by being sharp and observant",
-            "Ask the questions that need asking",
-            "Learn how the real world of business works — warts and all"
+            { text: "I don't have thirty years of loyalty to this family clouding my view. Sometimes that's what a room needs.", unlockedBy: null }
         ],
         relationships: [
             { name: "Charles Sterling", relation: "Your father" },
-            { name: "William Chamberlain", relation: "Fellow young person at the gathering" },
-            { name: "Robert Chamberlain", relation: "Fellow young person at the gathering" },
             { name: "Scott Thoreson Jr.", relation: "Family connection through your father" }
         ],
         items: []
     },
 
+    // ============================================================
+    // ALEXANDER — William Chamberlain (age 17)
+    // ============================================================
     "Alexander": {
         name: "William Chamberlain",
         publicDesc: "A young man under the guardianship of Patricia Chamberlain. Intelligent, thoughtful, and quietly ambitious.",
         skills: [],
-        backstory: "You're a young man under the guardianship of Patricia Chamberlain. You're intelligent, thoughtful, and quietly ambitious. You've grown up on the edges of Dallas high society, observing how wealth and power work from the outside looking in. You're fascinated by business and current events, and tonight's dinner was supposed to be an exciting glimpse into one of Dallas's most prominent families. It's turned into something much darker.",
-        howToPlay: {
-            tone: "Quiet, observant, surprisingly insightful for your age.",
-            behaviors: "Listen more than you speak, but when you do speak, make it count. You're an observer — share what you notice about people's behavior and reactions. Defer to Patricia but think for yourself.",
-            important: "You and the other young characters (James, Robert) can form a natural investigative team, sharing observations the adults might dismiss."
-        },
-        knowledge: [
-            { text: "Your guardian Patricia is protective but fair. She's taught you to think for yourself.", unlockedBy: null },
-            { text: "You've observed Dallas society from a unique perspective — close enough to see it, far enough to see it clearly.", unlockedBy: null },
-            { text: "You're good at reading situations and noticing when adults are being evasive.", unlockedBy: null },
-            { text: "Patricia has made comments about Will Thoreson that suggested she didn't fully trust him.", unlockedBy: null }
+        backstory: "You are seventeen years old, which means you are old enough to understand most of what is happening tonight and young enough that the adults will periodically forget you are in the room. You have learned to use both of those things to your advantage.\n\nYou were placed with Patricia Chamberlain at the age of nine, after your parents died within a year of each other — your father from a fall, your mother from a fever that the doctors caught too late. Patricia took you in without drama and has raised you with a combination of high expectations and genuine care that you have come to understand, over the years, is rarer than it sounds.\n\nYou are a serious student — history and mathematics are your best subjects, and you have been quietly nursing an ambition to study law at SMU, though you haven't told Patricia yet. You read the newspaper every morning. You have opinions about current events. You are the kind of seventeen-year-old who sometimes irritates adults by being right.\n\nRobert has been your brother in every way that matters for the past eight years. He is younger than you and more impulsive, and you have developed a habit of steadying him that you both take for granted. Tonight you are not sure who needs steadying more — Robert or the rest of this room.\n\nYou are, at your core, an honest man — not in the performative way of people who mention their honesty frequently, but in the structural way, the kind built in early and load-bearing ever since. You have never falsified a document, never looked the other way on a suspicious account, never let a client believe something you knew to be false. You retired with your reputation entirely intact. You are aware that this is rarer than it should be, and that awareness has never left you comfortable around men who seem too clean.\n\nYou have been told you are mature for your age so many times that you have started to find it mildly insulting. You are not mature for your age. You are a seventeen-year-old who read a great deal and paid attention when adults forgot you were in the room, and those are learnable skills, not a personality type. What you actually are, underneath the seriousness, is someone who wants very badly to understand how the world works — not the version people present at dinner parties, but the actual mechanisms underneath. Tonight those mechanisms are unusually visible.",
+        memories: [
+            { text: "Patricia said something to you last week, before tonight's dinner — that Will Thoreson was a man who had built something real but built it wrong, and that you could learn as much from watching that kind of story as from any success. You didn't fully understand it then. You do now.", unlockedBy: "stolenCompany" }
         ],
         canShare: [
-            { text: "Patricia has always said you can learn more about a person by watching what they do when they think nobody's looking.", unlockedBy: null },
-            { text: "I've been watching the room. Not everyone is reacting the way you'd expect to these revelations.", unlockedBy: "secretHeir" },
-            { text: "I don't know the family history, but the pattern seems clear — someone built a fortune on lies, and now it's catching up.", unlockedBy: "forgedDocs" },
-            { text: "Sometimes the youngest person in the room sees things the clearest. Just saying.", unlockedBy: null }
-        ],
-        goals: [
-            "Understand what's happening with this family",
-            "Make Patricia proud by being observant and thoughtful",
-            "Share your observations when they matter",
-            "Learn from this experience"
+            { text: "Patricia always says you can learn more about a person by watching what they do when they think nobody's looking.", unlockedBy: null }
         ],
         relationships: [
             { name: "Patricia Chamberlain", relation: "Your guardian" },
-            { name: "Robert Chamberlain", relation: "Fellow ward — like a brother" },
-            { name: "James Sterling", relation: "Fellow young person at the gathering" }
+            { name: "Robert Chamberlain", relation: "Like a brother — you've grown up together" },
+            { name: "James Sterling", relation: "Met tonight" }
         ],
         items: []
     },
 
+    // ============================================================
+    // JESSE — Robert Chamberlain (age 15)
+    // ============================================================
     "Jesse": {
         name: "Robert Chamberlain",
-        publicDesc: "The older of Patricia Chamberlain's two wards. Loyal, protective, and more emotionally attuned than people give him credit for.",
+        publicDesc: "The younger of Patricia Chamberlain's two wards. Loyal, protective, and more emotionally attuned than people give him credit for.",
         skills: [],
-        backstory: "You're the older of Patricia Chamberlain's two wards. You're loyal, protective, and more emotionally attuned than people give you credit for. You've developed a strong bond with Patricia and feel a responsibility to watch out for William. You're less interested in business than in people — you care about who's honest and who's not. Tonight, your instincts are telling you something is very wrong.",
-        howToPlay: {
-            tone: "Earnest, protective, emotionally perceptive. You feel things deeply.",
-            behaviors: "Watch people's faces and body language. Report what you observe. Be protective of William and Patricia. Trust your gut — your instincts are good.",
-            important: "Your observation about Miranda's calm demeanor is a key piece of the puzzle. Don't be afraid to voice it."
-        },
-        knowledge: [
-            { text: "Patricia has raised you well. You trust her judgment about people.", unlockedBy: null },
-            { text: "You're good at reading emotions — you notice when people are lying, nervous, or hiding something.", unlockedBy: null },
-            { text: "You've overheard Patricia say that some debts 'can't be repaid with money.'", unlockedBy: null },
-            { text: "Your instincts are sharp. When something feels wrong, you're usually right.", unlockedBy: null }
+        backstory: "You are twenty-three years old and you are acutely aware that this is the most interesting evening of your life so far. You work as a junior associate at your father's former bank, learning the trade from the bottom up the way your father insists is the only proper way to learn it. You are ambitious, observant, and not yet experienced enough to know which questions you're not supposed to ask.\n\nYou grew up in a house where dinner table conversation was frequently about interest rates, lending risk, and the moral obligations of financial institutions — your father had strong opinions about all of it and was not interested in keeping them to himself. You absorbed more than you let on. You know how to read a balance sheet. You know how collateral works. You know what it looks like when a loan has been structured to obscure something, and you know that the people doing the obscuring are rarely as clever as they think they are.\n\nYou also grew up watching your father move through rooms like this one — estates, clubs, charity dinners — and you studied the way he did it. Unhurried. Never the loudest voice. Always the person who had already understood the situation by the time everyone else was still figuring out what was happening. You are trying to learn that particular skill. You are not sure you have it yet, but tonight is useful practice.\n\nYou are, underneath the professional ambition, genuinely curious about people — why they make the choices they do, what they're protecting, what they're afraid of. You find this evening less frightening than most of the adults here seem to. You find it fascinating.\n\nYou have been brought to Thoreson events a handful of times by your father, but always as an afterthought — the son who tagged along. Tonight feels different.\n\nYou have spent most of your life being told, in various ways, that independence in a woman is either a performance or a compensation for something missing. You have found that the most efficient response to this is to ignore it entirely. You are independent because it suits you, because you are good at it, and because you worked very hard to build the conditions that make it possible. You owe no one an explanation for any of that, and you do not offer one.\n\nYou are aware that you are young enough that most people in this room will discount what you say before you finish saying it. You have decided to treat that as information rather than an obstacle. The people who dismiss you are showing you something — about their assumptions, about what they're protecting, about who they've decided doesn't count. You file it. You have been filing a great deal tonight.\n\nYou don't always have the words for what you notice, but you notice it. You noticed when Patricia was worried about something she wasn't saying last month. You noticed when the woman across the room — Miranda — looked at the deceased man's chair for a full three seconds before anyone else had processed that he was gone. You noticed things about tonight within minutes of arriving that the adults with thirty years on you are still catching up to. You're not sure what to do with that. You're figuring it out.",
+        memories: [
+            { text: "You saw Will alone in the garden once, maybe two months ago. He was holding a letter and his shoulders were shaking. When he noticed you he straightened up and shoved the letter in his pocket and pretended nothing had happened. He walked past you without a word. You have been thinking about the look on his face all evening.", unlockedBy: "margaretsLetter" },
+            { text: "Patricia said something on the drive over — that Will Thoreson was a man who had finally decided to face something he'd been running from for thirty years. You didn't know what she meant. You're starting to.", unlockedBy: "stolenCompany" }
         ],
         canShare: [
-            { text: "I saw Will alone in the garden once. He was holding a letter and crying. When he noticed me he shoved it in his pocket and pretended nothing happened.", unlockedBy: "margaretsLetter" },
-            { text: "I don't know these people well, but something feels wrong. Not sad — wrong. Like some people at this party expected this to happen.", unlockedBy: null },
-            { text: "I've been watching Miranda. Her expression hasn't changed all night. Everyone else is shocked or grieving. She's... calm.", unlockedBy: "secretHeir" },
-            { text: "Patricia always says the truth eventually comes out. I think she's been waiting for something like this.", unlockedBy: null },
-            { text: "People think young people don't notice things. We notice everything.", unlockedBy: null }
-        ],
-        goals: [
-            "Protect William and Patricia",
-            "Share what you observe about people's behavior",
-            "Trust your instincts when something feels wrong",
-            "Help uncover the truth"
+            { text: "I don't know these people the way everyone else here does. But someone in this room isn't surprised. And I know what that looks like.", unlockedBy: null }
         ],
         relationships: [
-            { name: "Patricia Chamberlain", relation: "Your guardian — you're deeply loyal to her" },
-            { name: "William Chamberlain", relation: "Fellow ward — you look out for him" },
-            { name: "James Sterling", relation: "Fellow young person at the gathering" }
+            { name: "Patricia Chamberlain", relation: "Your guardian" },
+            { name: "William Chamberlain", relation: "Like a brother" },
+            { name: "James Sterling", relation: "Met tonight" }
         ],
         items: []
     },
 
+    // ============================================================
+    // DYLAN — Theodore "Teddy" Winslow
+    // ============================================================
     "Dylan": {
         name: "Theodore 'Teddy' Winslow",
         publicDesc: "Vivienne's boyfriend and an accounting student at SMU. Quiet until someone puts numbers in front of him.",
         skills: ["Accounting"],
-        backstory: "You're an accounting student at Southern Methodist University, about a year from finishing your degree. You're here tonight because your girlfriend Vivienne invited you. She said it was a family dinner — her uncle's estate, nice food, good company. You said yes because you love her and because you've never been inside a house this big.\n\nYou don't know these people. You've met Scott and Brian once or twice, and Eleanor seems nice. Everyone else is a stranger. You figured you'd shake some hands, eat some good food, and try not to embarrass yourself in front of Vivienne's family.\n\nThen her uncle died, and now you're at a crime scene.\n\nHere's the thing — you may not know anyone here, but you know numbers. You're top of your class. You can read a ledger the way most people read a newspaper. If someone puts a financial document in front of you, you'll know exactly what it says and what it's hiding. You've been waiting for a chance to prove you're more than just Vivienne's boyfriend. Tonight might be that chance.",
-        howToPlay: {
-            tone: "Eager, sharp, a little out of his depth socially but completely in his element with numbers. You're the guy who finally gets to show what he can do.",
-            behaviors: "Be a bit quiet early on — you don't know anyone and this is your girlfriend's family. But if an opportunity comes up where your skills are useful, don't hesitate. You've been waiting for a chance to prove you're more than just Vivienne's boyfriend.",
-            important: "You have the Accounting skill. If something financial comes up tonight, you'll know it when you see it."
-        },
-        knowledge: [
-            { text: "You're here as Vivienne's date. You don't know most of these people.", unlockedBy: null },
-            { text: "You're studying accounting at SMU. You can read financial documents better than most professionals.", unlockedBy: null },
-            { text: "Vivienne mentioned her uncle Will was wealthy and ran a toy company. That's about all you know.", unlockedBy: null }
+        backstory: "You are twenty-three years old and you are acutely aware that this is the most interesting evening of your life so far. You work as a junior associate at your father's former bank, learning the trade from the bottom up the way your father insists is the only proper way to learn it. You are ambitious, observant, and not yet experienced enough to know which questions you're not supposed to ask.\n\nYou grew up in a house where dinner table conversation was frequently about interest rates, lending risk, and the moral obligations of financial institutions — your father had strong opinions about all of it and was not interested in keeping them to himself. You absorbed more than you let on. You know how to read a balance sheet. You know how collateral works. You know what it looks like when a loan has been structured to obscure something, and you know that the people doing the obscuring are rarely as clever as they think they are.\n\nYou also grew up watching your father move through rooms like this one — estates, clubs, charity dinners — and you studied the way he did it. Unhurried. Never the loudest voice. Always the person who had already understood the situation by the time everyone else was still figuring out what was happening. You are trying to learn that particular skill. You are not sure you have it yet, but tonight is useful practice.\n\nYou are, underneath the professional ambition, genuinely curious about people — why they make the choices they do, what they're protecting, what they're afraid of. You find this evening less frightening than most of the adults here seem to. You find it fascinating.\n\nYou have been brought to Thoreson events a handful of times by your father, but always as an afterthought — the son who tagged along. Tonight feels different.\n\nYou have spent most of your life being told, in various ways, that independence in a woman is either a performance or a compensation for something missing. You have found that the most efficient response to this is to ignore it entirely. You are independent because it suits you, because you are good at it, and because you worked very hard to build the conditions that make it possible. You owe no one an explanation for any of that, and you do not offer one.\n\nYou are aware that you are young enough that most people in this room will discount what you say before you finish saying it. You have decided to treat that as information rather than an obstacle. The people who dismiss you are showing you something — about their assumptions, about what they're protecting, about who they've decided doesn't count. You file it. You have been filing a great deal tonight.\n\nYou have been told you are mature for your age so many times that you have started to find it mildly insulting. You are not mature for your age. You are a seventeen-year-old who read a great deal and paid attention when adults forgot you were in the room, and those are learnable skills, not a personality type. What you actually are, underneath the seriousness, is someone who wants very badly to understand how the world works — not the version people present at dinner parties, but the actual mechanisms underneath. Tonight those mechanisms are unusually visible.\n\nYou are not, despite Vivienne's occasional gentle teasing, boring. You are specific. There is a difference. You are not interested in everything — you are deeply interested in a few things, numbers foremost among them, and you find that depth more satisfying than breadth. You can spend an hour on a single interesting ledger entry and come out the other side knowing something true and precise about a person or an organization that no amount of conversation would have revealed. Tonight you have been doing exactly that, quietly, while everyone else talks.",
+        memories: [
+            { text: "You ran the numbers quietly in your head while everyone was talking. Twenty-four years of fifty-dollar monthly payments. Fourteen thousand four hundred dollars. Not a fortune, but consistent. Sustained. Personal. Someone felt responsible for whoever T.H. is for a very long time.", unlockedBy: "secretHeir" }
         ],
         canShare: [
-            { text: "I may not know anyone here, but I know numbers. If there's a financial document, let me see it.", unlockedBy: null },
-            { text: "I'm studying accounting at SMU. Top of my class. Ledgers, balance sheets, payment records — that's what I do.", unlockedBy: null },
-            { text: "These payments in the ledger — they're structured to look routine, but they're not. Someone set this up deliberately to hide where the money was going.", unlockedBy: "ledger" },
-            { text: "Whoever buried these 'T.H.' payments knew exactly what they were doing. This isn't sloppy bookkeeping — it's intentional concealment.", unlockedBy: "ledger" }
-        ],
-        goals: [
-            "Prove yourself — show Vivienne's family you're more than just her boyfriend",
-            "Use your accounting skills to decode any financial documents",
-            "Help the investigation however you can",
-            "Be there for Vivienne during a difficult night"
+            { text: "I may not know anyone here, but I know numbers. If there's a financial document, let me see it.", unlockedBy: null }
         ],
         relationships: [
             { name: "Vivienne Ashford", relation: "Your girlfriend — you're here for her" },
-            { name: "Scott Thoreson Jr.", relation: "Vivienne's cousin — met him once or twice" },
+            { name: "Scott Thoreson Jr.", relation: "Vivienne's cousin — met him once" },
             { name: "Brian Thoreson", relation: "Vivienne's cousin" },
-            { name: "Eleanor Thoreson", relation: "Vivienne's aunt — seems kind" }
+            { name: "Eleanor Thoreson", relation: "Vivienne's aunt" }
         ],
         items: []
     }
+
 };
