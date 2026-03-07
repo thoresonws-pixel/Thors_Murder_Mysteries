@@ -33,6 +33,7 @@ This code lets you view ALL characters' full information on any character page.
 | James Sterling | Bradey | 96523 |
 | William Chamberlain | Alexander | 51783 |
 | Robert Chamberlain | Jesse | 28764 |
+| Theodore 'Teddy' Winslow | Dylan | 16583 |
 
 ---
 
