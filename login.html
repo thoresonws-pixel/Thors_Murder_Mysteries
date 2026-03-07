@@ -222,8 +222,12 @@
             "Alexander": { code: "51783", role: "guest" },
             "Jesse": { code: "28764", role: "guest" },
             "Dylan": { code: "16583", role: "guest" },
-            "TestUser1": { code: "00000", role: "testing" },
-            "TestUser2": { code: "00001", role: "testing" }
+            // ── TEST ACCOUNTS (tonight's playtest) ─────────────────
+            "TestMiranda": { code: "51199", role: "test", character: "Leanna" },
+            "TestWalter":  { code: "47150", role: "test", character: "Marc" },
+            "TestVivienne":{ code: "27235", role: "test", character: "Hannah" },
+            "TestDavid":   { code: "55274", role: "test", character: "DJ" },
+            "TestCasey":   { code: "34346", role: "test", character: "Casey" }
         };
 
         document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -234,8 +238,11 @@
             const errorMsg = document.getElementById('errorMessage');
 
             if (users[username] && users[username].code === code) {
+                // Test accounts use a different character key than their username
+                const charKey = users[username].character || username;
                 const userSession = {
-                    username: username,
+                    username: charKey,
+                    displayName: username,
                     role: users[username].role,
                     loginTime: new Date().toISOString()
                 };
