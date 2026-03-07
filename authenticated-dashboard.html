@@ -485,35 +485,68 @@
         }
         .guest-container {
             width: 100%;
-            max-width: 550px;
-            background: linear-gradient(145deg, #f5f0e6 0%, #e8e0d0 50%, #d4c9b5 100%);
-            border: 2px solid #8b7355;
-            box-shadow: 
-                0 0 0 1px #a08060,
-                0 0 0 4px #2a2520,
-                0 0 0 6px #8b7355,
-                0 20px 50px rgba(0,0,0,0.5);
-            padding: 40px;
-            border-radius: 2px;
-        }
-        .guest-list {
+            max-width: 620px;
             display: flex;
             flex-direction: column;
-            gap: 0;
+            gap: 6px;
         }
-        .guest-item {
+        .guest-card {
+            background: linear-gradient(145deg, #f5f0e6 0%, #e8e0d0 100%);
+            border: 1px solid #8b7355;
+            overflow: hidden;
+        }
+        .guest-card-header {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(139, 115, 85, 0.2);
-            transition: background 0.3s;
+            justify-content: space-between;
+            padding: 14px 20px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
         }
-        .guest-item:hover {
-            background: rgba(201, 162, 39, 0.05);
+        .guest-card-header:hover { background: rgba(139,115,85,0.12); }
+        .guest-card-left { display: flex; flex-direction: column; gap: 2px; }
+        .guest-card-name {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 20px;
+            color: #2a2520;
+            font-style: italic;
         }
-        .guest-item:last-child {
-            border-bottom: none;
+        .guest-card-player {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            color: #a08060;
+            font-style: normal;
+        }
+        .guest-card-role {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #8b7355;
+        }
+        .guest-card-chevron {
+            color: #8b7355;
+            font-size: 11px;
+            transition: transform 0.25s;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+        .guest-card.open .guest-card-chevron { transform: rotate(180deg); }
+        .guest-card-body {
+            display: none;
+            padding: 0 20px 16px 20px;
+            border-top: 1px solid rgba(139,115,85,0.3);
+        }
+        .guest-card.open .guest-card-body { display: block; }
+        .guest-card-desc {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 17px;
+            font-style: italic;
+            color: #5a4a3a;
+            line-height: 1.7;
+            padding-top: 12px;
         }
         .guest-bullet {
             color: #8b7355;
@@ -1163,10 +1196,8 @@
         <h2 class="section-title">Expected Guests</h2>
         <p class="section-subtitle">Those who have answered the summons</p>
         
-        <div class="guest-container">
-            <div class="guest-list" id="guestList">
-                <div class="loading">Loading guest list...</div>
-            </div>
+        <div class="guest-container" id="guestList">
+            <div class="loading">Loading guest list&hellip;</div>
         </div>
     </section>
 
@@ -2200,27 +2231,28 @@
         }
 
             const charactersList = [
-            { id: "scott-thoreson-jr", name: "Scott Thoreson Jr.", irlName: "Scott", publicDesc: "Eldest son and family attorney. Built a successful career managing both business and legal affairs. Professional and measured, though the weight of responsibility often shows." },
-            { id: "frederick-brian-thoreson", name: "Frederick Brian T. Thoreson", irlName: "BrianT", publicDesc: "Younger son who pursued a different path. Lives comfortably but remains uninvolved in family business. Prefers leisure and social life over corporate matters." },
-            { id: "charlotte-clara-waverly", name: "Charlotte Clara Waverly", irlName: "Clara", publicDesc: "Household manager and bartender of seven years. Manages the estate operations with quiet efficiency. A widow who found stability in her work. Observant and knowledgeable about house operations." },
-            { id: "leanna-midday-miranda-hartley", name: "Miranda Leanna Hartley", irlName: "Leanna", publicDesc: "Scott's legal assistant for over a decade. Competent and professional in her role. Daughter of a Dallas family with business connections. Discrete and reliable." },
-            { id: "walter-lippman", name: "Walter Lippman", irlName: "Marc", publicDesc: "Journalist covering Dallas society and business for the Herald. Known for thorough research and compelling writing. Recently married to Sophie. Interested in understanding prominent local families." },
-            { id: "maisy-maan-de-kok-sophie", name: "Sophie Vanderpool", irlName: "Maisy", publicDesc: "Assistant to Walter Lippman at the Dallas Herald. Intelligent and energetic. Comes from a merchant family background. Works on various journalistic projects and research." },
-            { id: "vivienne-ashford", name: "Vivienne Ashford", irlName: "Hannah", publicDesc: "Thoreson cousin, recently returned from extended time in France. Educated abroad, fluent in French, and brings a European perspective. Spirited and independent-minded." },
-            { id: "dj-strickland-david", name: "David Richardson", irlName: "DJ", publicDesc: "Family cousin with various business interests. Well-connected and personable. Handles special projects and family matters. Known for his ability to manage complex situations." },
-            { id: "peter-hammann-raymond", name: "Raymond Hammond", irlName: "Peter", publicDesc: "Business Manager at Thoreson Toys for fifteen years. Expert in company operations and finance. Detail-oriented and systematic. Integral to the company's day-to-day success." },
-            { id: "arash-fan-marcus", name: "Marcus Brennan", irlName: "Arash", publicDesc: "Major investor in Thoreson Toys for several years. Successful businessman with diverse holdings. Analytical and measured in his approach to investments and partnerships." },
-            { id: "becky-piroga-victoria", name: "Victoria Ashworth", irlName: "Becky", publicDesc: "Fellow investor alongside Marcus in Thoreson Toys. Sharp business acumen and keen observation skills. Active in social circles and local philanthropic efforts." },
-            { id: "thomas-bradford", name: "Thomas Bradford", irlName: "BrianS", publicDesc: "Competitor in the toy manufacturing industry with his own successful business. Charming and ambitious. Participates in Dallas business community and social events." },
-            { id: "margaret-ashford", name: "Margaret Ashford", irlName: "Katie", publicDesc: "Long-time friend of the Thoreson family spanning three decades. Warm and practical. Active in society circles. Values loyalty and family bonds." },
-            { id: "dorothy-wells", name: "Dorothy Wells", irlName: "Michelle", publicDesc: "Prominent society figure and businesswoman. Intelligent and perceptive observer of people. Involved in various business and charitable endeavors. Well-connected in Dallas." },
-            { id: "charles-sterling", name: "Charles Sterling", irlName: "Jeff", publicDesc: "Retired banker and distant family relation. Traditional in values and conduct. Maintains an interest in family matters and local business community. Concerned with propriety." },
-            { id: "patricia-chamberlain", name: "Patricia Chamberlain", irlName: "Casey", publicDesc: "Independent widow with considerable means. Guardian to two young men. Protective and caring toward those under her care. Maintains an active social and personal life." },
-            { id: "victoria-grant", name: "Victoria Grant", irlName: "Krystal", publicDesc: "Wife of a successful businessman with investments in various enterprises. Sophisticated and knowledgeable about commerce. Active in cultural and social circles." },
-            { id: "elizabeth-monroe", name: "Elizabeth Monroe", irlName: "Lindsey", publicDesc: "Family matriarch with deep knowledge of local history and family matters. Organized and methodical in approach. Respected for her wisdom and perspective on family affairs." },
-            { id: "james-sterling", name: "James Sterling", irlName: "Bradey", publicDesc: "Young member of the Sterling family. Ambitious and eager to establish himself in business and society. Son of Charles Sterling. Still developing his place in the world." },
-            { id: "william-chamberlain", name: "William Chamberlain", irlName: "Alexander", publicDesc: "Young ward under Patricia Chamberlain's guardianship. Intelligent and thoughtful. Interested in business and current events. Working to establish his own path." },
-            { id: "robert-chamberlain", name: "Robert Chamberlain", irlName: "Jesse", publicDesc: "Oldest of the younger generation. Close to Patricia Chamberlain. Thoughtful and observant. Loyal to those he cares about. Developing his own business interests." }
+            { name: "William 'Scott' Thoreson Jr.", irlName: "Scott", role: "The Host / Game Master", publicDesc: "Eldest son of William Thoreson Sr. and the family's attorney. A man of integrity who has dedicated his career to managing the family's legal affairs." },
+            { name: "Brian Thoreson", irlName: "BrianT", role: "The Younger Brother", publicDesc: "Younger son of William Thoreson Sr. The easygoing one. Here for the food and the drinks." },
+            { name: "Clara Thoreson", irlName: "Clara", role: "Scott's Wife / The Bartender", publicDesc: "Scott's wife. Warm, practical, and the one keeping things running tonight." },
+            { name: "Miranda Longfellow", irlName: "Leanna", role: "Legal Assistant", publicDesc: "Scott Thoreson's legal assistant. Professional, competent, and discreet. Has worked for the family for nearly ten years." },
+            { name: "Walter Lippman", irlName: "Marc", role: "The Journalist", publicDesc: "A journalist for the Dallas Herald, covering business and society. Known for thorough, honest reporting." },
+            { name: "Sophie Vanderpool", irlName: "Maisy", role: "The Journalist's Assistant", publicDesc: "Walter Lippman's assistant at the Dallas Herald. Smart, energetic, and eager to prove herself." },
+            { name: "Vivienne Ashford", irlName: "Hannah", role: "The Worldly Cousin", publicDesc: "Scott and Brian's cousin on their mother's side. Recently returned from years living in Paris. Cultured, worldly, and fluent in French." },
+            { name: "Theodore 'Teddy' Winslow", irlName: "Dylan", role: "Vivienne's Guest", publicDesc: "Vivienne's boyfriend and an accounting student at SMU. Quiet until someone puts numbers in front of him." },
+            { name: "David Richardson", irlName: "DJ", role: "The Private Investigator", publicDesc: "A cousin on the Thoreson side and a licensed private investigator. Invited to tonight's dinner — now using his connections to help the family get answers." },
+            { name: "Raymond Hammond", irlName: "Peter", role: "The Business Manager", publicDesc: "Business Manager at Thoreson Toys for fifteen years. Handles operations, vendor relationships, and day-to-day management." },
+            { name: "Marcus Brennan", irlName: "Arash", role: "The Investor", publicDesc: "A successful Dallas businessman with a significant stake in Thoreson Toys. Analytical, measured, and protective of his money." },
+            { name: "Victoria Ashworth", irlName: "Becky", role: "The Investor", publicDesc: "A sharp businesswoman and Thoreson Toys investor. Active in Dallas society with a keen eye for detail." },
+            { name: "Thomas Bradford", irlName: "BrianS", role: "The Competitor", publicDesc: "Runs Bradford & Sons, a competing toy manufacturer. Charming, ambitious, and very interested in Thoreson Toys' secrets." },
+            { name: "Lillian Ashford", irlName: "Katie", role: "The Family Friend", publicDesc: "A dear friend of the Thoreson family for over thirty years. Warm, sharp-tongued, and the best-dressed woman in any room she enters." },
+            { name: "Dorothy Wells", irlName: "Michelle", role: "The Society Insider", publicDesc: "One of the most well-connected women in Dallas society. Knows what's happening in every corner of the city." },
+            { name: "Charles Sterling", irlName: "Jeff", role: "The Retired Banker", publicDesc: "A retired Dallas banker and old friend of the Thoreson family. Traditional, principled, and sharp as ever." },
+            { name: "James Sterling", irlName: "Bradey", role: "The Banker's Son", publicDesc: "Son of Charles Sterling, the retired banker. Young, ambitious, and seeing the Thoreson family with fresh eyes." },
+            { name: "Patricia Chamberlain", irlName: "Casey", role: "The Guardian", publicDesc: "An independent woman of means and strong will. Guardian to two young men. Protective, perceptive, and doesn't suffer fools." },
+            { name: "William Chamberlain", irlName: "Alexander", role: "The Ward (age 17)", publicDesc: "A young man under the guardianship of Patricia Chamberlain. Intelligent, thoughtful, and quietly ambitious." },
+            { name: "Robert Chamberlain", irlName: "Jesse", role: "The Ward (age 15)", publicDesc: "The younger of Patricia Chamberlain's two wards. Loyal, protective, and more emotionally attuned than people give him credit for." },
+            { name: "Victoria Grant", irlName: "Krystal", role: "The Importer's Wife", publicDesc: "Her husband runs a successful import business with ties to Thoreson Toys. Sophisticated, socially savvy, and sharper than people expect." },
+            { name: "Elizabeth Monroe", irlName: "Lindsey", role: "The Family Elder", publicDesc: "The eldest member of the extended family. Her memory stretches back further than anyone else's." },
         ];
         
         function loadGuests() {
@@ -2228,29 +2260,28 @@
         }
         
         function displayGuests(guests) {
-            const guestListEl = document.getElementById('guestList');
-            
-            if (guests.length === 0) {
-                guestListEl.innerHTML = '<div class="loading">Awaiting responses...</div>';
+            const container = document.getElementById('guestList');
+            if (!guests || guests.length === 0) {
+                container.innerHTML = '<div class="loading">Awaiting responses...</div>';
                 return;
             }
-            
-            guestListEl.innerHTML = guests
-                .map(character => `
-                    <div class="guest-item" onclick="toggleGuestInfo(this)" style="cursor: pointer;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            <div>
-                                <span class="guest-bullet">✦</span>
-                                <span class="guest-name">${character.name} (${character.irlName})</span>
-                            </div>
-                            <span class="guest-toggle" style="transition: transform 0.3s; color: #8b7355;">▼</span>
+            container.innerHTML = guests.map((c, i) => `
+                <div class="guest-card" id="gc${i}">
+                    <div class="guest-card-header" onclick="toggleGuestCard(${i})">
+                        <div class="guest-card-left">
+                            <div class="guest-card-name">${c.name} <span class="guest-card-player">(${c.irlName})</span></div>
+                            <div class="guest-card-role">${c.role || ''}</div>
                         </div>
-                        <div class="guest-info" style="display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid #d4c9b5;">
-                            <div style="font-size: 14px; color: #5a5340; line-height: 1.6; font-style: italic;">${character.publicDesc}</div>
-                        </div>
+                        <div class="guest-card-chevron">&#9660;</div>
                     </div>
-                `)
-                .join('');
+                    <div class="guest-card-body">
+                        <div class="guest-card-desc">${c.publicDesc || ''}</div>
+                    </div>
+                </div>`).join('');
+        }
+
+        function toggleGuestCard(i) {
+            document.getElementById('gc' + i).classList.toggle('open');
         }
 
         function toggleGuestInfo(element) {
