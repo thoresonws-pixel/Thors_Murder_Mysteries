@@ -2001,7 +2001,8 @@
             if (newlyAdded.length === 0) return;
 
             var username = userSession.username;
-            var charData = characterDatabase[username];
+            var charKey = (userSession.character) ? userSession.character : username;
+            var charData = characterDatabase[charKey];
             if (!charData) return;
 
             var memories = [];
