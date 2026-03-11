@@ -2090,6 +2090,23 @@
             };
 
             var isTextMsg = memory.triggerId && textMessageTriggers[memory.triggerId];
+
+            // ── NATIVE NOTIFICATION ───────────────────────────────────
+            if (isTextMsg) {
+                var tmInfo = textMessageTriggers[memory.triggerId];
+                sendNativeNotification(
+                    '📱 ' + tmInfo.from,
+                    memory.text,
+                    'thoreson-dj-' + memory.triggerId
+                );
+            } else {
+                sendNativeNotification(
+                    '🕵️ Thoreson Estate',
+                    memory.text,
+                    'thoreson-memory-' + (memory.triggerId || Date.now())
+                );
+            }
+
             var overlay = document.createElement('div');
             overlay.className = 'memory-popup-overlay';
 
@@ -2405,24 +2422,47 @@
     <!-- Firebase configured -->
 
     <script>
-        // TEMPORARY: Nuke service worker and all caches, then reload once
-        if ('serviceWorker' in navigator) {
-            const alreadyNuked = sessionStorage.getItem('sw-nuked-v16');
-            if (!alreadyNuked) {
-                sessionStorage.setItem('sw-nuked-v16', 'true');
-                navigator.serviceWorker.getRegistrations().then(registrations => {
-                    const unregisterPromises = registrations.map(r => r.unregister());
-                    return Promise.all(unregisterPromises);
-                }).then(() => {
-                    if ('caches' in window) {
-                        return caches.keys().then(names => Promise.all(names.map(n => caches.delete(n))));
-                    }
-                }).then(() => {
-                    console.log('Service worker nuked, reloading...');
-                    window.location.reload(true);
+        // ── SERVICE WORKER + NOTIFICATIONS ──────────────────────────
+        var swRegistration = null;
+
+        function registerServiceWorker() {
+            if (!('serviceWorker' in navigator)) return;
+            navigator.serviceWorker.register('/Thoreson_Estate_Dinner/sw.js')
+                .then(function(reg) {
+                    swRegistration = reg;
+                    console.log('SW registered');
+                })
+                .catch(function(err) {
+                    console.log('SW registration failed:', err);
                 });
+        }
+
+        function requestNotificationPermission() {
+            if (!('Notification' in window)) return;
+            if (Notification.permission === 'granted') return;
+            if (Notification.permission === 'denied') return;
+            setTimeout(function() {
+                Notification.requestPermission();
+            }, 3000);
+        }
+
+        function sendNativeNotification(title, body, tag) {
+            if (!('Notification' in window)) return;
+            if (Notification.permission !== 'granted') return;
+            if (swRegistration && swRegistration.active) {
+                swRegistration.active.postMessage({
+                    type: 'SHOW_NOTIFICATION',
+                    title: title,
+                    body: body,
+                    tag: tag || 'thoreson-' + Date.now()
+                });
+            } else {
+                new Notification(title, { body: body, tag: tag });
             }
         }
+
+        registerServiceWorker();
+        requestNotificationPermission();
     </script>
 </body>
 </html>
