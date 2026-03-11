@@ -1439,6 +1439,15 @@
                 }
             });
 
+            database.ref('memoryReset').on('value', (snapshot) => {
+                const val = snapshot.val();
+                if (val) {
+                    localStorage.setItem('shownMemories', '[]');
+                    localStorage.setItem('personalDiscoveries', '[]');
+                    console.log('Memory reset received — cleared shownMemories');
+                }
+            });
+
             database.ref('discoveredSkills').on('value', (snapshot) => {
                 const skills = snapshot.val() || [];
                 if (userSession && Array.isArray(skills)) {
@@ -1876,7 +1885,17 @@
 
         function fireDJText(itemId) {
             if (!userSession.activeItems) userSession.activeItems = [];
-            if (userSession.activeItems.includes(itemId)) return; // already sent, one-shot only
+            var isTesting = userSession.role === 'master' || userSession.role === 'test';
+            if (userSession.activeItems.includes(itemId)) {
+                if (!isTesting) return; // real game — one-shot only
+                // Test mode: allow re-fire by removing from activeItems + shownMemories first
+                userSession.activeItems = userSession.activeItems.filter(function(id) { return id !== itemId; });
+                var shown = getShownMemories();
+                shown = shown.filter(function(id) { return id !== itemId; });
+                localStorage.setItem('shownMemories', JSON.stringify(shown));
+                // Also clear it from Firebase shownMemories signal
+                if (database) database.ref('memoryReset').set(Date.now());
+            }
             var oldItems = userSession.activeItems.slice();
             userSession.activeItems.push(itemId);
             checkForNewMemories(oldItems, userSession.activeItems);
@@ -1947,6 +1966,7 @@
             if (database) {
                 database.ref('activeItems').set([]);
                 database.ref('discoveredSkills').set([]);
+                database.ref('memoryReset').set(Date.now());
             }
             
             // Broadcast to same-device tabs
