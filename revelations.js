@@ -83,13 +83,6 @@ const revelationsDatabase = {
                 detail: null
             },
             {
-                id: "affair",
-                type: "clue",
-                title: "Love Letters — Will & Margaret",
-                summary: "A collection of personal letters between William Thoreson and Margaret Hartley — the wife of his business partner Robert. The letters span several years and confirm a romantic relationship. Requires an Investigation expert to examine.",
-                detail: null
-            },
-            {
                 id: "margaretsLetter",
                 type: "clue",
                 title: "Margaret's Letter",
@@ -167,13 +160,7 @@ const revelationsDatabase = {
                 summary: "Miranda Longfellow's legal name is Miranda Hartley. She is the daughter of Robert Hartley — Will's former business partner. She changed her name in 1920 and has worked as Scott's legal assistant for the past ten years.",
                 detail: null
             },
-            {
-                id: "fireSafeOpened",
-                type: "story",
-                title: "The Fire Safe — Opened",
-                summary: "The fire safe in the game room has been opened. Search its contents.",
-                detail: null
-            },
+
         ]
     }
 };
