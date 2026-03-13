@@ -1889,6 +1889,37 @@
             html += '<div style="font-family: \'Playfair Display\', Georgia, serif; font-size: 24px; color: #c9a227; margin-bottom: 10px;">Master Controls</div>';
             html += '<p style="color: #8b8b8b; margin-bottom: 25px; font-size: 14px;">Toggle items to push them to all guests\' Discoveries page in real time.</p>';
 
+            // ── OPENING SPEECH ────────────────────────────────────────
+            html += `
+            <div style="margin-bottom:24px; padding:20px 24px; background:rgba(0,0,0,0.3); border-radius:5px; border:1px solid rgba(201,162,39,0.3);">
+                <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; margin-bottom:0;">
+                    <div style="font-family:'Playfair Display',serif; font-size:18px; color:#c9a227;">📋 Opening Speech</div>
+                    <div style="color:#c9a227; font-size:16px;">▸</div>
+                </div>
+                <div style="display:none; margin-top:16px; border-top:1px solid rgba(201,162,39,0.2); padding-top:16px;">
+                    <div style="font-size:13px; color:#8b8b8b; font-style:italic; margin-bottom:16px;">Read this after everyone has a drink and you have the room's attention.</div>
+
+                    <div style="font-size:15px; line-height:2; color:#e8e8e8;">
+                        <p style="margin:0 0 12px;">"Thank you all for coming tonight. As many of you know, my father invited you here for a dinner party. He said he had an announcement to make — something that would <em>'change everything.'</em>"</p>
+                        <p style="margin:0 0 12px;"><em style="color:#999;">[Pause. Let confusion set in.]</em></p>
+                        <p style="margin:0 0 12px;">"He never got to make that announcement. My father... William Thoreson... is dead. He was found earlier this evening. The authorities have been contacted, but we're on our own for now. No one leaves until we understand what happened."</p>
+                        <p style="margin:0 0 12px;"><em style="color:#999;">[Steady yourself.]</em></p>
+                        <p style="margin:0 0 20px;">"I'm Scott Thoreson — his eldest son. I've handled this family's legal affairs for years. I never imagined I'd be investigating my own father's death. But here we are. And I need your help."</p>
+
+                        <div style="border-top:1px solid rgba(201,162,39,0.2); padding-top:16px; margin-top:4px;">
+                            <div style="font-family:'Playfair Display',serif; font-size:14px; color:#c9a227; letter-spacing:2px; text-transform:uppercase; margin-bottom:12px;">The Rules</div>
+                            <p style="margin:0 0 10px;">"Here's how this works. We investigate in phases — I'll call everyone back together between each one to share what we've found."</p>
+                            <p style="margin:0 0 10px;">"Talk to everyone. Every person in this room may know something. Ask questions. Share what you find."</p>
+                            <p style="margin:0 0 10px;">"Search the estate — but respect its limits. <strong style="color:#c9a227;">A closed door means that room is off limits.</strong> Do not open it."</p>
+                            <p style="margin:0 0 10px;">"<strong style="color:#c9a227;">Blue tape on an item means hands off.</strong> It's personal property — leave it where it is."</p>
+                            <p style="margin:0 0 10px;">"<strong style="color:#c9a227;">A QR code means you've found a clue.</strong> Scan it with your phone. You may need someone with the right expertise to interpret what you find."</p>
+                            <p style="margin:0 0 16px;"><em style="color:#999;">[Look around the room.]</em></p>
+                            <p style="margin:0;">"The goal is simple: find out what happened to my father. The Living Room, Dining Room, Parlor, Kitchen, Breakfast Nook, and my father's Office are all open. Begin."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+
             // Game Start button
             var gameStarted = userSession.activeItems.includes('willsDeath');
             html += '<div style="margin-bottom: 24px; padding: 16px; background: rgba(0,0,0,0.3); border-radius: 5px; border: 2px solid ' + (gameStarted ? '#4caf50' : '#c9a227') + '; display: flex; justify-content: space-between; align-items: center;">';
