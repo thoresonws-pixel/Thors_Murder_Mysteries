@@ -142,7 +142,7 @@ const revelationsDatabase = {
                 id: "travelJournal",
                 type: "clue",
                 title: "Miranda's Travel Journal",
-                summary: "A personal journal belonging to Miranda Longfellow, covering her trip to Switzerland in summer 1934. One entry dated August 14 reads: 'The flowers in the Alps are remarkable. One caught my eye — beautiful purple blooms. Beautiful and deadly. I pressed a sample between these pages. I have what I came for.' A dried flower fragment remains between the pages.",
+                summary: "A personal journal belonging to Miranda Longfellow, covering her trip to Switzerland in summer 1934. One entry dated August 14 reads: 'The flowers in the Alps are remarkable — one of which definitely caught my eye.'",
                 detail: null
             },
             {
