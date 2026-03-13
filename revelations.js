@@ -132,17 +132,10 @@ const revelationsDatabase = {
                 detail: null
             },
             {
-                id: "poisoning",
-                type: "story",
-                title: "Murder by Poison",
-                summary: "The coroner's report has been interpreted. Will's symptoms are consistent with Aconitine poisoning — a toxin derived from Wolfsbane. This was not a natural death.",
-                detail: null
-            },
-            {
                 id: "wolfsbane",
-                type: "clue",
-                title: "Wolfsbane Reference",
-                summary: "A reference identifying Wolfsbane (Aconitum) as the source of Aconitine. Notes that the plant grows wild in the Swiss Alps and cannot be purchased commercially. Requires a Botany expert to examine.",
+                type: "story",
+                title: "The Poison Identified",
+                summary: "Aconitine was found in the body of William Thoreson — confirmed by the coroner's report. Our botanist has determined that Aconitine is derived from Wolfsbane, a rare flower that grows exclusively in the Swiss Alps. It cannot be purchased or sourced in North America. Someone had to travel there to obtain it.",
                 detail: null
             },
             {
