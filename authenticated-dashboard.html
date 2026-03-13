@@ -1837,13 +1837,7 @@
 
             html += '</div>';
 
-            // Popup Test Toggle (Scott only)
-            html += '<div style="margin-top:30px; padding-top:20px; border-top:2px dashed #c9a227;">';
-            html += '<div style="font-family:\'Playfair Display\',serif; font-size:13px; letter-spacing:3px; text-transform:uppercase; color:#c9a227; margin-bottom:12px;">\uD83E\uDDEA POPUP TEST</div>';
-            var isTestActive = userSession.activeItems.includes('popupTest');
-            html += '<button onclick="toggleItem(\'popupTest\')" style="background:' + (isTestActive ? '#e74c3c' : '#4caf50') + '; color:white; border:none; padding:8px 16px; cursor:pointer; border-radius:3px; font-size:13px;">' + (isTestActive ? 'Reset Test' : 'Test Memory Popup') + '</button>';
-            html += '<div style="font-size:11px; color:#8b7355; margin-top:8px; font-style:italic;">Toggle ON to see the popup on your device. Toggle OFF to reset for retesting.</div>';
-            html += '</div>';
+
 
             // START GAME / RESET button
             // Test Mode toggle
