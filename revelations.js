@@ -41,6 +41,13 @@ const revelationsDatabase = {
                 detail: "Dated March 14, 1910 — one day before Robert Hartley's death. A Legal expert can confirm the signature does not match Robert's known handwriting on file. The notary stamp belongs to a James P. Whitmore, who has no record in Dallas County's notary registry. Will transferred 100% of Thoreson & Hartley Toys to himself using a document Robert never signed."
             },
             {
+                id: "europeanDeal",
+                type: "clue",
+                title: "The Failed European Deal",
+                summary: "Will wired $8,000 to a Hamburg distributor for an overseas expansion deal. The company dissolved within weeks — total loss. Two investors have been demanding answers.",
+                detail: "Earlier this year, Will wired $8,000 to Kessler & Braun European Distributors in Hamburg. The company dissolved within weeks of receiving payment. Two outside investors who had money in Thoreson Toys — Marcus Brennan and Victoria Ashworth — have been pressing Will for an explanation for months. No satisfactory answer was ever given."
+            },
+            {
                 id: "stolenCompany",
                 type: "story",
                 title: "The Stolen Company",
@@ -87,13 +94,6 @@ const revelationsDatabase = {
                 title: "Bank Statement — Private Account",
                 summary: "A bank statement for a private account shows regular disbursements matching the ledger entries — routed to an account in Taylor Hartley's name.",
                 detail: "The statement covers January through December 1934. It shows twelve monthly entries of $50 each, labeled 'Standing Order — Priv. Acct 9941.' Cross-referencing with the financial ledger confirms these are the T.H. payments. The receiving account is held at First National Bank of Fort Worth under the name T. Hartley. Will was actively funding this account until the month he died."
-            },
-            {
-                id: "europeanDeal",
-                type: "clue",
-                title: "The Failed European Deal",
-                summary: "Will wired $8,000 to a Hamburg distributor for an overseas expansion deal. The company dissolved within weeks — total loss. Two investors have been demanding answers.",
-                detail: "Earlier this year, Will wired $8,000 to Kessler & Braun European Distributors in Hamburg. The company dissolved within weeks of receiving payment. Two outside investors who had money in Thoreson Toys — Marcus Brennan and Victoria Ashworth — have been pressing Will for an explanation for months. No satisfactory answer was ever given."
             },
             {
                 id: "secretHeir",
