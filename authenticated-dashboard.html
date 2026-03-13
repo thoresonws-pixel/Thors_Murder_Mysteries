@@ -1770,15 +1770,41 @@
             });
 
             // ── STORY ──────────────────────────────────────────────────
+            const transcriptIds = ['transcriptAct1','transcriptAct2','transcriptAct3'];
+            // Only show the latest active transcript
+            let activeTranscript = null;
+            for (let i = transcriptIds.length - 1; i >= 0; i--) {
+                if (userSession.activeItems.includes(transcriptIds[i])) {
+                    activeTranscript = revelationsDatabase[['act1','act2','act3'][i]].items.find(x => x.id === transcriptIds[i]);
+                    break;
+                }
+            }
+
             const storyItems = [];
             Object.entries(revelationsDatabase).forEach(([actKey, act]) => {
-                act.items.filter(i => i.type === 'story' && userSession.activeItems.includes(i.id))
+                act.items.filter(i => i.type === 'story' && userSession.activeItems.includes(i.id) && !transcriptIds.includes(i.id))
                     .forEach(i => storyItems.push({ item: i, actLabel: act.label }));
             });
 
-            let storyHtml = storyItems.length === 0
-                ? '<div style="text-align:center; padding:40px; color:#999; font-style:italic;">No story beats unlocked yet.</div>'
-                : '';
+            let storyHtml = '';
+            // Transcript card first if active
+            if (activeTranscript) {
+                const transcriptText = activeTranscript.summary.replace(/\n/g, '<br>').replace(/\[static\]/g, '<span style="color:#666; font-style:italic;">[static]</span>');
+                storyHtml += `
+                    <div style="background:rgba(0,0,0,0.3); border-left:3px solid #8b7355; margin-bottom:8px; border-radius:3px; overflow:hidden;">
+                        <div onclick="toggleDiscoveryCard('transcript-active')" style="padding:14px 18px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+                            <div style="font-family:'Playfair Display',serif; font-size:19px; color:#c9a227;">✦ Confession Recording — Transcript</div>
+                            <div id="arrow-transcript-active" style="font-size:20px; color:#c9a227; margin-left:12px; flex-shrink:0;">▸</div>
+                        </div>
+                        <div id="detail-transcript-active" style="display:none; padding:0 18px 16px 18px; border-top:1px solid rgba(201,162,39,0.15);">
+                            <div style="font-size:15px; line-height:2; color:#cccccc; padding-top:14px; font-family:Georgia,serif;">${transcriptText}</div>
+                        </div>
+                    </div>`;
+            }
+
+            if (storyItems.length === 0 && !activeTranscript) {
+                storyHtml = '<div style="text-align:center; padding:40px; color:#999; font-style:italic;">No story beats unlocked yet.</div>';
+            }
             lastAct = '';
             storyItems.forEach(({ item, actLabel }) => {
                 if (actLabel !== lastAct) {
