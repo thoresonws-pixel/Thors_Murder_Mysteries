@@ -13,6 +13,13 @@ const revelationsDatabase = {
         label: "Act 1 — The Gathering",
         items: [
             {
+                id: "willsDeath",
+                type: "story",
+                title: "William Thoreson Is Dead",
+                summary: "The patriarch of the Thoreson family was found dead this evening before the dinner began. The cause of death is unknown. No one leaves until we understand what happened.",
+                detail: "William 'Will' Thoreson Sr. was found unresponsive at the Thoreson Estate earlier this evening. He was pronounced dead before guests arrived for dinner. His eldest son Scott Thoreson Jr. has taken charge of the investigation. The authorities have been notified but cannot reach the estate tonight. The investigation begins now."
+            },
+            {
                 id: "newspaper",
                 type: "clue",
                 title: "Dallas Herald — Thoreson Cleared",
