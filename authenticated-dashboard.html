@@ -1348,9 +1348,10 @@
             if (event.data.type === 'itemUpdate') {
                 var oldItems = userSession.activeItems || [];
                 checkForNewMemories(oldItems, event.data.activeItems || []);
+                const newlyAdded = (event.data.activeItems || []).filter(id => oldItems.indexOf(id) === -1);
                 userSession.activeItems = event.data.activeItems || [];
                 localStorage.setItem('userSession', JSON.stringify(userSession));
-                loadDiscoveriesData();
+                loadDiscoveriesData(newlyAdded.length > 0 ? newlyAdded[newlyAdded.length-1] : null);
                 loadCharacterData();
             }
             if (event.data.type === 'skillUpdate') {
@@ -1435,7 +1436,9 @@
                     checkForNewMemories(oldItems, items);
                     userSession.activeItems = items;
                     localStorage.setItem('userSession', JSON.stringify(userSession));
-                    if (document.getElementById('discoveriesContent')) loadDiscoveriesData();
+                    // Detect newly added item to switch to correct tab
+                    const newlyAdded = items.filter(id => oldItems.indexOf(id) === -1);
+                    if (document.getElementById('discoveriesContent')) loadDiscoveriesData(newlyAdded.length > 0 ? newlyAdded[newlyAdded.length-1] : null);
                     loadCharacterData();
                     if (document.getElementById('masterCluesContent') && userSession.role === 'master') loadMasterClues();
                 }
@@ -1729,24 +1732,37 @@
             if (arrow) arrow.textContent = isOpen ? '▸' : '▾';
         }
 
-        function loadDiscoveriesData() {
+        function loadDiscoveriesData(newItemId) {
             if (!userSession.activeItems) userSession.activeItems = [];
             if (!userSession.discoveredSkills) userSession.discoveredSkills = [];
 
-            const tabStyle = (active) => `
+            // If a new item was just revealed, switch to the right tab (never memories)
+            if (newItemId) {
+                let found = false;
+                Object.values(revelationsDatabase).forEach(act => {
+                    act.items.forEach(item => {
+                        if (item.id === newItemId && !found) {
+                            activeDiscoveryTab = item.type === 'story' ? 'story' : 'clues';
+                            found = true;
+                        }
+                    });
+                });
+            }
+
+            const tabStyle = (tabName) => `
                 padding: 10px 18px; cursor: pointer; border: none; border-radius: 3px 3px 0 0;
                 font-family: 'Playfair Display', Georgia, serif; font-size: 15px; letter-spacing: 1px;
-                background: ${active ? '#c9a227' : 'rgba(0,0,0,0.3)'};
-                color: ${active ? '#1a1a2e' : '#999'};
+                background: ${tabName === activeDiscoveryTab ? '#c9a227' : 'rgba(0,0,0,0.3)'};
+                color: ${tabName === activeDiscoveryTab ? '#1a1a2e' : '#999'};
                 margin-right: 4px;
             `;
 
             let html = `
                 <div style="display: flex; flex-wrap: wrap; margin-bottom: 0; border-bottom: 2px solid #c9a227;">
-                    <button onclick="switchDiscoveryTab('clues')" id="dtab-clues" style="${tabStyle(true)}">Clues</button>
-                    <button onclick="switchDiscoveryTab('story')" id="dtab-story" style="${tabStyle(false)}">Story</button>
-                    <button onclick="switchDiscoveryTab('expert')" id="dtab-expert" style="${tabStyle(false)}">Expert Notes</button>
-                    <button onclick="switchDiscoveryTab('memories')" id="dtab-memories" style="${tabStyle(false)}">Memories</button>
+                    <button onclick="switchDiscoveryTab('clues')" id="dtab-clues" style="${tabStyle('clues')}">Clues</button>
+                    <button onclick="switchDiscoveryTab('story')" id="dtab-story" style="${tabStyle('story')}">Story</button>
+                    <button onclick="switchDiscoveryTab('expert')" id="dtab-expert" style="${tabStyle('expert')}">Expert Notes</button>
+                    <button onclick="switchDiscoveryTab('memories')" id="dtab-memories" style="${tabStyle('memories')}">Memories</button>
                 </div>
             `;
 
@@ -1871,10 +1887,10 @@
             if (memoriesHtml === '') memoriesHtml = '<div style="text-align:center; padding:40px; color:#999; font-style:italic;">No memories unlocked yet.</div>';
 
             html += `
-                <div id="dpanel-clues"   style="padding-top:16px;">${clueHtml}</div>
-                <div id="dpanel-story"   style="padding-top:16px; display:none;">${storyHtml}</div>
-                <div id="dpanel-expert"  style="padding-top:16px; display:none;">${expertHtml}</div>
-                <div id="dpanel-memories" style="padding-top:16px; display:none;">${memoriesHtml}</div>
+                <div id="dpanel-clues"   style="padding-top:16px; display:${activeDiscoveryTab==='clues' ? 'block' : 'none'};">${clueHtml}</div>
+                <div id="dpanel-story"   style="padding-top:16px; display:${activeDiscoveryTab==='story' ? 'block' : 'none'};">${storyHtml}</div>
+                <div id="dpanel-expert"  style="padding-top:16px; display:${activeDiscoveryTab==='expert' ? 'block' : 'none'};">${expertHtml}</div>
+                <div id="dpanel-memories" style="padding-top:16px; display:${activeDiscoveryTab==='memories' ? 'block' : 'none'};">${memoriesHtml}</div>
             `;
 
             if (html === '') html = '<div style="text-align:center; padding:40px; color:#999; font-style:italic;">No discoveries yet.</div>';
@@ -1896,6 +1912,7 @@
         }
 
         function switchDiscoveryTab(tab) {
+            activeDiscoveryTab = tab;
             ['clues','story','expert','memories'].forEach(t => {
                 const panel = document.getElementById('dpanel-' + t);
                 const btn = document.getElementById('dtab-' + t);
@@ -2195,6 +2212,7 @@
 
         // ── MEMORY POPUP SYSTEM ──────────────────────────────────
         var memoryQueue = [];
+        var activeDiscoveryTab = 'clues';
 
         // Track which triggers have already shown popups (persists across sessions)
         function getShownMemories() {
