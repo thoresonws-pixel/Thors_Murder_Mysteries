@@ -1738,15 +1738,19 @@
 
             // If a new item was just revealed, switch to the right tab (never memories)
             if (newItemId) {
-                let found = false;
-                Object.values(revelationsDatabase).forEach(act => {
-                    act.items.forEach(item => {
-                        if (item.id === newItemId && !found) {
-                            activeDiscoveryTab = item.type === 'story' ? 'story' : 'clues';
-                            found = true;
-                        }
+                if (newItemId === 'willsDeath') {
+                    activeDiscoveryTab = 'story';
+                } else {
+                    let found = false;
+                    Object.values(revelationsDatabase).forEach(act => {
+                        act.items.forEach(item => {
+                            if (item.id === newItemId && !found) {
+                                activeDiscoveryTab = item.type === 'story' ? 'story' : 'clues';
+                                found = true;
+                            }
+                        });
                     });
-                });
+                }
             }
 
             const tabStyle = (tabName) => `
@@ -1797,6 +1801,10 @@
             }
 
             const storyItems = [];
+            // willsDeath handled separately — not in revelationsDatabase
+            if (userSession.activeItems.includes('willsDeath')) {
+                storyItems.push({ item: { id: 'willsDeath', title: 'William Thoreson Is Dead', summary: "William 'Will' Thoreson Sr. was found unresponsive at the estate before dinner. He was pronounced dead this evening. The cause of death is unknown.", detail: null }, actLabel: 'Act 1 — The Gathering' });
+            }
             Object.entries(revelationsDatabase).forEach(([actKey, act]) => {
                 act.items.filter(i => i.type === 'story' && userSession.activeItems.includes(i.id) && !transcriptIds.includes(i.id))
                     .forEach(i => storyItems.push({ item: i, actLabel: act.label }));
