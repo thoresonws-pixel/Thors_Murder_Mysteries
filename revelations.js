@@ -6,13 +6,6 @@ const revelationsDatabase = {
         label: "Act 1 — The Gathering",
         items: [
             {
-                id: "willsDeath",
-                type: "story",
-                title: "William Thoreson Is Dead",
-                summary: "William 'Will' Thoreson Sr. was found unresponsive at the estate before dinner. He was pronounced dead this evening. The cause of death is unknown.",
-                detail: null
-            },
-            {
                 id: "newspaper",
                 type: "clue",
                 title: "Dallas Herald — Thoreson Cleared",
