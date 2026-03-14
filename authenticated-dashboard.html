@@ -2204,7 +2204,7 @@
         }
 
         function resetGame() {
-            if (!confirm('This will clear ALL revelations, skill discoveries, and popup history for every connected device. Are you sure?')) return;
+            if (!confirm('This will clear ALL revelations, skill discoveries, popup history, and scan counts for every connected device. Are you sure?')) return;
             
             // Clear local state
             userSession.activeItems = [];
@@ -2218,6 +2218,8 @@
                 database.ref('activeItems').set([]);
                 database.ref('discoveredSkills').set([]);
                 database.ref('memoryReset').set(Date.now());
+                database.ref('scans').remove();
+                database.ref('scanLog').remove();
             }
             
             // Broadcast to same-device tabs
@@ -2489,6 +2491,12 @@
 
         function onScanSuccess(decodedText) {
             closeScanner();
+
+            // Block all scans until game has started
+            if (!userSession.activeItems || !userSession.activeItems.includes('willsDeath')) {
+                showSkillDenied('Not Yet', 'The investigation has not begun. Wait for the game to start.');
+                return;
+            }
 
             // Generic prop scan — URL format
             if (decodedText.includes('scan.html')) {
