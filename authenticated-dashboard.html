@@ -1870,7 +1870,8 @@
                 const discoveredKey = skillName.toLowerCase() + 'Discovered';
                 const isGlobalDiscovered = userSession.discoveredSkills.includes(discoveredKey);
                 const isPersonalDiscovered = personalDisc.includes(discoveredKey);
-                if (!isGlobalDiscovered && !isPersonalDiscovered) return;
+                // Bartender recipes always visible — no scan needed
+                if (!isGlobalDiscovered && !isPersonalDiscovered && skillName !== 'Bartender') return;
 
                 if (skillName === 'Bartender') {
                     expertHtml += `
