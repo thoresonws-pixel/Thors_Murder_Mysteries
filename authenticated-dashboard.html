@@ -2682,42 +2682,32 @@
 
             const player = userSession.username;
             const ts = Date.now();
-            const ext = file.name.split('.').pop() || 'jpg';
 
-            const storage = firebase.storage();
-            const wallRef = storage.ref(`photos/wall/${ts}_${player}.jpg`);
-
-            const uploadTask = wallRef.put(file);
-            uploadTask.on('state_changed',
-                snapshot => {
-                    const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    status.textContent = `Uploading... ${pct}%`;
-                },
-                err => {
-                    status.textContent = 'Error: ' + err.code;
-                    btn.disabled = false;
-                    btn.textContent = '📷 Take a Photo';
-                },
-                () => {
-                    uploadTask.snapshot.ref.getDownloadURL().then(wallUrl => {
-                        const photoKey = firebase.database().ref('photos').push({
-                            player, wallUrl, fullUrl: wallUrl, time: ts
-                        }).key;
+            // Compress then store as base64 in Realtime Database (no Storage needed)
+            compressImage(file, 900, 0.75, function(compressed) {
+                status.textContent = 'Uploading...';
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64 = e.target.result; // data:image/jpeg;base64,...
+                    firebase.database().ref('photos').push({
+                        player,
+                        wallUrl: base64,
+                        fullUrl: null,
+                        time: ts
+                    }).then(() => {
                         status.textContent = 'Photo added!';
                         btn.disabled = false;
                         btn.textContent = '📷 Take a Photo';
                         document.getElementById('photoInput').value = '';
                         setTimeout(() => { status.textContent = ''; }, 3000);
-                        // Full res in background
-                        const fullRef = storage.ref(`photos/full/${ts}_${player}.${ext}`);
-                        fullRef.put(file).then(() => {
-                            fullRef.getDownloadURL().then(fullUrl => {
-                                firebase.database().ref(`photos/${photoKey}/fullUrl`).set(fullUrl);
-                            });
-                        });
+                    }).catch(err => {
+                        status.textContent = 'Error: ' + err.message;
+                        btn.disabled = false;
+                        btn.textContent = '📷 Take a Photo';
                     });
-                }
-            );
+                };
+                reader.readAsDataURL(compressed);
+            });
         }
 
                 function compressImage(file, maxWidth, quality, callback) {
