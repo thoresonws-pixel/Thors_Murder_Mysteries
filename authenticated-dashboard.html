@@ -2687,11 +2687,39 @@
             compressImage(file, 800, 0.7, function(compressed) {
                 const storage = firebase.storage();
                 const wallRef = storage.ref(`photos/wall/${ts}_${player}.jpg`);
-                status.textContent = 'Uploading... (this may take a moment)';
+                status.textContent = 'Uploading...';
 
-                const uploadTask = wallRef.put(compressed);
+            // Skip compression for now — upload directly
+            const storage = firebase.storage();
+            const wallRef = storage.ref(`photos/wall/${ts}_${player}.jpg`);
 
-                uploadTask.on('state_changed',
+            const uploadTask = wallRef.put(file);
+            uploadTask.on('state_changed',
+                snapshot => {
+                    const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    status.textContent = `Uploading... ${pct}%`;
+                },
+                err => {
+                    status.textContent = 'Error: ' + err.code;
+                    btn.disabled = false;
+                    btn.textContent = '📷 Take a Photo';
+                },
+                () => {
+                    uploadTask.snapshot.ref.getDownloadURL().then(wallUrl => {
+                        firebase.database().ref('photos').push({
+                            player, wallUrl, fullUrl: wallUrl, time: ts
+                        });
+                        status.textContent = 'Photo added!';
+                        btn.disabled = false;
+                        btn.textContent = '📷 Take a Photo';
+                        document.getElementById('photoInput').value = '';
+                        setTimeout(() => { status.textContent = ''; }, 3000);
+                    });
+                }
+            );
+
+            if (false) { // compression disabled temporarily
+            compressImage(file, 800, 0.7, function(compressed) {
                     snapshot => {
                         const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
                         status.textContent = `Uploading... ${pct}%`;
