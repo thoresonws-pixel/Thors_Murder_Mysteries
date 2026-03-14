@@ -2684,34 +2684,32 @@
             const ts = Date.now();
             const ext = file.name.split('.').pop() || 'jpg';
 
-            // Compress for wall display
             compressImage(file, 800, 0.7, function(compressed) {
                 const storage = firebase.storage();
-
-                // Upload compressed version
                 const wallRef = storage.ref(`photos/wall/${ts}_${player}.jpg`);
+
                 wallRef.put(compressed).then(() => {
                     wallRef.getDownloadURL().then(wallUrl => {
 
-                        // Upload full resolution
+                        // Save to DB immediately with wall URL — show on wall now
+                        const photoKey = firebase.database().ref('photos').push({
+                            player,
+                            wallUrl,
+                            fullUrl: null,
+                            time: ts
+                        }).key;
+
+                        status.textContent = 'Photo added!';
+                        btn.disabled = false;
+                        btn.textContent = '📷 Take a Photo';
+                        document.getElementById('photoInput').value = '';
+                        setTimeout(() => { status.textContent = ''; }, 3000);
+
+                        // Full res uploads in background — updates record when done
                         const fullRef = storage.ref(`photos/full/${ts}_${player}.${ext}`);
                         fullRef.put(file).then(() => {
                             fullRef.getDownloadURL().then(fullUrl => {
-
-                                // Save metadata to database
-                                firebase.database().ref('photos').push({
-                                    player,
-                                    wallUrl,
-                                    fullUrl,
-                                    time: ts
-                                });
-
-                                status.textContent = 'Photo added to the wall!';
-                                btn.disabled = false;
-                                btn.textContent = '📷 Take a Photo';
-                                // Reset file input
-                                document.getElementById('photoInput').value = '';
-                                setTimeout(() => { status.textContent = ''; }, 3000);
+                                firebase.database().ref(`photos/${photoKey}/fullUrl`).set(fullUrl);
                             });
                         });
                     });
@@ -2763,8 +2761,8 @@
                                 ${p.player} · ${new Date(p.time).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}
                             </div>
                             <a href="${p.fullUrl}" download target="_blank"
-                               style="font-size:12px; color:#c9a227; text-decoration:none; letter-spacing:1px; border:1px solid rgba(201,162,39,0.4); padding:4px 10px; border-radius:2px;">
-                                ↓ Full
+                               style="font-size:12px; color:${p.fullUrl ? '#c9a227' : '#555'}; text-decoration:none; letter-spacing:1px; border:1px solid rgba(201,162,39,0.4); padding:4px 10px; border-radius:2px; pointer-events:${p.fullUrl ? 'auto' : 'none'};">
+                                ${p.fullUrl ? '↓ Full' : '⏳'}
                             </a>
                         </div>
                     </div>
