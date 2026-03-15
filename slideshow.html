@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thoreson Estate — Photo Slideshow</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #000;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #c9a227;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+  .slide.active { opacity: 1; }
+
+  .slide img {
+    max-width: 100%;
+    max-height: 100vh;
+    object-fit: contain;
+  }
+
+  .caption {
+    position: absolute;
+    bottom: 30px;
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 16px;
+    color: rgba(201,162,39,0.8);
+    letter-spacing: 3px;
+    text-shadow: 0 0 20px rgba(0,0,0,0.8);
+  }
+
+  .crest {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    opacity: 0.25;
+    width: 60px;
+  }
+
+  .count {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    font-size: 13px;
+    color: rgba(201,162,39,0.4);
+    letter-spacing: 2px;
+  }
+
+  .no-photos {
+    text-align: center;
+    color: #444;
+    font-size: 22px;
+    font-style: italic;
+    letter-spacing: 2px;
+  }
+</style>
+</head>
+<body>
+
+<svg class="crest" viewBox="0 0 680 860" xmlns="http://www.w3.org/2000/svg">
+  <path d="M 190,90 L 490,90 L 490,470 Q 490,575 340,660 Q 190,575 190,470 Z" fill="#1a1205" stroke="#c9a227" stroke-width="3"/>
+  <polygon points="375,155 295,330 345,318 308,478 420,280 362,295 400,155" fill="#c9a227"/>
+  <rect x="160" y="42" width="360" height="48" rx="3" fill="#c9a227"/>
+  <text x="340" y="75" text-anchor="middle" font-family="Playfair Display,Georgia,serif" fill="#1a1205" font-size="22" font-weight="700" letter-spacing="5">THORESON</text>
+  <path d="M 185,668 Q 340,715 495,668 L 478,702 Q 340,748 202,702 Z" fill="#c9a227"/>
+  <path d="M 185,668 L 202,702 L 182,720 Q 145,700 185,668 Z" fill="#a8871f"/>
+  <path d="M 495,668 L 478,702 L 498,720 Q 535,700 495,668 Z" fill="#a8871f"/>
+  <text x="340" y="702" text-anchor="middle" font-family="Playfair Display,Georgia,serif" fill="#1a1205" font-size="12" font-weight="700" letter-spacing="2">THORESON FAMILY ESTATE</text>
+</svg>
+
+<div id="slideContainer"></div>
+<div class="count" id="countDisplay"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+<script>
+  firebase.initializeApp({
+    apiKey: "AIzaSyApHrYubqWrR4m0ihdpq6Ym40jv4HTQ5i0",
+    authDomain: "thoreson-estate.firebaseapp.com",
+    databaseURL: "https://thoreson-estate-default-rtdb.firebaseio.com",
+    projectId: "thoreson-estate",
+    storageBucket: "thoreson-estate.firebasestorage.app",
+    messagingSenderId: "182924616892",
+    appId: "1:182924616892:web:8153e1c69895cee665dcb9"
+  });
+
+  const db = firebase.database();
+  let photos = [];
+  let current = 0;
+  let timer = null;
+
+  function showSlide(index) {
+    const container = document.getElementById('slideContainer');
+    const slides = container.querySelectorAll('.slide');
+    slides.forEach(s => s.classList.remove('active'));
+    if (slides[index]) slides[index].classList.add('active');
+    document.getElementById('countDisplay').textContent = `${index + 1} / ${photos.length}`;
+  }
+
+  function nextSlide() {
+    current = (current + 1) % photos.length;
+    showSlide(current);
+  }
+
+  function buildSlides() {
+    const container = document.getElementById('slideContainer');
+    container.innerHTML = '';
+    if (photos.length === 0) {
+      container.innerHTML = '<div class="slide active" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><div class="no-photos">No photos yet.</div></div>';
+      document.getElementById('countDisplay').textContent = '';
+      return;
+    }
+    photos.forEach((p, i) => {
+      const div = document.createElement('div');
+      div.className = 'slide' + (i === current ? ' active' : '');
+      const time = new Date(p.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+      div.innerHTML = `
+        <img src="${p.wallUrl}" alt="">
+        <div class="caption">${p.player} · ${time}</div>
+      `;
+      container.appendChild(div);
+    });
+    document.getElementById('countDisplay').textContent = `${current + 1} / ${photos.length}`;
+  }
+
+  // Listen for new photos in real time
+  db.ref('photos').orderByChild('time').on('value', snap => {
+    const data = snap.val();
+    const newPhotos = data ? Object.values(data).sort((a,b) => a.time - b.time) : [];
+    const hadPhotos = photos.length > 0;
+    photos = newPhotos;
+    buildSlides();
+    if (!hadPhotos && photos.length > 0) startSlideshow();
+  });
+
+  function startSlideshow() {
+    if (timer) clearInterval(timer);
+    if (photos.length > 1) {
+      timer = setInterval(nextSlide, 5000);
+    }
+  }
+
+  startSlideshow();
+
+  // Keyboard controls
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { clearInterval(timer); nextSlide(); startSlideshow(); }
+    if (e.key === 'ArrowLeft') { clearInterval(timer); current = (current - 1 + photos.length) % photos.length; showSlide(current); startSlideshow(); }
+    if (e.key === 'f' || e.key === 'F') document.documentElement.requestFullscreen?.();
+  });
+</script>
+</body>
+</html>

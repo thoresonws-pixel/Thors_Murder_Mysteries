@@ -1584,6 +1584,15 @@
                     document.getElementById('masterclues').style.display = 'none';
                 }
 
+                // Greeter mode — only show photo wall
+                if (userSession.role === 'greeter') {
+                    document.querySelectorAll('nav li').forEach(li => li.style.display = 'none');
+                    document.getElementById('discoveries').style.display = 'none';
+                    document.getElementById('photos').style.display = 'block';
+                    loadPhotoWall();
+                    return;
+                }
+
                 // Show Scan nav for ALL characters
                 document.getElementById('scanNav').style.display = 'block';
 
