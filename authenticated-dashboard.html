@@ -2594,6 +2594,9 @@
                     if (posterUrl) {
                         const player = userSession.username;
                         const fullUrl = 'https://thoresonws-pixel.github.io/Thoreson_Estate_Dinner/' + posterUrl;
+                        // Count as a clue scan
+                        database.ref('scans/' + player).transaction(c => (c || 0) + 1);
+                        database.ref('scanLog').push({ player, propId: id, time: Date.now() });
                         firebase.database().ref('photos').orderByChild('wallUrl').equalTo(fullUrl).once('value', snap => {
                             if (!snap.exists()) {
                                 firebase.database().ref('photos').push({ player, wallUrl: fullUrl, fullUrl, time: Date.now(), isPoster: true });
