@@ -129,12 +129,32 @@
     'p3': 'posters/missing_laurie.jpg',
     'p4': 'posters/missing_robin.jpg',
   };
+
+  // Wedding gallery — all wedding photos stacked (add marquee + couple photo later)
+  const weddingAlbum = [
+    'photos/easter_collage.jpeg',
+    // 'photos/marquee.jpeg',   // add when ready
+    // 'photos/marc_maisy.jpeg' // add when ready
+  ];
+
   const id = new URLSearchParams(window.location.search).get('id');
-  const src = photos[id];
-  if (src) {
-    document.getElementById('photo').src = src;
-  } else {
+
+  if (id === 'wedding') {
     document.getElementById('photo').style.display = 'none';
+    const wrap = document.querySelector('.photo-wrap');
+    weddingAlbum.forEach(src => {
+      const img = document.createElement('img');
+      img.src = src;
+      img.style.cssText = 'width:100%; display:block; margin-bottom:16px; filter:sepia(30%) contrast(95%) brightness(90%);';
+      wrap.appendChild(img);
+    });
+  } else {
+    const src = photos[id];
+    if (src) {
+      document.getElementById('photo').src = src;
+    } else {
+      document.getElementById('photo').style.display = 'none';
+    }
   }
 </script>
 </body>
