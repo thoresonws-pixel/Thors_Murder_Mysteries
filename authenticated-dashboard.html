@@ -2577,6 +2577,31 @@
                 return;
             }
 
+            // Poster QR — add to photo wall and open poster
+            if (decodedText.includes('photo.html')) {
+                try {
+                    const id = new URL(decodedText).searchParams.get('id');
+                    const posterMap = {
+                        'p1': 'posters/wanted_aaron.jpg',
+                        'p2': 'posters/missing_sarah.jpg',
+                        'p3': 'posters/missing_laurie.jpg',
+                        'p4': 'posters/missing_robin.jpg',
+                    };
+                    const posterUrl = posterMap[id];
+                    if (posterUrl) {
+                        const player = userSession.username;
+                        const fullUrl = 'https://thoresonws-pixel.github.io/Thoreson_Estate_Dinner/' + posterUrl;
+                        firebase.database().ref('photos').orderByChild('wallUrl').equalTo(fullUrl).once('value', snap => {
+                            if (!snap.exists()) {
+                                firebase.database().ref('photos').push({ player, wallUrl: fullUrl, fullUrl, time: Date.now() });
+                            }
+                        });
+                    }
+                } catch(e) {}
+                window.open(decodedText, '_blank');
+                return;
+            }
+
             // Parse QR code — expected format: THORESON:SkillName
             if (!decodedText.startsWith('THORESON:')) {
                 showSkillDenied('Unrecognized Document', 'This does not appear to be a valid estate document.');
