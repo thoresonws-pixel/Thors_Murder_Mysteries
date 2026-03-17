@@ -102,6 +102,12 @@ const itemDatabase = [
     category: "container",
     act: null,
   },
+  {
+    id: "lockbox_3",
+    label: "Locked Box — Three",
+    category: "container",
+    act: null,
+  },
 
   // ── KEYS ───────────────────────────────────────────────────
 

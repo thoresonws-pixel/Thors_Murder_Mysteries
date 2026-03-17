@@ -1,4 +1,5 @@
 # All QR Codes — Thoreson Estate
+Last updated: March 17, 2026
 
 ## Skill QR Codes (print ON the document itself)
 These encode plain text `THORESON:SkillName`. Only the in-app scanner reads them.
@@ -29,14 +30,41 @@ These encode URLs to `clue.html?item=ID`. Tracks who found what on the leaderboa
 | `item_pinkerton_report.png` | Investigative Report | 3 |
 | `item_lockbox_1.png` | Locked Box — One | All |
 | `item_lockbox_2.png` | Locked Box — Two | All |
+| `item_lockbox_3.png` | Locked Box — Three | All |
 | `item_key_1.png` | Key — One | All |
 | `item_key_2.png` | Key — Two | All |
 
-## Note
-The following documents have BOTH types of QR code:
-- Financial Ledger: skill QR (`THORESON:Accounting`) + item QR is the skill QR itself
-- Forged Transfer: skill QR (`THORESON:Legal`) + item QR is the skill QR itself
-- Dallas Herald: skill QR (`THORESON:Journalism`) + item QR is the skill QR itself
-- French Letter: skill QR (`THORESON:French`) + item QR is the skill QR itself
-- Autopsy Report: skill QR (`THORESON:Medical`) + item QR (`item_coroner_report`)
-- Bank Statement: skill QR (`THORESON:Banking`) + no separate item QR
+## Easter Egg Photos (hidden around the house)
+These encode URLs to `photo.html?id=X`. Adds to photo wall + leaderboard.
+
+| File | Photo |
+|------|-------|
+| `easter_e1.png` | Easter egg photo 1 |
+| `easter_e2.png` | Easter egg photo 2 |
+| `easter_e3.png` | Easter egg photo 3 |
+| `easter_e4.png` | Easter egg photo 4 (Marc & Maisy) |
+| `easter_e5.png` | Easter egg photo 5 (Marc & Maisy) |
+| `easter_wedding.png` | Wedding album collage |
+
+## Missing/Wanted Posters (hung on walls)
+These encode URLs to `photo.html?id=X`. Adds to photo wall + leaderboard.
+
+| File | Poster |
+|------|--------|
+| `poster_wanted_aaron.png` | Wanted — Aaron |
+| `poster_missing_sarah.png` | Missing — Sarah |
+| `poster_missing_laurie.png` | Missing — Laurie |
+| `poster_missing_robin.png` | Missing — Robin |
+
+## Netsuke Side Quest
+| File | URL |
+|------|-----|
+| `netsuke_quest.png` | `netsuke.html` — triggers side quest popup |
+
+## Totals
+- 7 skill QR codes
+- 14 item QR codes
+- 6 easter egg photo QR codes
+- 4 poster QR codes
+- 1 netsuke quest QR code
+- **32 QR codes total**
