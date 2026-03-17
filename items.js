@@ -40,6 +40,12 @@ const itemDatabase = [
     act: 1,
   },
   {
+    id: "letterhead",
+    label: "Company Letterhead",
+    category: "clue",
+    act: 1,
+  },
+  {
     id: "calendar",
     label: "Office Calendar",
     category: "clue",
@@ -60,6 +66,12 @@ const itemDatabase = [
   {
     id: "coroner_report",
     label: "Coroner's Report",
+    category: "clue",
+    act: 2,
+  },
+  {
+    id: "margaret_obituary",
+    label: "Newspaper Obituary",
     category: "clue",
     act: 2,
   },
