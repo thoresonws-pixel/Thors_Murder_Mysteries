@@ -61,7 +61,7 @@ const itemDatabase = [
     id: "european_deal",
     label: "Business Documents",
     category: "clue",
-    act: 2,
+    act: 1,
   },
   {
     id: "travel_journal",
