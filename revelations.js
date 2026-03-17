@@ -93,14 +93,14 @@ const revelationsDatabase = {
                 id: "birthCertificate",
                 type: "clue",
                 title: "Birth Certificate — Taylor Hartley",
-                summary: "Dallas County birth certificate. Name: Taylor Hartley. Date of birth: March 5, 1911. Mother: Margaret Hartley. Father: listed as unknown. Registered March 11, 1911. County Clerk: Edgar T. Calloway.",
+                summary: "Dallas County birth certificate. Name: Taylor Hartley. Date of birth: March 5, 1911. Mother: Margaret Hartley. Father: William S. Thoreson. Registered March 11, 1911. County Clerk: Edgar T. Calloway.",
                 detail: null
             },
             {
                 id: "margaretDeath",
                 type: "clue",
                 title: "Newspaper — Margaret Hartley Obituary",
-                summary: "A brief obituary from a Fort Worth newspaper, dated 1913. Margaret Hartley, formerly of Dallas, passed away leaving behind two children. No cause of death listed. No mention of surviving family beyond the children.",
+                summary: "A brief obituary from a Dallas newspaper, dated October 14, 1914. Margaret Hartley, formerly of Dallas, passed away leaving behind two children. Cause of death listed as accidental overdose of laudanum. No mention of surviving family beyond the children.",
                 detail: null
             },
             {
