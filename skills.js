@@ -72,34 +72,6 @@ const skillsDatabase = {
         `
     },
 
-    "Investigation": {
-        title: "Background Check — All Guests",
-        password: "open",
-        lockedTitle: "Background Report",
-        lockedSubtitle: "This document requires investigative expertise to interpret",
-        errorMsg: "Incorrect password. Find someone with investigative skills.",
-        badge: "Background Investigation",
-        header: "Pinkerton Guest Verification — Thoreson Estate",
-        summary: "Background checks were run on everyone at the party. Most came back clean. But two guests flagged for name changes — both connected to the <strong>Hartley</strong> family. Walter Lippman was born <strong>Taylor Hartley</strong>. And Miranda Longfellow's identity doesn't exist before 1920 — she's a high-probability match for <strong>Miranda Hartley</strong>.",
-        expert: `
-            <p>I called in a favor at Pinkerton and had them run background checks on every person at this dinner tonight. Most of them came back exactly as expected — no surprises, no flags. But two names came back with anomalies.</p>
-            
-            <div class="reveal-highlight">
-                <strong>Walter Lippman</strong> — the journalist — has a legal name change on file. His birth name is <strong>Taylor Hartley</strong>. Born March 5, 1911. Mother: Margaret Hartley. He changed his name in 1929 at age 18. We already knew about Taylor from the ledger and the trust fund — but now we know he's been sitting at this table the whole time.
-            </div>
-            
-            <p>That's interesting on its own. But here's where it gets serious.</p>
-            
-            <div class="reveal-danger">
-                <strong>Miranda Longfellow</strong> — Scott's assistant — doesn't exist. There is no birth certificate, no school record, no census entry for anyone named "Miranda Longfellow" anywhere in Texas before 1920. The identity was created from nothing. Pinkerton cross-referenced her description against Dallas County records and came back with one high-probability match: <strong>Miranda Hartley</strong>, born June 3, 1896. Father: Robert Hartley. Mother: Margaret Hartley.
-            </div>
-            
-            <p>If that's right, then Walter and Miranda share the same mother — Margaret Hartley. They're both Hartleys. One changed his name legally. The other built an entirely new identity and has been working inside the Thoreson household for <strong>ten years</strong>.</p>
-            
-            <p><strong>Two children of the Hartley family are in this room tonight. And one of them has been hiding in plain sight.</strong></p>
-        `
-    },
-
     "Legal": {
         title: "Forged Transfer Documents",
         password: "open",

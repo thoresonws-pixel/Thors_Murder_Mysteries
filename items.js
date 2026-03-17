@@ -25,7 +25,7 @@
 //   • Financial Ledger          (THORESON:Accounting)
 //   • Forged Transfer Document  (THORESON:Legal)
 //   • Dallas Herald Clipping    (THORESON:Journalism)
-//   • Love Letters              (THORESON:Investigation)
+//   • Margaret's French Letter  (THORESON:French)
 // ─────────────────────────────────────────────────────────────
 
 const itemDatabase = [
