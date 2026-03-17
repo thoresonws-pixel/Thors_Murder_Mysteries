@@ -231,5 +231,33 @@ const skillsDatabase = {
         expert: `
             <p><em>Content coming soon — editorial analysis of the Hartley death article.</em></p>
         `
+    },
+
+    "Botany": {
+        title: "Coroner's Report — Botanical Analysis",
+        password: "open",
+        lockedTitle: "Coroner's Report",
+        lockedSubtitle: "This report requires botanical expertise to interpret",
+        errorMsg: "Incorrect password. Find someone with botanical expertise.",
+        badge: "Botanical Analysis",
+        header: "Field Analysis — Aconitum Species Identification",
+        summary: "The toxin is <strong>Aconitine</strong>, derived from <em>Aconitum napellus</em> — Wolfsbane. It does not grow in Texas. It does not grow anywhere in North America. <strong>Someone traveled to obtain this.</strong>",
+        expert: `
+            <p>I recognize this immediately. Aconitum napellus — Wolfsbane, or Monkshood. I have been studying this genus for thirty years and I have never encountered it outside of controlled specimens and pressed samples. It does not grow in Texas. It does not grow anywhere in the Americas.</p>
+
+            <div class="reveal-danger">
+                Aconitine is among the most potent plant alkaloids known to botany. A single gram of concentrated root extract is sufficient to kill an adult. The roots are the most toxic part — but the flowers, the stems, the leaves — all of it is lethal with sufficient exposure. There is no antidote. There is no margin for error in the dosage. Whoever used this knew exactly what they were handling.
+            </div>
+
+            <p>In the wild, Aconitum napellus grows in the mountainous regions of central Europe — the Swiss Alps, the Austrian Tirol, the Northern Italian ranges. The flowers are a distinctive deep violet-blue, almost iridescent in the right light. They bloom in summer. They look beautiful. They will kill you if you're not careful even handling them with bare hands.</p>
+
+            <div class="reveal-highlight">
+                This plant was not purchased from a pharmacy or apothecary. It cannot be ordered by mail. It cannot be synthesized in a kitchen. It had to be collected — deliberately, in the field, from a specific region of Europe — and transported back to Texas. This was planned months in advance. Someone went to the Alps and came home with murder in their luggage.
+            </div>
+
+            <p>The timing matters as well. If Will Thoreson ingested aconitine this evening, it was almost certainly introduced to his food or drink earlier tonight. Aconitine is water-soluble and essentially tasteless in small concentrations — it would be undetectable in a cocktail or a sauce. The initial symptom is a faint tingling or numbness in the lips and throat, which most people would dismiss. By the time the cardiac symptoms present, it is far too late.</p>
+
+            <p>This is not an impulsive crime. This is a botanical crime. Whoever did this has knowledge, patience, and a very specific travel history. Find someone who has been to the Alps recently. Find the wolfsbane. You will find your killer.</p>
+        `
     }
 };
