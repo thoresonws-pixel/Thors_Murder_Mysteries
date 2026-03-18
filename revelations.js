@@ -37,7 +37,7 @@ const revelationsDatabase = {
                 id: "forgedDocs",
                 type: "clue",
                 title: "Company Transfer Document",
-                summary: "A transfer document dated March 14, 1910 signing Robert Hartley's full ownership over to William Thoreson. Notarized by one James Crawford. Requires a Legal expert to examine.",
+                summary: "A transfer document dated March 13, 1910 signing Robert Hartley's full ownership over to William Thoreson. Notarized by one James Crawford. Requires a Legal expert to examine.",
                 detail: null
             },
             {

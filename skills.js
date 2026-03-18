@@ -88,7 +88,7 @@ const skillsDatabase = {
                 The signature attributed to Robert Hartley is forged. The pen strokes are hesitant and show signs of tracing — inconsistent with someone's natural handwriting. The ink also appears slightly different in color and weight from the body of the document, suggesting it was added at a different time, possibly after the document was drafted.
             </div>
             
-            <p>The timing is deeply suspicious. The document is dated <strong>March 14, 1910</strong> — exactly one day before Robert Hartley's death. A man transferring his entire stake in a profitable company the day before he dies, with no apparent consideration or payment recorded? That defies all standard business practice.</p>
+            <p>The timing is deeply suspicious. The document is dated <strong>March 13, 1910</strong> — two days before Robert Hartley's death. A man transferring his entire stake in a profitable company two days before he dies, with no apparent consideration or payment recorded? That defies all standard business practice.</p>
 
             <p>I also attempted to verify the witness. The document bears the signature of "James Crawford, Notary Public." However, there is no record of any James Crawford serving as a licensed notary in Dallas County during this period. The notary seal, upon close examination, appears hand-stamped rather than embossed — another indication of fabrication.</p>
             
@@ -210,7 +210,7 @@ const skillsDatabase = {
             <p>Second — the sourcing. The only named source in this article is William Thoreson himself. His quote reads like it was prepared in advance: measured, sympathetic, careful. There's no quote from the police investigator, no comment from Hartley's family, no statement from anyone at the company. A real reporter would have talked to at least three people. This reporter talked to one — the man who stood to benefit most from Hartley's death.</p>
 
             <div class="reveal-danger">
-                Third — and this is the part that should trouble everyone in this room — the article makes no mention of the ownership transfer document filed the day before Robert died. March 14th: Robert's entire stake in the company is signed over to Thoreson. March 15th: Robert is dead. Any competent journalist would have connected those two facts. This one didn't. Either they weren't told, or they were told not to ask.
+                Third — and this is the part that should trouble everyone in this room — the article makes no mention of the ownership transfer document filed two days before Robert died. March 13th: Robert's entire stake in the company is signed over to Thoreson. March 15th: Robert is dead. Any competent journalist would have connected those two facts. This one didn't. Either they weren't told, or they were told not to ask.
             </div>
 
             <p>Finally — the framing. The headline says "Thoreson Cleared." Not "Hartley Death Ruled Suicide." Not "Investigation Closed." The story is framed around Thoreson's innocence, not around what happened to Robert Hartley. That tells you who this article was written for.</p>
