@@ -549,7 +549,7 @@ const characterDatabase = {
             { text: "You ran the numbers quietly in your head while everyone was talking. Twenty-four years of fifty-dollar monthly payments. Fourteen thousand four hundred dollars. Not a fortune, but consistent. Sustained. Personal. Someone felt responsible for whoever T.H. is for a very long time.", unlockedBy: "secretHeir" }
         ],
         canShare: [
-            { text: "I may not know anyone here, but I know numbers. If there's a financial document, let me see it.", unlockedBy: null }
+            { text: "Most people see numbers and their eyes glaze over. I see numbers and I see a story someone thought they hid.", unlockedBy: null }
         ],
         relationships: [
             { name: "Vivienne Ashford", relation: "Your girlfriend — you're here for her" },
