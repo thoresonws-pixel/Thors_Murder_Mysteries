@@ -55,9 +55,10 @@ const skillsDatabase = {
             <p>This letter was written in French — likely deliberately, so that only someone educated abroad would be able to read it. The tone is deeply personal, angry, and accusatory. Here is the full translation:</p>
             
             <div class="letter-text">
-                "William,<br><br>
+                "June 4th, 1914<br><br>
+                William,<br><br>
                 You always kept your secrets locked away. Just like that safe in your study closet. I know you have a heart in there somewhere. Even though you showed no heart when you sent me away.<br><br>
-                I wonder — does the combination reveal how you truly felt? The day our son came into this world — you locked it away behind steel and numbers because you could not bring yourself to forget it, and you could not bring yourself to claim it.<br><br>
+                I wonder — does the combination reveal how you truly felt? Our son turned three this past March and you were not there. You locked his birthday behind steel and numbers because you could not bring yourself to forget it, and you could not bring yourself to claim it.<br><br>
                 Our son deserved a father. You gave him money and a name on a trust document and nothing else. He will grow up not knowing who he is because you decided your reputation mattered more than his life.<br><br>
                 I have given everything to keep him safe. You have given nothing but silence and a monthly check.<br><br>
                 I have kept your secret all these years. But secrets have a way of rising to the surface, William. Especially yours.<br><br>
@@ -67,7 +68,7 @@ const skillsDatabase = {
             <p>Margaret is furious — and grief-stricken. She confronts Will directly over their child — a son he funded privately but refused to acknowledge. Will chose secrecy over fatherhood.</p>
             
             <div class="reveal-highlight">
-                Margaret references a <strong>safe in the study closet</strong>. She says the combination is connected to the day their son was born — a date Will couldn't forget. If we can find the son's birthday, we have the combination.
+                Margaret references a <strong>safe in the study closet</strong>. The letter is dated June 1914. She says their son <strong>turned three this past March</strong>. Three years old in March 1914 means the child was born in <strong>March 1911</strong>. The combination is his birthday — we just need the exact day.
             </div>
         `
     },
