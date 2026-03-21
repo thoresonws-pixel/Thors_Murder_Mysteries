@@ -46,6 +46,12 @@ const itemDatabase = [
     act: 1,
   },
   {
+    id: "phonograph",
+    label: "Recording Device",
+    category: "clue",
+    act: 1,
+  },
+  {
     id: "calendar",
     label: "Office Calendar",
     category: "clue",
