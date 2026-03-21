@@ -21,8 +21,7 @@ const cards = itemDatabase.map(item => {
   return `
     <div class="qr-card" style="border-color:${cfg.border}">
       <div class="qr-top" style="background:${cfg.color}">
-        <div class="qr-badge" style="color:${cfg.textColor}">${cfg.label.toUpperCase()}</div>
-        <div class="qr-number">${item._number}<span> / ${itemDatabase.filter(i=>i.category===item.category).length}</span></div>
+        <div class="qr-number">${cfg.label} ${item._number}</div>
         <div class="qr-label">${item.label}</div>
       </div>
       <div class="qr-code" id="qr-${item.id}"></div>
@@ -51,8 +50,7 @@ const skillQRs = [
 const skillCards = skillQRs.map((s, i) => `
   <div class="qr-card" style="border-color:#6a3a3a">
     <div class="qr-top" style="background:#3a1a1a">
-      <div class="qr-badge" style="color:#c88a6a">SKILL</div>
-      <div class="qr-number">${i+1}<span> / ${skillQRs.length}</span></div>
+      <div class="qr-number">Skill ${i+1}</div>
       <div class="qr-label">${s.doc}</div>
       <div class="qr-act">Print ON document</div>
     </div>
@@ -90,8 +88,7 @@ const extraQRs = [
 const extraCards = extraQRs.map((e, i) => `
   <div class="qr-card" style="border-color:#3a3a1a">
     <div class="qr-top" style="background:#2a2a10">
-      <div class="qr-badge" style="color:#c8c86a">PHOTO / SPECIAL</div>
-      <div class="qr-number">${i+1}<span> / ${extraQRs.length}</span></div>
+      <div class="qr-number">Special ${i+1}</div>
       <div class="qr-label">${e.label}</div>
       <div class="qr-act">Hide around venue</div>
     </div>
