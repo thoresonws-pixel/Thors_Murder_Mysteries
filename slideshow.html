@@ -129,10 +129,18 @@
       const div = document.createElement('div');
       div.className = 'slide' + (i === current ? ' active' : '');
       const time = new Date(p.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-      div.innerHTML = `
-        <img src="${p.wallUrl}" alt="">
-        <div class="caption">${p.player} · ${time}</div>
-      `;
+      if (p.showCounter) {
+        div.innerHTML = `
+          <img src="${p.wallUrl}" alt="">
+          <div class="caption" style="font-size:22px; color:#c9a227; font-style:italic;">${p.caption || ''}</div>
+          <div id="bathroomCount" style="font-size:18px; color:#8b7355; margin-top:5px;"></div>
+        `;
+      } else {
+        div.innerHTML = `
+          <img src="${p.wallUrl}" alt="">
+          <div class="caption">${p.player} · ${time}</div>
+        `;
+      }
       container.appendChild(div);
     });
     document.getElementById('countDisplay').textContent = `${current + 1} / ${photos.length}`;
@@ -146,6 +154,15 @@
     photos = newPhotos;
     buildSlides();
     if (!hadPhotos && photos.length > 0) startSlideshow();
+  });
+
+  // Live bathroom scan counter
+  db.ref('bathroomScans').on('value', snap => {
+    const count = snap.val() || 0;
+    const el = document.getElementById('bathroomCount');
+    if (el && count > 0) {
+      el.textContent = count + ' detective' + (count > 1 ? 's have' : ' has') + ' made this mistake';
+    }
   });
 
   function startSlideshow() {

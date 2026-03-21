@@ -2706,6 +2706,7 @@
                         'p4': 'posters/missing_robin.jpg',
                         'e4': 'photos/easter4.jpeg',
                         'e5': 'photos/easter5.jpeg',
+                        'bathroom': 'photos/bathroom_cat.jpeg',
                         'wedding': 'photos/easter_collage.jpeg',
                     };
                     const posterUrl = posterMap[id];
@@ -2715,20 +2716,45 @@
                         // Count as a clue scan
                         database.ref('scans/' + player).transaction(c => (c || 0) + 1);
                         database.ref('scanLog').push({ player, propId: id, time: Date.now() });
+
+                        // Special bathroom counter
+                        if (id === 'bathroom') {
+                            database.ref('bathroomScans').transaction(c => (c || 0) + 1);
+                        }
+
                         firebase.database().ref('photos').orderByChild('wallUrl').equalTo(fullUrl).once('value', snap => {
                             if (!snap.exists()) {
-                                firebase.database().ref('photos').push({ player, wallUrl: fullUrl, fullUrl, time: Date.now(), isPoster: true });
+                                var photoData = { player, wallUrl: fullUrl, fullUrl, time: Date.now(), isPoster: true };
+                                if (id === 'bathroom') {
+                                    photoData.caption = "Why are you looking for clues in the bathroom?!";
+                                    photoData.showCounter = true;
+                                }
+                                firebase.database().ref('photos').push(photoData);
                             }
                         });
-                        // Show popup with the poster image
+                        // Show popup
                         var modal = document.getElementById('skillModalContent');
-                        modal.innerHTML = `
-                            <div style="text-align:center; padding:10px 0;">
-                                <img src="${fullUrl}" style="max-width:100%; max-height:70vh; display:block; margin:0 auto 14px; border:2px solid #c9a227;">
-                                <div style="font-size:13px; color:#8b7355; letter-spacing:1px;">Added to the photo wall.</div>
-                            </div>
-                            <button class="skill-modal-close" onclick="closeSkillModal()">Dismiss</button>`;
-                        document.getElementById('skillModalOverlay').classList.add('active');
+                        if (id === 'bathroom') {
+                            database.ref('bathroomScans').once('value', function(snap) {
+                                var count = snap.val() || 1;
+                                modal.innerHTML = `
+                                    <div style="text-align:center; padding:10px 0;">
+                                        <img src="${fullUrl}" style="max-width:100%; max-height:50vh; display:block; margin:0 auto 14px; border:2px solid #c9a227;">
+                                        <div style="font-size:20px; color:#c9a227; font-family:'Playfair Display',serif; margin:10px 0;">Why are you looking for clues in the bathroom?!</div>
+                                        <div style="font-size:15px; color:#8b7355; margin-top:8px;">${count} detective${count > 1 ? 's have' : ' has'} made this mistake</div>
+                                    </div>
+                                    <button class="skill-modal-close" onclick="closeSkillModal()">Dismiss</button>`;
+                                document.getElementById('skillModalOverlay').classList.add('active');
+                            });
+                        } else {
+                            modal.innerHTML = `
+                                <div style="text-align:center; padding:10px 0;">
+                                    <img src="${fullUrl}" style="max-width:100%; max-height:70vh; display:block; margin:0 auto 14px; border:2px solid #c9a227;">
+                                    <div style="font-size:13px; color:#8b7355; letter-spacing:1px;">Added to the photo wall.</div>
+                                </div>
+                                <button class="skill-modal-close" onclick="closeSkillModal()">Dismiss</button>`;
+                            document.getElementById('skillModalOverlay').classList.add('active');
+                        }
                     }
                 } catch(e) {}
                 return;
@@ -2969,6 +2995,8 @@
                         <div style="position:relative; background:#000;">
                             <img src="${p.wallUrl}" style="width:100%; display:block; max-height:400px; object-fit:contain;" loading="lazy">
                         </div>
+                        ${p.caption ? `<div style="padding:8px 12px; text-align:center; font-family:'Playfair Display',serif; font-size:15px; color:#c9a227;">${p.caption}</div>` : ''}
+                        ${p.showCounter ? `<div id="bathroomCount" style="text-align:center; font-size:13px; color:#8b7355; padding-bottom:6px;"></div>` : ''}
                         <div style="padding:10px 12px; display:flex; justify-content:space-between; align-items:center;">
                             <div style="font-family:'Playfair Display',serif; font-size:13px; color:#8b7355;">
                                 ${p.player} · ${new Date(p.time).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}
@@ -2980,6 +3008,15 @@
                         </div>
                     </div>
                 `).join('');
+
+                // Update bathroom counter if present
+                var bcEl = document.getElementById('bathroomCount');
+                if (bcEl) {
+                    database.ref('bathroomScans').on('value', function(snap) {
+                        var count = snap.val() || 0;
+                        bcEl.textContent = count + ' detective' + (count !== 1 ? 's have' : ' has') + ' checked the bathroom for clues';
+                    });
+                }
 
                 // Download All button
                 const existing = document.getElementById('downloadAllBtn');
