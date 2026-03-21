@@ -129,11 +129,12 @@ const html = `<!DOCTYPE html>
       margin-bottom: 32px;
     }
     .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      display: flex;
+      flex-wrap: wrap;
       gap: 16px;
       max-width: 960px;
       margin: 0 auto;
+      justify-content: center;
     }
     .qr-card {
       border: 1px solid #3a2a10;
@@ -141,6 +142,12 @@ const html = `<!DOCTYPE html>
       overflow: hidden;
       background: #fffdf5;
       break-inside: avoid;
+      page-break-inside: avoid;
+      width: 180px;
+    }
+    .section-break {
+      break-before: page;
+      page-break-before: always;
     }
     .qr-top {
       padding: 12px 12px 8px;
@@ -191,7 +198,8 @@ const html = `<!DOCTYPE html>
     @media print {
       body { background: white; padding: 16px; }
       .grid { gap: 12px; }
-      .qr-card { border-color: #999; }
+      .qr-card { border-color: #999; break-inside: avoid; page-break-inside: avoid; }
+      .section-break { break-before: page; page-break-before: always; }
     }
   </style>
 </head>
@@ -202,11 +210,11 @@ const html = `<!DOCTYPE html>
   <div class="grid">
     ${cards}
   </div>
-  <div style="text-align:center; font-size:14px; color:#5a4a2a; margin:32px 0 24px; font-style:italic;">Skill QR Codes (print on documents)</div>
+  <div style="text-align:center; font-size:14px; color:#5a4a2a; margin:32px 0 24px; font-style:italic;" class="section-break">Skill QR Codes</div>
   <div class="grid">
     ${skillCards}
   </div>
-  <div style="text-align:center; font-size:14px; color:#5a4a2a; margin:32px 0 24px; font-style:italic;">Photos, Posters &amp; Special</div>
+  <div style="text-align:center; font-size:14px; color:#5a4a2a; margin:32px 0 24px; font-style:italic;" class="section-break">Photos, Posters &amp; Special</div>
   <div class="grid">
     ${extraCards}
   </div>
