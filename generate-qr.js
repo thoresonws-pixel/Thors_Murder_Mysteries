@@ -217,3 +217,43 @@ const fs = require('fs');
 fs.writeFileSync('qr-codes.html', html);
 console.log(`✓ Generated qr-codes.html — ${totalCount} total QR codes (${itemDatabase.length} items, ${skillQRs.length} skills, ${extraQRs.length} photos/special)`);
 console.log('  Open in a browser and print (or save as PDF)');
+
+// Generate GM cheat sheet
+const cheatItems = itemDatabase.map(item => {
+  const cfg = categoryConfig[item.category] || { label: item.category };
+  return `<tr><td>${cfg.label} ${item._number}</td><td>${item.label}</td><td>${item.id}</td></tr>`;
+}).join('\n');
+
+const cheatSkills = skillQRs.map((s, i) => 
+  `<tr><td>Skill ${i+1}</td><td>${s.doc}</td><td>THORESON:${s.id}</td></tr>`
+).join('\n');
+
+const cheatExtras = extraQRs.map((e, i) => 
+  `<tr><td>Special ${i+1}</td><td>${e.label}</td><td>${e.id}</td></tr>`
+).join('\n');
+
+const cheatSheet = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"/><title>QR Cheat Sheet</title>
+<style>
+  body { font-family: Georgia, serif; padding: 32px; max-width: 700px; margin: 0 auto; }
+  h1 { font-size: 18px; letter-spacing: 3px; text-transform: uppercase; text-align: center; margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+  th { text-align: left; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #666; border-bottom: 2px solid #333; padding: 6px 8px; }
+  td { padding: 6px 8px; border-bottom: 1px solid #ddd; font-size: 13px; }
+  td:first-child { font-weight: bold; white-space: nowrap; }
+  @media print { body { padding: 16px; } }
+</style></head><body>
+<h1>QR Code Cheat Sheet — GM Only</h1>
+<table><tr><th>Card</th><th>What It Is</th><th>ID</th></tr>
+${cheatItems}
+</table>
+<table><tr><th>Card</th><th>Print On</th><th>Encodes</th></tr>
+${cheatSkills}
+</table>
+<table><tr><th>Card</th><th>What It Is</th><th>ID</th></tr>
+${cheatExtras}
+</table>
+</body></html>`;
+
+fs.writeFileSync('qr-cheatsheet.html', cheatSheet);
+console.log('✓ Generated qr-cheatsheet.html — GM reference for QR card numbers');
