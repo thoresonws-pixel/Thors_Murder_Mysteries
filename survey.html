@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thoreson Estate — Guest Feedback</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0d0b08; color: #e8e8e8; font-family: 'Playfair Display', Georgia, serif; min-height: 100vh; padding: 30px 20px 60px; }
+  .container { max-width: 600px; margin: 0 auto; }
+  h1 { text-align: center; font-size: 26px; color: #c9a227; letter-spacing: 4px; margin-bottom: 6px; }
+  .subtitle { text-align: center; font-size: 12px; color: #666; letter-spacing: 3px; margin-bottom: 6px; }
+  .intro { text-align: center; font-size: 14px; color: #8b7355; line-height: 1.6; margin-bottom: 30px; font-style: italic; }
+  .divider { border: none; border-top: 1px solid rgba(201,162,39,0.3); margin: 30px 0; }
+
+  .question { margin-bottom: 28px; }
+  .q-label { font-size: 16px; color: #c9a227; margin-bottom: 10px; }
+  .q-sublabel { font-size: 12px; color: #666; margin-bottom: 8px; font-style: italic; }
+
+  /* Star rating */
+  .stars { display: flex; gap: 8px; margin-bottom: 4px; }
+  .star { font-size: 32px; color: #333; cursor: pointer; transition: color 0.15s; }
+  .star:hover, .star.active { color: #c9a227; }
+  .star-label { font-size: 12px; color: #666; margin-top: 4px; }
+
+  /* Radio options */
+  .options { display: flex; flex-wrap: wrap; gap: 8px; }
+  .opt {
+    padding: 8px 18px; border: 1px solid rgba(201,162,39,0.3); border-radius: 3px;
+    font-size: 13px; color: #8b7355; cursor: pointer; transition: all 0.15s;
+    font-family: 'Playfair Display', serif;
+  }
+  .opt:hover { border-color: #c9a227; color: #c9a227; }
+  .opt.selected { background: rgba(201,162,39,0.15); border-color: #c9a227; color: #c9a227; }
+
+  /* Text areas */
+  textarea {
+    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(201,162,39,0.2);
+    border-radius: 3px; padding: 12px; font-family: 'Playfair Display', serif; font-size: 14px;
+    color: #e8e8e8; resize: vertical; min-height: 80px;
+  }
+  textarea:focus { outline: none; border-color: #c9a227; }
+  textarea::placeholder { color: #555; font-style: italic; }
+
+  /* Price options */
+  .price-options { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  /* Submit */
+  .submit-btn {
+    display: block; width: 100%; padding: 16px; border: 1px solid #c9a227;
+    background: transparent; color: #c9a227; font-family: 'Playfair Display', serif;
+    font-size: 16px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer;
+    border-radius: 3px; margin-top: 30px; transition: all 0.2s;
+  }
+  .submit-btn:hover { background: rgba(201,162,39,0.1); }
+  .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .thanks { display: none; text-align: center; padding: 60px 20px; }
+  .thanks h2 { font-size: 24px; color: #c9a227; margin-bottom: 16px; }
+  .thanks p { font-size: 15px; color: #8b7355; line-height: 1.7; }
+
+  /* Name input */
+  input[type="text"] {
+    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(201,162,39,0.2);
+    border-radius: 3px; padding: 10px 12px; font-family: 'Playfair Display', serif; font-size: 14px;
+    color: #e8e8e8;
+  }
+  input[type="text"]:focus { outline: none; border-color: #c9a227; }
+  input[type="text"]::placeholder { color: #555; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="container" id="surveyForm">
+  <h1>Guest Feedback</h1>
+  <div class="subtitle">THE THORESON ESTATE · MARCH 1935</div>
+  <hr class="divider">
+  <div class="intro">Thank you for attending this evening's gathering. Your candid reflections will help us refine future investigations.</div>
+
+  <div class="question">
+    <div class="q-label">Your name</div>
+    <div class="q-sublabel">Optional — but we'd love to know who said what</div>
+    <input type="text" id="name" placeholder="First name or character name">
+  </div>
+
+  <hr class="divider">
+
+  <div class="question">
+    <div class="q-label">Overall, how would you rate the evening?</div>
+    <div class="stars" id="stars">
+      <span class="star" data-val="1">★</span>
+      <span class="star" data-val="2">★</span>
+      <span class="star" data-val="3">★</span>
+      <span class="star" data-val="4">★</span>
+      <span class="star" data-val="5">★</span>
+    </div>
+    <div class="star-label" id="starLabel"></div>
+  </div>
+
+  <div class="question">
+    <div class="q-label">What was your favorite moment?</div>
+    <div class="q-sublabel">A reveal, a conversation, a reaction — anything that stood out</div>
+    <textarea id="favorite" placeholder="The moment when..."></textarea>
+  </div>
+
+  <div class="question">
+    <div class="q-label">Was anything confusing or unclear?</div>
+    <textarea id="confusing" placeholder="Anything that didn't make sense or felt off..."></textarea>
+  </div>
+
+  <hr class="divider">
+
+  <div class="question">
+    <div class="q-label">How was the pacing?</div>
+    <div class="options" id="pacing">
+      <div class="opt" data-val="too-slow">Too slow</div>
+      <div class="opt" data-val="slightly-slow">Slightly slow</div>
+      <div class="opt" data-val="just-right">Just right</div>
+      <div class="opt" data-val="slightly-fast">Slightly fast</div>
+      <div class="opt" data-val="too-fast">Too fast</div>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-label">How was the tech?</div>
+    <div class="q-sublabel">The app, QR scanning, phone notifications</div>
+    <div class="options" id="tech">
+      <div class="opt" data-val="flawless">Worked perfectly</div>
+      <div class="opt" data-val="minor-issues">Minor hiccups</div>
+      <div class="opt" data-val="confusing">Confusing</div>
+      <div class="opt" data-val="didnt-use">Didn't really use it</div>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-label">Would you do another murder mystery like this?</div>
+    <div class="options" id="again">
+      <div class="opt" data-val="absolutely">Absolutely</div>
+      <div class="opt" data-val="probably">Probably</div>
+      <div class="opt" data-val="maybe">Maybe</div>
+      <div class="opt" data-val="not-my-thing">Not really my thing</div>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-label">Would you recommend this to friends?</div>
+    <div class="options" id="recommend">
+      <div class="opt" data-val="already-have">I already have</div>
+      <div class="opt" data-val="definitely">Definitely would</div>
+      <div class="opt" data-val="probably">Probably</div>
+      <div class="opt" data-val="probably-not">Probably not</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="question">
+    <div class="q-label">If this were a paid experience — dinner, cocktails, and a 3-hour mystery — what would you expect to pay per person?</div>
+    <div class="price-options options" id="price">
+      <div class="opt" data-val="50-75">$50–75</div>
+      <div class="opt" data-val="75-100">$75–100</div>
+      <div class="opt" data-val="100-125">$100–125</div>
+      <div class="opt" data-val="125-150">$125–150</div>
+      <div class="opt" data-val="150+">$150+</div>
+      <div class="opt" data-val="wouldnt-pay">Wouldn't pay</div>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-label">What would you improve?</div>
+    <textarea id="improve" placeholder="More clues, less clues, different food, longer cocktail hour, anything..."></textarea>
+  </div>
+
+  <div class="question">
+    <div class="q-label">Anything else you want to tell us?</div>
+    <textarea id="anything" placeholder="Compliments, complaints, theories about who really did it..."></textarea>
+  </div>
+
+  <button class="submit-btn" id="submitBtn" onclick="submitSurvey()">Submit Feedback</button>
+</div>
+
+<div class="container thanks" id="thanks">
+  <h2>Thank You</h2>
+  <p>Your feedback has been recorded. The Thoreson family appreciates your discretion regarding tonight's events.</p>
+  <hr class="divider">
+  <p style="margin-top:20px;"><a href="photos-download.html" style="color:#c9a227; text-decoration:none; letter-spacing:2px;">↓ Download Photos from Tonight</a></p>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+<script>
+  firebase.initializeApp({
+    databaseURL: "https://thoreson-estate-default-rtdb.firebaseio.com"
+  });
+
+  var rating = 0;
+
+  // Star rating
+  document.querySelectorAll('.star').forEach(function(star) {
+    star.addEventListener('click', function() {
+      rating = parseInt(this.dataset.val);
+      document.querySelectorAll('.star').forEach(function(s) {
+        s.classList.toggle('active', parseInt(s.dataset.val) <= rating);
+      });
+      var labels = ['', 'Not great', 'It was okay', 'Good', 'Really good', 'Incredible'];
+      document.getElementById('starLabel').textContent = labels[rating];
+    });
+  });
+
+  // Option buttons
+  document.querySelectorAll('.options').forEach(function(group) {
+    group.querySelectorAll('.opt').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        group.querySelectorAll('.opt').forEach(function(o) { o.classList.remove('selected'); });
+        opt.classList.add('selected');
+      });
+    });
+  });
+
+  function getSelected(id) {
+    var el = document.querySelector('#' + id + ' .opt.selected');
+    return el ? el.dataset.val : '';
+  }
+
+  function submitSurvey() {
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+
+    var response = {
+      name: document.getElementById('name').value || 'Anonymous',
+      rating: rating,
+      favorite: document.getElementById('favorite').value,
+      confusing: document.getElementById('confusing').value,
+      pacing: getSelected('pacing'),
+      tech: getSelected('tech'),
+      again: getSelected('again'),
+      recommend: getSelected('recommend'),
+      price: getSelected('price'),
+      improve: document.getElementById('improve').value,
+      anything: document.getElementById('anything').value,
+      time: Date.now()
+    };
+
+    firebase.database().ref('survey').push(response).then(function() {
+      document.getElementById('surveyForm').style.display = 'none';
+      document.getElementById('thanks').style.display = 'block';
+    }).catch(function(err) {
+      btn.textContent = 'Error — try again';
+      btn.disabled = false;
+    });
+  }
+</script>
+
+</body>
+</html>
