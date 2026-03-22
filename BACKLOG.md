@@ -2,10 +2,10 @@
 
 ## HIGH PRIORITY
 1. **Cocktail hour side quests** — Icebreaker tasks, character scavenger hunt, relationship missions, gossip round. Players need to be in character BEFORE the murder happens. Nobody should be reading their backstory for the first time when Will dies.
+2. **Detective board on TV** — Cork board display on the big TV behind GM. As revelations are toggled from Master Controls, clues auto-pin as polaroid-style cards. Red string animates between connected evidence. Replaces the need for the investigator to manually track clues — DJ did a great job in character but struggled to write everything down. The TV becomes the room's shared brain.
 
 ## FEATURES
-2. **Detective board UI** — Redesign Discoveries page as a cork board. Clues appear as polaroid-style cards. Red string animates between connected evidence when story revelations unlock.
-3. **Detective board on TV** — Mirror the detective board to the slideshow/TV so the whole room sees the web of evidence being built.
+3. **Detective board on phones** — Redesign Discoveries page to match the TV board aesthetic. Players can review clues on their own phone but the TV is the primary view.
 4. **Native app** — React Native or Flutter. Proper push notifications, offline support, smoother QR scanning.
 
 ## STORY / GAME DESIGN
