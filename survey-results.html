@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thoreson Estate — Survey Results</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0d0b08; color: #e8e8e8; font-family: 'Playfair Display', Georgia, serif; min-height: 100vh; padding: 30px 20px 60px; }
+  .container { max-width: 800px; margin: 0 auto; }
+  h1 { text-align: center; font-size: 26px; color: #c9a227; letter-spacing: 4px; margin-bottom: 6px; }
+  .subtitle { text-align: center; font-size: 12px; color: #666; letter-spacing: 3px; margin-bottom: 30px; }
+  .divider { border: none; border-top: 1px solid rgba(201,162,39,0.3); margin: 24px 0; }
+  .response-count { text-align: center; font-size: 16px; color: #8b7355; margin-bottom: 30px; }
+
+  /* Averages */
+  .averages { margin-bottom: 30px; }
+  .avg-title { font-size: 18px; color: #c9a227; letter-spacing: 2px; margin-bottom: 16px; }
+  .avg-row { display: flex; align-items: center; margin-bottom: 10px; gap: 12px; }
+  .avg-label { flex: 0 0 200px; font-size: 14px; color: #8b7355; }
+  .avg-bar-bg { flex: 1; height: 20px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
+  .avg-bar { height: 100%; background: #c9a227; border-radius: 3px; transition: width 0.5s; }
+  .avg-val { flex: 0 0 50px; font-size: 15px; color: #c9a227; font-weight: bold; text-align: right; }
+
+  /* Option breakdowns */
+  .breakdown { margin-bottom: 24px; }
+  .bd-title { font-size: 15px; color: #c9a227; margin-bottom: 10px; }
+  .bd-row { display: flex; align-items: center; margin-bottom: 6px; gap: 10px; }
+  .bd-label { flex: 0 0 160px; font-size: 13px; color: #8b7355; }
+  .bd-count { font-size: 13px; color: #c9a227; flex: 0 0 30px; text-align: right; }
+  .bd-bar-bg { flex: 1; height: 14px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
+  .bd-bar { height: 100%; background: rgba(201,162,39,0.5); border-radius: 2px; }
+
+  /* Free text responses */
+  .text-section { margin-bottom: 24px; }
+  .text-title { font-size: 15px; color: #c9a227; margin-bottom: 10px; }
+  .text-response { background: rgba(255,255,255,0.03); border-left: 2px solid rgba(201,162,39,0.3); padding: 10px 14px; margin-bottom: 8px; border-radius: 0 3px 3px 0; }
+  .text-content { font-size: 14px; color: #ccc; line-height: 1.6; font-style: italic; }
+  .text-name { font-size: 11px; color: #666; margin-top: 4px; }
+
+  .loading { text-align: center; padding: 60px; color: #666; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Survey Results</h1>
+  <div class="subtitle">THE THORESON ESTATE · GM EYES ONLY</div>
+  <div class="response-count" id="count">Loading...</div>
+
+  <div id="results"><div class="loading">Loading responses...</div></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+<script>
+  firebase.initializeApp({
+    databaseURL: "https://thoreson-estate-default-rtdb.firebaseio.com"
+  });
+
+  firebase.database().ref('survey').once('value', function(snap) {
+    var data = snap.val();
+    var el = document.getElementById('results');
+
+    if (!data) {
+      el.innerHTML = '<div class="loading">No responses yet.</div>';
+      document.getElementById('count').textContent = '0 responses';
+      return;
+    }
+
+    var responses = Object.values(data).sort(function(a, b) { return a.time - b.time; });
+    document.getElementById('count').textContent = responses.length + ' response' + (responses.length !== 1 ? 's' : '');
+
+    var html = '';
+
+    // Star rating averages
+    var starFields = [
+      { key: 'rating_overall', label: 'Overall Experience' },
+      { key: 'rating_story', label: 'Story Engagement' },
+      { key: 'rating_clarity', label: 'Easy to Understand' },
+      { key: 'rating_appEase', label: 'App Ease of Use' },
+      { key: 'rating_characters', label: 'Characters' },
+      { key: 'rating_entertainment', label: 'Entertainment' },
+      { key: 'rating_immersion', label: 'Immersion' },
+      { key: 'rating_ending', label: 'Ending Satisfaction' },
+    ];
+
+    html += '<div class="averages"><div class="avg-title">Star Ratings (Average)</div>';
+    starFields.forEach(function(f) {
+      var vals = responses.map(function(r) { return r[f.key] || 0; }).filter(function(v) { return v > 0; });
+      var avg = vals.length > 0 ? (vals.reduce(function(a, b) { return a + b; }, 0) / vals.length) : 0;
+      var pct = (avg / 5 * 100).toFixed(0);
+      html += '<div class="avg-row">';
+      html += '<div class="avg-label">' + f.label + '</div>';
+      html += '<div class="avg-bar-bg"><div class="avg-bar" style="width:' + pct + '%"></div></div>';
+      html += '<div class="avg-val">' + avg.toFixed(1) + '</div>';
+      html += '</div>';
+    });
+    html += '</div><hr class="divider">';
+
+    // Option breakdowns
+    var optionFields = [
+      { key: 'pacing', label: 'Pacing', options: ['too-slow', 'slightly-slow', 'just-right', 'slightly-fast', 'too-fast'], labels: ['Too Slow', 'Slightly Slow', 'Just Right', 'Slightly Fast', 'Too Fast'] },
+      { key: 'tech', label: 'Tech Experience', options: ['flawless', 'minor-issues', 'confusing', 'didnt-use'], labels: ['Worked Perfectly', 'Minor Hiccups', 'Confusing', "Didn't Use"] },
+      { key: 'again', label: 'Would Do Again', options: ['absolutely', 'probably', 'maybe', 'not-my-thing'], labels: ['Absolutely', 'Probably', 'Maybe', 'Not My Thing'] },
+      { key: 'recommend', label: 'Would Recommend', options: ['already-have', 'definitely', 'probably', 'probably-not'], labels: ['Already Have', 'Definitely', 'Probably', 'Probably Not'] },
+      { key: 'price', label: 'Would Pay (per person)', options: ['50-75', '75-100', '100-125', '125-150', '150+', 'wouldnt-pay'], labels: ['$50–75', '$75–100', '$100–125', '$125–150', '$150+', "Wouldn't Pay"] },
+    ];
+
+    optionFields.forEach(function(f) {
+      html += '<div class="breakdown"><div class="bd-title">' + f.label + '</div>';
+      var total = responses.filter(function(r) { return r[f.key]; }).length;
+      f.options.forEach(function(opt, i) {
+        var count = responses.filter(function(r) { return r[f.key] === opt; }).length;
+        var pct = total > 0 ? (count / total * 100).toFixed(0) : 0;
+        html += '<div class="bd-row">';
+        html += '<div class="bd-label">' + f.labels[i] + '</div>';
+        html += '<div class="bd-bar-bg"><div class="bd-bar" style="width:' + pct + '%"></div></div>';
+        html += '<div class="bd-count">' + count + '</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+    });
+
+    html += '<hr class="divider">';
+
+    // Free text responses
+    var textFields = [
+      { key: 'favorite', label: 'Favorite Moments' },
+      { key: 'confusing', label: 'What Was Confusing' },
+      { key: 'improve', label: 'What Would You Improve' },
+      { key: 'anything', label: 'Other Comments' },
+    ];
+
+    textFields.forEach(function(f) {
+      var texts = responses.filter(function(r) { return r[f.key] && r[f.key].trim(); });
+      if (texts.length === 0) return;
+      html += '<div class="text-section"><div class="text-title">' + f.label + ' (' + texts.length + ')</div>';
+      texts.forEach(function(r) {
+        html += '<div class="text-response">';
+        html += '<div class="text-content">' + r[f.key].replace(/</g, '&lt;').replace(/\n/g, '<br>') + '</div>';
+        html += '<div class="text-name">— ' + (r.name || 'Anonymous') + '</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+    });
+
+    el.innerHTML = html;
+  });
+</script>
+
+</body>
+</html>
