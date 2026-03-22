@@ -15,7 +15,7 @@
 4. **Native app** — React Native or Flutter. Proper push notifications, offline support, smoother QR scanning.
 
 ## STORY / GAME DESIGN
-5. *(add items from debrief)*
+5. **Rework the confession delivery** — Three audio recordings was too repetitive. By Act 3 it felt tedious. Options: one full recording split into unlockable segments; shorter clips for Acts 2-3 with just the key reveals; mix formats (Act 1 audio, Act 2 written letter, Act 3 Pinkerton report); or let the investigator read Acts 2-3 aloud from the TV board. Variety keeps each act feeling fresh.
 
 ## PRODUCTION
 6. *(costumes, lighting, music, dinner pairing — pending survey results)*
