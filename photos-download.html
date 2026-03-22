@@ -35,6 +35,7 @@
   .photo-info { padding: 8px 12px; font-size: 12px; color: #8b7355; display: flex; justify-content: space-between; }
   .caption { padding: 6px 12px; font-size: 14px; color: #c9a227; font-style: italic; }
   .loading { text-align: center; padding: 60px; color: #666; font-style: italic; }
+  .section-title { font-size: 18px; color: #c9a227; letter-spacing: 3px; text-transform: uppercase; text-align: center; padding: 20px 0 10px; }
 </style>
 </head>
 <body>
@@ -45,11 +46,20 @@
 </div>
 <div class="count" id="count">Loading...</div>
 <div class="download-bar">
-  <button class="download-btn" id="downloadBtn" onclick="downloadAll()" disabled>↓ Download All as ZIP</button>
+  <button class="download-btn" id="downloadPhotosBtn" onclick="downloadSet('photos')" disabled>↓ Download Guest Photos</button>
+  <span style="display:inline-block; width:20px;"></span>
+  <button class="download-btn" id="downloadSpecialsBtn" onclick="downloadSet('specials')" disabled style="border-color:#8b6914; color:#8b6914;">↓ Download QR Specials</button>
   <div class="progress" id="progress"></div>
 </div>
-<div class="grid" id="grid">
-  <div class="loading">Loading photographs...</div>
+<div id="photosSection">
+  <div class="section-title">Guest Photos</div>
+  <div class="grid" id="photosGrid">
+    <div class="loading">Loading photographs...</div>
+  </div>
+</div>
+<div id="specialsSection">
+  <div class="section-title">QR Specials</div>
+  <div class="grid" id="specialsGrid"></div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -59,48 +69,73 @@
     databaseURL: "https://thoreson-estate-default-rtdb.firebaseio.com"
   });
 
-  var allPhotos = [];
+  var guestPhotos = [];
+  var specialPhotos = [];
 
   firebase.database().ref('photos').orderByChild('time').once('value', function(snap) {
     var data = snap.val();
     if (!data) {
-      document.getElementById('grid').innerHTML = '<div class="loading">No photos found.</div>';
+      document.getElementById('photosGrid').innerHTML = '<div class="loading">No photos found.</div>';
       document.getElementById('count').textContent = '0 photos';
       return;
     }
 
-    allPhotos = Object.values(data).sort(function(a, b) { return a.time - b.time; });
-    document.getElementById('count').textContent = allPhotos.length + ' photographs from the evening';
-    document.getElementById('downloadBtn').disabled = false;
+    var all = Object.values(data).sort(function(a, b) { return a.time - b.time; });
+    
+    all.forEach(function(p) {
+      if (p.isPoster) {
+        specialPhotos.push(p);
+      } else {
+        guestPhotos.push(p);
+      }
+    });
 
-    var grid = document.getElementById('grid');
-    grid.innerHTML = allPhotos.map(function(p, i) {
-      var url = p.fullUrl || p.wallUrl;
-      var time = new Date(p.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      var caption = p.caption ? '<div class="caption">' + p.caption + '</div>' : '';
-      return '<div class="photo-card">' +
-        '<img src="' + url + '" loading="lazy">' +
-        caption +
-        '<div class="photo-info"><span>' + p.player + '</span><span>' + time + '</span></div>' +
-        '</div>';
-    }).join('');
+    document.getElementById('count').textContent = guestPhotos.length + ' guest photos · ' + specialPhotos.length + ' QR specials';
+    if (guestPhotos.length > 0) document.getElementById('downloadPhotosBtn').disabled = false;
+    if (specialPhotos.length > 0) document.getElementById('downloadSpecialsBtn').disabled = false;
+
+    function renderGrid(photos, gridId, emptyMsg) {
+      var grid = document.getElementById(gridId);
+      if (photos.length === 0) {
+        grid.innerHTML = '<div class="loading">' + emptyMsg + '</div>';
+        return;
+      }
+      grid.innerHTML = photos.map(function(p) {
+        var url = p.fullUrl || p.wallUrl;
+        var time = new Date(p.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        var caption = p.caption ? '<div class="caption">' + p.caption + '</div>' : '';
+        return '<div class="photo-card">' +
+          '<img src="' + url + '" loading="lazy">' +
+          caption +
+          '<div class="photo-info"><span>' + p.player + '</span><span>' + time + '</span></div>' +
+          '</div>';
+      }).join('');
+    }
+
+    renderGrid(guestPhotos, 'photosGrid', 'No guest photos.');
+    renderGrid(specialPhotos, 'specialsGrid', 'No QR specials.');
   });
 
-  async function downloadAll() {
-    var btn = document.getElementById('downloadBtn');
+  async function downloadSet(which) {
+    var photos = which === 'photos' ? guestPhotos : specialPhotos;
+    var btnId = which === 'photos' ? 'downloadPhotosBtn' : 'downloadSpecialsBtn';
+    var zipName = which === 'photos' ? 'thoreson_guest_photos.zip' : 'thoreson_qr_specials.zip';
+    var folderName = which === 'photos' ? 'guest_photos' : 'qr_specials';
+    
+    var btn = document.getElementById(btnId);
     var prog = document.getElementById('progress');
     btn.disabled = true;
     btn.textContent = 'Preparing...';
     prog.style.display = 'block';
 
     var zip = new JSZip();
-    var folder = zip.folder('thoreson_estate_photos');
-    var total = allPhotos.length;
+    var folder = zip.folder(folderName);
+    var total = photos.length;
     var done = 0;
 
-    for (var i = 0; i < allPhotos.length; i++) {
-      var url = allPhotos[i].fullUrl || allPhotos[i].wallUrl;
-      var player = allPhotos[i].player || 'unknown';
+    for (var i = 0; i < photos.length; i++) {
+      var url = photos[i].fullUrl || photos[i].wallUrl;
+      var player = photos[i].player || 'unknown';
       var ext = url.match(/\.(jpe?g|png|gif)/i) ? url.match(/\.(jpe?g|png|gif)/i)[0] : '.jpg';
       var filename = (i + 1).toString().padStart(2, '0') + '_' + player + ext;
 
@@ -121,7 +156,7 @@
     zip.generateAsync({ type: 'blob' }).then(function(content) {
       var a = document.createElement('a');
       a.href = URL.createObjectURL(content);
-      a.download = 'thoreson_estate_photos.zip';
+      a.download = zipName;
       a.click();
       URL.revokeObjectURL(a.href);
 
@@ -130,7 +165,7 @@
       prog.style.display = 'none';
 
       setTimeout(function() {
-        btn.textContent = '↓ Download All as ZIP';
+        btn.textContent = which === 'photos' ? '↓ Download Guest Photos' : '↓ Download QR Specials';
         btn.disabled = false;
       }, 3000);
     });
