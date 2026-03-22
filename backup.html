@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thoreson Estate — Data Backup</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0d0b08; color: #e8e8e8; font-family: 'Playfair Display', Georgia, serif; min-height: 100vh; padding: 30px 20px 60px; }
+  .container { max-width: 700px; margin: 0 auto; }
+  h1 { text-align: center; font-size: 26px; color: #c9a227; letter-spacing: 4px; margin-bottom: 6px; }
+  .subtitle { text-align: center; font-size: 12px; color: #666; letter-spacing: 3px; margin-bottom: 30px; }
+  .divider { border: none; border-top: 1px solid rgba(201,162,39,0.3); margin: 20px 0; }
+
+  .btn {
+    display: block; width: 100%; padding: 16px; border: 1px solid #c9a227;
+    background: transparent; color: #c9a227; font-family: 'Playfair Display', serif;
+    font-size: 15px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+    border-radius: 3px; margin-bottom: 12px; transition: all 0.2s;
+  }
+  .btn:hover { background: rgba(201,162,39,0.1); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn.done { border-color: #4a8; color: #4a8; }
+
+  .status { font-size: 13px; color: #8b7355; margin-bottom: 20px; text-align: center; }
+  .node { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .node-name { font-size: 15px; color: #c9a227; }
+  .node-info { font-size: 12px; color: #666; }
+  .node-status { font-size: 12px; }
+  .node-status.found { color: #4a8; }
+  .node-status.empty { color: #a44; }
+
+  pre {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(201,162,39,0.1);
+    padding: 16px; border-radius: 3px; font-size: 11px; color: #aaa;
+    max-height: 300px; overflow: auto; margin-top: 10px; font-family: monospace;
+    white-space: pre-wrap; word-break: break-all; display: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Data Backup</h1>
+  <div class="subtitle">GM EYES ONLY — EXPORT ALL FIREBASE DATA</div>
+
+  <div class="status" id="status">Connecting to Firebase...</div>
+
+  <div id="nodes"></div>
+
+  <hr class="divider">
+
+  <button class="btn" id="backupAllBtn" onclick="backupAll()" disabled>↓ Download Full Backup (JSON)</button>
+  <button class="btn" id="backupPhotosBtn" onclick="backupPhotos()" disabled style="border-color:#8b6914; color:#8b6914;">↓ Download Photos Backup (with URLs)</button>
+
+  <hr class="divider">
+
+  <div style="font-size: 13px; color: #666; text-align: center;">
+    <p>Full backup saves ALL Firebase data as a single JSON file.</p>
+    <p style="margin-top:6px;">Photos backup saves photo metadata + URLs as a separate CSV for easy reference.</p>
+  </div>
+
+  <pre id="preview"></pre>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+<script>
+  firebase.initializeApp({
+    databaseURL: "https://thoreson-estate-default-rtdb.firebaseio.com"
+  });
+
+  var db = firebase.database();
+  var fullData = {};
+
+  var dataNodes = [
+    'photos', 'survey', 'scans', 'scanLog', 'bathroomScans',
+    'gameState', 'revelations', 'items', 'users', 'votes'
+  ];
+
+  var loaded = 0;
+
+  function checkNode(name) {
+    db.ref(name).once('value', function(snap) {
+      var data = snap.val();
+      var el = document.getElementById('node-' + name);
+      if (data) {
+        var count = typeof data === 'object' ? Object.keys(data).length : 1;
+        fullData[name] = data;
+        el.querySelector('.node-status').textContent = count + ' entries';
+        el.querySelector('.node-status').className = 'node-status found';
+      } else {
+        el.querySelector('.node-status').textContent = 'empty';
+        el.querySelector('.node-status').className = 'node-status empty';
+      }
+      loaded++;
+      if (loaded >= dataNodes.length) {
+        document.getElementById('status').textContent = 'Connected — ' + Object.keys(fullData).length + ' data nodes found';
+        document.getElementById('backupAllBtn').disabled = false;
+        if (fullData.photos) document.getElementById('backupPhotosBtn').disabled = false;
+      }
+    });
+  }
+
+  // Build node list and start loading
+  var nodesHtml = '';
+  dataNodes.forEach(function(name) {
+    nodesHtml += '<div class="node" id="node-' + name + '">';
+    nodesHtml += '<div class="node-name">' + name + '</div>';
+    nodesHtml += '<div class="node-status" style="color:#666;">loading...</div>';
+    nodesHtml += '</div>';
+  });
+  document.getElementById('nodes').innerHTML = nodesHtml;
+  dataNodes.forEach(checkNode);
+
+  // Also grab the entire root in case there are nodes we didn't list
+  db.ref('/').once('value', function(snap) {
+    var rootData = snap.val();
+    if (rootData) {
+      Object.keys(rootData).forEach(function(key) {
+        if (!fullData[key]) {
+          fullData[key] = rootData[key];
+        }
+      });
+    }
+  });
+
+  function backupAll() {
+    var btn = document.getElementById('backupAllBtn');
+    btn.disabled = true;
+
+    // Get fresh root snapshot
+    db.ref('/').once('value', function(snap) {
+      var everything = snap.val();
+      var json = JSON.stringify(everything, null, 2);
+      var date = new Date().toISOString().slice(0, 10);
+
+      var blob = new Blob([json], { type: 'application/json' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'thoreson_estate_backup_' + date + '.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+
+      btn.textContent = '✓ Backup Downloaded';
+      btn.className = 'btn done';
+
+      var preview = document.getElementById('preview');
+      preview.style.display = 'block';
+      preview.textContent = 'Backup size: ' + (json.length / 1024).toFixed(1) + ' KB\n\nNodes: ' + Object.keys(everything).join(', ') + '\n\nFirst 2000 chars:\n' + json.substring(0, 2000) + '...';
+
+      setTimeout(function() {
+        btn.textContent = '↓ Download Full Backup (JSON)';
+        btn.className = 'btn';
+        btn.disabled = false;
+      }, 3000);
+    });
+  }
+
+  function backupPhotos() {
+    var btn = document.getElementById('backupPhotosBtn');
+    btn.disabled = true;
+
+    db.ref('photos').once('value', function(snap) {
+      var data = snap.val();
+      if (!data) return;
+
+      var photos = Object.values(data).sort(function(a, b) { return a.time - b.time; });
+
+      // CSV format
+      var csv = 'Number,Player,Time,Caption,Wall URL,Full URL\n';
+      photos.forEach(function(p, i) {
+        var time = new Date(p.time).toLocaleString();
+        var caption = (p.caption || '').replace(/"/g, '""');
+        var wallUrl = p.wallUrl || '';
+        var fullUrl = p.fullUrl || '';
+        csv += (i + 1) + ',"' + (p.player || '') + '","' + time + '","' + caption + '","' + wallUrl + '","' + fullUrl + '"\n';
+      });
+
+      var date = new Date().toISOString().slice(0, 10);
+      var blob = new Blob([csv], { type: 'text/csv' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'thoreson_photos_' + date + '.csv';
+      a.click();
+      URL.revokeObjectURL(a.href);
+
+      btn.textContent = '✓ ' + photos.length + ' Photos Exported';
+      btn.className = 'btn done';
+
+      setTimeout(function() {
+        btn.textContent = '↓ Download Photos Backup (with URLs)';
+        btn.className = 'btn';
+        btn.disabled = false;
+      }, 3000);
+    });
+  }
+</script>
+
+</body>
+</html>
