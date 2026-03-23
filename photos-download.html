@@ -67,7 +67,6 @@
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
 <script>
   firebase.initializeApp({
@@ -126,17 +125,14 @@
 
     renderGrid(guestPhotos, 'photosGrid', 'No guest photos.');
     renderGrid(specialPhotos, 'specialsGrid', 'No QR specials.');
+  }, function(err) {
+    document.getElementById('count').textContent = 'Database error: ' + err.message;
+    document.getElementById('photosGrid').innerHTML = '<div class="loading">Could not load photos: ' + err.message + '</div>';
   });
   }
 
-  // Sign in anonymously so Firebase rules allow the read
-  firebase.auth().signInAnonymously()
-    .then(loadPhotos)
-    .catch(function(err) {
-      // Anonymous auth not enabled — try reading anyway (works if rules are open)
-      console.warn('Anonymous auth failed, trying direct read:', err.message);
-      loadPhotos();
-    });
+  // Call directly — main dashboard reads photos without Firebase Auth, rules are open
+  loadPhotos();
 
   async function downloadSet(which) {
     var photos = which === 'photos' ? guestPhotos : specialPhotos;
