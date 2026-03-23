@@ -1360,7 +1360,7 @@
 
         // Read skills live from characters.js — single source of truth
         function getMySkills() {
-            const charData = characterDatabase[userSession.username];
+            const charData = characterDatabase[resolveCharacterKey(userSession.username)];
             return charData ? (charData.skills || []).concat(charData.hiddenSkills || []) : [];
         }
 
@@ -1399,20 +1399,6 @@
         let firebaseReady = false;
         let database = null;
 
-        // Initialize Firebase
-        try {
-            const firebaseConfig = {
-                apiKey: "AIzaSyApHrYubqWrR4m0ihdpq6Ym40jv4HTQ5i0",
-                authDomain: "thoreson-estate.firebaseapp.com",
-                databaseURL: "https://thoreson-estate-default-rtdb.firebaseio.com",
-                projectId: "thoreson-estate",
-                storageBucket: "thoreson-estate.firebasestorage.app",
-                messagingSenderId: "182924616892",
-                appId: "1:182924616892:web:8153e1c69895cee665dcb9",
-                measurementId: "G-MXHFH3FL00"
-            };
-            firebase.initializeApp(firebaseConfig);
-            database = firebase.database();
         // ── GAME-SCOPED REF HELPER ────────────────────────────────────
         // All live game state lives under /games/{gameId}/state/
         // Falls back to root path for legacy localStorage sessions (GM shortcut)
@@ -1464,6 +1450,21 @@
             if (out.name)     out.name     = renderText(out.name);
             return out;
         }
+
+        // Initialize Firebase
+        try {
+            const firebaseConfig = {
+                apiKey: "AIzaSyApHrYubqWrR4m0ihdpq6Ym40jv4HTQ5i0",
+                authDomain: "thoreson-estate.firebaseapp.com",
+                databaseURL: "https://thoreson-estate-default-rtdb.firebaseio.com",
+                projectId: "thoreson-estate",
+                storageBucket: "thoreson-estate.firebasestorage.app",
+                messagingSenderId: "182924616892",
+                appId: "1:182924616892:web:8153e1c69895cee665dcb9",
+                measurementId: "G-MXHFH3FL00"
+            };
+            firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
 
 
             
@@ -1735,9 +1736,33 @@
             }
         }
 
+        // ── LEGACY USERNAME MAP ───────────────────────────────────────
+        // Maps old localStorage session usernames to new character slug keys
+        // Keeps the legacy login.html shortcut working during transition
+        const LEGACY_KEY_MAP = {
+            'Scott':    'scott_thoreson',
+            'Leanna':   'miranda_longfellow',
+            'Marc':     'walter_lippman',
+            'DJ':       'david_richardson',
+            'Clara':    'charlotte_waverly',
+            'Casey':    'patricia_chamberlain',
+            'Michelle': 'dorothy_wells',
+            'Hannah':   'vivienne_ashford',
+            'Linda':    'eleanor_thoreson',
+            'Peter':    'raymond_hammond',
+            'Arash':    'marcus_brennan',
+            'Becky':    'victoria_ashworth',
+            'Lindsey':  'elizabeth_monroe'
+        };
+
+        function resolveCharacterKey(username) {
+            return LEGACY_KEY_MAP[username] || username;
+        }
+
         function loadCharacterData() {
             try {
-                const charData = characterDatabase[userSession.username];
+                const charKey = resolveCharacterKey(userSession.username);
+                const charData = characterDatabase[charKey];
                 if (!charData) {
                     document.getElementById('characterContent').innerHTML = '<div style="color: #e74c3c; padding: 20px;">Debug: No character data found for username: "' + userSession.username + '"</div>';
                     return;
@@ -2499,7 +2524,7 @@
             if (newlyAdded.length === 0) return;
 
             var username = userSession.username;
-            var charKey = userSession.username;
+            var charKey = resolveCharacterKey(userSession.username);
             var charData = characterDatabase[charKey];
             if (!charData) return;
 
@@ -3265,7 +3290,7 @@
                     if (!token) { console.log('No FCM token received'); return; }
                     console.log('FCM token registered');
                     // Save token under fcmTokens/{username} in Firebase
-                    var charKey = userSession.username;
+                    var charKey = resolveCharacterKey(userSession.username);
                     if (database) {
                         gameRef('fcmTokens/' + charKey + '/' + token.substring(0, 20)).set(token);
                     }
