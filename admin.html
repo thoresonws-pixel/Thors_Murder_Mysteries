@@ -1471,18 +1471,39 @@
 
     // ── Game card HTML ────────────────────────────────────
     function gameCardHTML(id, g) {
-        const players    = Object.entries(g.players || {});
-        const playerCount = players.length;
+        const players     = Object.entries(g.players || {});
+        const realPlayers = players.filter(([uid]) => !uid.startsWith('test_player_'));
+        const playerCount = realPlayers.length;
         const maxPlayers  = g.maxPlayers || 21;
         const fillPct     = Math.min(100, Math.round((playerCount / maxPlayers) * 100));
         const statusClass = `status-${g.status}`;
         const statusLabel = { lobby: 'Open Lobby', active: 'Active', complete: 'Complete' }[g.status] || g.status;
+        const story       = STORIES[g.storyId] || {};
 
         const dateStr = g.eventDate
-            ? new Date(g.eventDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
-            : '—';
+            ? new Date(g.eventDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+            : 'No date set';
 
         const inviteUrl = `${GAME_BASE_URL}?code=${g.partyCode}`;
+
+        // ── FLAG SYMBOLS ─────────────────────────────────────────
+        const flags = [];
+        // $ unpaid players
+        const unpaid = realPlayers.filter(([,p]) => !p.paymentCollected).length;
+        if (unpaid > 0) flags.push({ sym: '$', tip: unpaid + ' unpaid', color: '#d29922' });
+        // ⚄ roles not generated
+        const state = g.state || {};
+        if (realPlayers.length > 0 && !state.characterRoles) flags.push({ sym: '⚄', tip: 'Roles not generated', color: '#8b949e' });
+        // ⚠ missing questionnaire
+        const noQ = realPlayers.filter(([,p]) => !p.questionnaire).length;
+        if (noQ > 0) flags.push({ sym: '⚠', tip: noQ + ' missing questionnaire', color: '#d29922' });
+        // 👤 still choosing
+        const choosing = realPlayers.filter(([,p]) => p.status !== 'ready').length;
+        if (choosing > 0) flags.push({ sym: '👤', tip: choosing + ' still choosing character', color: '#8b949e' });
+
+        const flagsHTML = flags.map(f =>
+            `<span title="${f.tip}" style="font-size:13px;cursor:default;opacity:0.85;" data-tip="${f.tip}">${f.sym}</span>`
+        ).join('');
 
         const playersHTML = players.length === 0
             ? '<div style="color:var(--fog);font-style:italic;font-size:15px;padding:10px 0;">No guests yet.</div>'
@@ -1503,12 +1524,14 @@
             <div style="height:4px;background:${STORIES[g.storyId]?.color || 'var(--gold-dk)'};border-bottom:2px solid ${STORIES[g.storyId]?.accent || 'var(--gold)'};" ></div>
         <div class="game-card-top">
                 <div class="game-info">
-                    <div class="game-story">${g.partyName || g.storyName || 'Mystery Dinner'}</div>
-                    <div style="font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:var(--gold-dk);margin-top:2px;">${g.storyName || ''}</div>
-                    <div class="game-meta">
-                        ${g.venueName ? `<span>${g.venueName}</span> &nbsp;·&nbsp; ` : ''}
-                        ${dateStr}
-                        ${g.eventTime ? ' · ' + formatTime(g.eventTime) : ''}
+                    <div class="game-story">${g.partyName || 'Unnamed Party'}</div>
+                    <div class="game-meta" style="margin-top:4px;">
+                        ${dateStr}${g.eventTime ? ' &nbsp;·&nbsp; ' + formatTime(g.eventTime) : ''}
+                        ${g.venueName ? ' &nbsp;·&nbsp; ' + g.venueName : ''}
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
+                        <span style="font-size:11px;color:var(--fog);">${story.badge || ''} ${g.storyName || ''}</span>
+                        ${flagsHTML ? `<span style="display:flex;gap:6px;margin-left:4px;">${flagsHTML}</span>` : ''}
                     </div>
                 </div>
                 <div class="game-right">
@@ -1521,7 +1544,7 @@
                             <div class="player-bar-fill" style="width:${fillPct}%"></div>
                         </div>
                     </div>
-                    <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+                    <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;margin-top:6px;">
                         <button class="btn-gold" style="padding:7px 16px;font-size:11px;" onclick="window.location.href='game.html?id=${id}'">Open →</button>
                         <div style="display:flex;gap:6px;">
                             <button class="btn-ghost" style="padding:5px 10px;font-size:10px;" onclick="openEditModal('${id}');event.stopPropagation();">Edit</button>
