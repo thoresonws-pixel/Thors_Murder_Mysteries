@@ -130,10 +130,28 @@
     // Check redirect result FIRST before onAuthStateChanged routes
     auth.getRedirectResult().then(async result => {
         if (result && result.user) {
-            routing = true; // block onAuthStateChanged from double-routing
+            routing = true;
+            document.getElementById('errorMsg').style.display = 'none';
+            // Show visible status so we can debug
+            const statusEl = document.getElementById('successMsg') || document.createElement('div');
+            statusEl.id = 'successMsg';
+            statusEl.style.cssText = 'display:block;padding:10px;background:rgba(39,98,42,0.1);border:1px solid green;margin-top:10px;font-size:13px;';
+            statusEl.textContent = 'Google auth OK — loading account...';
+            document.querySelector('.card').appendChild(statusEl);
             try {
                 await ensureUserRecord(result.user);
-                await routeUser(result.user);
+                statusEl.textContent = 'Account loaded — checking role...';
+                const snap = await db.ref('users/' + result.user.uid).once('value');
+                const data = snap.val();
+                statusEl.textContent = 'Role: ' + (data ? data.role : 'none') + ' — redirecting...';
+                await new Promise(r => setTimeout(r, 1000)); // pause so we can read it
+                if (data && data.role === 'admin') {
+                    window.location.href = 'admin.html';
+                } else if (data && data.currentGameId) {
+                    window.location.href = 'authenticated-dashboard.html';
+                } else {
+                    window.location.href = 'join.html';
+                }
             } catch(e) {
                 routing = false;
                 showError('Sign-in error: ' + e.message);
