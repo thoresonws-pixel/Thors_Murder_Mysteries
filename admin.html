@@ -1231,6 +1231,10 @@
                         <label for="storySelect">Mystery / Story</label>
                         <select id="storySelect">
                             <option value="thoreson_estate_dinner">The Thoreson Estate Dinner</option>
+                    <option value="devereaux_masquerade" disabled>The Devereaux Masquerade (Coming Soon)</option>
+                    <option value="last_train_wicker_park" disabled>Last Train to Wicker Park (Coming Soon)</option>
+                        <option value="devereaux_masquerade" disabled>The Devereaux Masquerade (Coming Soon)</option>
+                        <option value="last_train_wicker_park" disabled>Last Train to Wicker Park (Coming Soon)</option>
                             <option value="devereaux" disabled>The Devereaux Masquerade (Coming Soon)</option>
                             <option value="wicker" disabled>Last Train to Wicker Park (Coming Soon)</option>
                         </select>
@@ -1343,11 +1347,31 @@
 
     const STORIES = {
         thoreson_estate_dinner: {
-            name: 'The Thoreson Estate Dinner',
+            name:        'The Thoreson Estate Dinner',
+            description: 'A 1935 Dallas murder mystery. William Thoreson Sr. is dead — and everyone at the table had a reason.',
             minPlayers: 10, maxPlayers: 21,
             color:  '#1a2a4a',
             accent: '#c9a227',
-            badge:  '🕯'
+            badge:  '🕯',
+            status: 'active'
+        },
+        devereaux_masquerade: {
+            name:        'The Devereaux Masquerade',
+            description: 'New Orleans, 1924. A masquerade ball. A missing heir. A body behind the curtain.',
+            minPlayers: 10, maxPlayers: 24,
+            color:  '#1a0a2a',
+            accent: '#c0392b',
+            badge:  '🎭',
+            status: 'coming_soon'
+        },
+        last_train_wicker_park: {
+            name:        'Last Train to Wicker Park',
+            description: 'Chicago, 1947. Our take on murder on the Orient Express — nobody gets off until the killer is found.',
+            minPlayers: 8, maxPlayers: 20,
+            color:  '#0a1a0a',
+            accent: '#2ecc71',
+            badge:  '🚂',
+            status: 'coming_soon'
         }
     };
 
@@ -2372,6 +2396,10 @@
                     <label for="editStory">Mystery</label>
                     <select id="editStory">
                         <option value="thoreson_estate_dinner">The Thoreson Estate Dinner</option>
+                    <option value="devereaux_masquerade" disabled>The Devereaux Masquerade (Coming Soon)</option>
+                    <option value="last_train_wicker_park" disabled>Last Train to Wicker Park (Coming Soon)</option>
+                        <option value="devereaux_masquerade" disabled>The Devereaux Masquerade (Coming Soon)</option>
+                        <option value="last_train_wicker_park" disabled>Last Train to Wicker Park (Coming Soon)</option>
                     </select>
                 </div>
                 <div class="form-group">
