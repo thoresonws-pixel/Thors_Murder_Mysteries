@@ -3059,19 +3059,29 @@
             if (!urls.length) return;
             const btn = document.getElementById('downloadAllSequential');
             btn.disabled = true;
+            let saved = 0;
             for (let i = 0; i < urls.length; i++) {
-                btn.textContent = `↓ Downloading ${i+1} of ${urls.length}...`;
-                const a = document.createElement('a');
-                a.href = urls[i];
-                a.download = `thoreson_photo_${String(i+1).padStart(3,'0')}.jpg`;
-                a.target = '_blank';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                await new Promise(r => setTimeout(r, 1500));
+                btn.textContent = `↓ Saving ${i+1} of ${urls.length}...`;
+                try {
+                    const resp = await fetch(urls[i]);
+                    const blob = await resp.blob();
+                    const ext = blob.type.includes('png') ? 'png' : 'jpg';
+                    const objUrl = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = objUrl;
+                    a.download = `thoreson_photo_${String(i+1).padStart(3,'0')}.${ext}`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    setTimeout(() => URL.revokeObjectURL(objUrl), 5000);
+                    saved++;
+                } catch(e) {
+                    console.warn('Failed photo', i+1, e);
+                }
+                await new Promise(r => setTimeout(r, 800));
             }
-            btn.textContent = `✓ Done — ${urls.length} photos`;
-            setTimeout(() => { btn.textContent = `↓ Download All (${urls.length})`; btn.disabled = false; }, 3000);
+            btn.textContent = `✓ Done — ${saved} photos saved`;
+            setTimeout(() => { btn.textContent = `↓ Download All (${urls.length})`; btn.disabled = false; }, 4000);
         }
 
         function logout() {
