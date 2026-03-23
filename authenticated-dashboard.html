@@ -2581,7 +2581,7 @@
                     const posterUrl = posterMap[id];
                     if (posterUrl) {
                         const player = userSession.username;
-                        const fullUrl = 'https://thoresonws-pixel.github.io/Thors_Murder_Mysteries/' + posterUrl;
+                        const fullUrl = 'https://thoreson-estate.web.app/' + posterUrl;
                         // Count as a clue scan
                         gameRef('scans/' + player).transaction(c => (c || 0) + 1);
                         gameRef('scanLog').push({ player, propId: id, time: Date.now() });

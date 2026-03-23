@@ -5,7 +5,7 @@
 | Item | Value |
 |------|-------|
 | GitHub Repo | `thoresonws-pixel/Thors_Murder_Mysteries` |
-| Live Site | `https://thoresonws-pixel.github.io/Thors_Murder_Mysteries/` |
+| Live Site | `https://thoreson-estate.web.app/` |
 | Deploy | Push to `main` → GitHub Pages auto-deploys |
 
 ## Firebase Realtime Database

@@ -58,13 +58,13 @@ exports.sendDJNotification = functions.database.ref('/activeItems')
                     notification: {
                         title: notif.title,
                         body: notif.body,
-                        icon: 'https://thoresonws-pixel.github.io/Thors_Murder_Mysteries/icon-192.png',
-                        badge: 'https://thoresonws-pixel.github.io/Thors_Murder_Mysteries/icon-192.png',
+                        icon: 'https://thoreson-estate.web.app/icon-192.png',
+                        badge: 'https://thoreson-estate.web.app/icon-192.png',
                         renotify: true,
                         tag: 'thoreson-dj'
                     },
                     fcmOptions: {
-                        link: 'https://thoresonws-pixel.github.io/Thors_Murder_Mysteries/authenticated-dashboard.html'
+                        link: 'https://thoreson-estate.web.app/authenticated-dashboard.html'
                     }
                 }
             });

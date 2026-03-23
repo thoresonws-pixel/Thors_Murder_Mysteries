@@ -1449,7 +1449,7 @@ function renderChecklist() {
     const rolesGenerated   = Object.keys(roleAssign).length > 0;
     const skillsAssigned   = Object.keys(skillAssign).length > 0;
     const gameStarted      = activeItems.includes('willsDeath');
-    const inviteUrl        = `https://thoresonws-pixel.github.io/Thors_Murder_Mysteries/join.html?code=${gameData.partyCode}`;
+    const inviteUrl        = `https://thoreson-estate.web.app/join.html?code=${gameData.partyCode}`;
 
     const items = [
         {
@@ -2088,7 +2088,7 @@ async function removeTestPlayersGame() {
 
 // ── UTILITIES ─────────────────────────────────────────────────
 function copyInviteLink() {
-    const url = `https://thoresonws-pixel.github.io/Thors_Murder_Mysteries/join.html?code=${gameData.partyCode}`;
+    const url = `https://thoreson-estate.web.app/join.html?code=${gameData.partyCode}`;
     navigator.clipboard.writeText(url).then(() => {
         const el = document.getElementById('inviteCopyConfirm');
         el.classList.add('show');
@@ -2156,7 +2156,7 @@ function showToast(msg, type='success') {
 
     // ── INVITE SENDING (backbone — wire to SendGrid/Twilio when going commercial) ──
     function buildInviteMessage() {
-        const inviteUrl = `https://thoresonws-pixel.github.io/Thors_Murder_Mysteries/join.html?code=${gameData.partyCode}`;
+        const inviteUrl = `https://thoreson-estate.web.app/join.html?code=${gameData.partyCode}`;
         return {
             subject: `You're invited — ${gameData.partyName || gameData.storyName}`,
             body: `You have been invited to ${gameData.partyName || 'a mystery dinner experience'}.
