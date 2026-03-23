@@ -610,8 +610,18 @@ let ROSTER = buildRoster(false);
 
 
 // ── DYNAMIC STORY SCRIPT LOADER ──────────────────────────────
+function normalizeStoryId(storyId) {
+    const map = {
+        'thoreson':        'thoreson_estate_dinner',
+        'thoreson_estate': 'thoreson_estate_dinner',
+        'devereaux':       'devereaux_masquerade',
+        'asgard':          'thors_asgard'
+    };
+    return map[storyId] || storyId || 'thoreson_estate_dinner';
+}
+
 function loadStoryScripts(storyId, callback) {
-    const base = 'stories/' + storyId + '/';
+    const base = 'stories/' + normalizeStoryId(storyId) + '/';
     const files = ['characters.js', 'skills.js', 'revelations.js', 'items.js'];
     let loaded = 0;
     files.forEach(function(file) {
