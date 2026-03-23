@@ -1204,8 +1204,12 @@
                     </div>
 
                     <div class="form-group full">
+                        <label for="partyName">Party Name</label>
+                        <input type="text" id="partyName" placeholder="e.g. Smith Party, Johnson Event">
+                    </div>
+                    <div class="form-group full">
                         <label for="venueName">Venue Name</label>
-                        <input type="text" id="venueName" placeholder="e.g. The Thoreson Estate, 123 Elm Street, Dallas TX">
+                        <input type="text" id="venueName" placeholder="e.g. 123 Elm Street, Dallas TX">
                     </div>
 
                     <div class="form-group full">
@@ -1290,7 +1294,13 @@
     const db   = firebase.database();
 
     const STORIES = {
-        thoreson_estate_dinner: { name: 'The Thoreson Estate Dinner', minPlayers: 10, maxPlayers: 21 }
+        thoreson_estate_dinner: {
+            name: 'The Thoreson Estate Dinner',
+            minPlayers: 10, maxPlayers: 21,
+            color:  '#1a2a4a',
+            accent: '#c9a227',
+            badge:  '🕯'
+        }
     };
 
     // Game invite base URL — points to the game app
@@ -1365,9 +1375,10 @@
         const filtered = entries.filter(([id, g]) => {
             const matchStatus = status === 'all' || g.status === status;
             const matchQuery  = !query ||
-                (g.storyName || '').toLowerCase().includes(query) ||
-                (g.venueName || '').toLowerCase().includes(query) ||
-                (g.partyCode || '').toLowerCase().includes(query);
+                (g.partyName  || '').toLowerCase().includes(query) ||
+                (g.storyName  || '').toLowerCase().includes(query) ||
+                (g.venueName  || '').toLowerCase().includes(query) ||
+                (g.partyCode  || '').toLowerCase().includes(query);
             return matchStatus && matchQuery;
         });
 
@@ -1419,9 +1430,11 @@
 
         return `
         <div class="game-card" id="card-${id}">
-            <div class="game-card-top" onclick="window.location.href='game.html?id=${id}'" style="cursor:pointer;">
+            <div style="height:4px;background:${STORIES[g.storyId]?.color || 'var(--gold-dk)'};border-bottom:2px solid ${STORIES[g.storyId]?.accent || 'var(--gold)'};" ></div>
+        <div class="game-card-top" onclick="window.location.href='game.html?id=${id}'" style="cursor:pointer;">
                 <div class="game-info">
-                    <div class="game-story">${g.storyName || 'Mystery Dinner'}</div>
+                    <div class="game-story">${g.partyName || g.storyName || 'Mystery Dinner'}</div>
+                    <div style="font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:var(--gold-dk);margin-top:2px;">${g.storyName || ''}</div>
                     <div class="game-meta">
                         ${g.venueName ? `<span>${g.venueName}</span> &nbsp;·&nbsp; ` : ''}
                         ${dateStr}
@@ -1507,6 +1520,7 @@
             const gameData = {
                 storyId,
                 storyName:   story.name,
+                partyName:   partyName || null,
                 partyCode,
                 status:      'lobby',
                 eventDate,
@@ -1571,7 +1585,8 @@
     }
 
     function resetForm() {
-        document.getElementById('storySelect').value = 'thoreson_estate_dinner';
+        document.getElementById('partyName').value       = '';
+        document.getElementById('storySelect').value    = 'thoreson_estate_dinner';
         document.getElementById('gameDate').value    = new Date().toISOString().split('T')[0];
         document.getElementById('gameTime').value    = '18:30';
         document.getElementById('maxPlayers').value  = '21';
@@ -1849,9 +1864,11 @@
         const story = STORIES[storyId] || { name: 'Mystery Dinner' };
 
         try {
+            const partyNameEdit = document.getElementById('editPartyName').value.trim();
             await db.ref('games/' + gameId).update({
                 storyId,
                 storyName:   story.name,
+                partyName:   partyNameEdit || null,
                 eventDate,
                 eventTime,
                 maxPlayers,
@@ -2265,6 +2282,10 @@
         <div class="edit-modal-body">
             <input type="hidden" id="editGameId">
             <div class="form-grid">
+                <div class="form-group full">
+                    <label for="editPartyName">Party Name</label>
+                    <input type="text" id="editPartyName" placeholder="e.g. Smith Party">
+                </div>
                 <div class="form-group">
                     <label for="editStory">Mystery</label>
                     <select id="editStory">

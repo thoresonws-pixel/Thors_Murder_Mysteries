@@ -1278,8 +1278,15 @@ function loadStoryScripts(storyId) {
 // ── HEADER ────────────────────────────────────────────────────
 function renderHeader() {
     const g = gameData;
-    document.getElementById('topbarTitle').textContent  = g.storyName || 'Game Dashboard';
-    document.getElementById('headerTitle').textContent  = g.storyName || '—';
+    document.getElementById('topbarTitle').textContent  = g.partyName ? g.partyName + ' — ' + g.storyName : g.storyName || 'Game Dashboard';
+    document.getElementById('headerTitle').textContent  = g.partyName || g.storyName || '—';
+    // Add story subtitle if partyName exists
+    if (g.partyName) {
+        const sub = document.createElement('div');
+        sub.style.cssText = 'font-family:Special Elite,monospace;font-size:11px;letter-spacing:2px;color:var(--gold-dk);margin-top:3px;text-transform:uppercase;';
+        sub.textContent = g.storyName || '';
+        document.getElementById('headerTitle').after(sub);
+    }
     document.getElementById('headerCode').textContent   = g.partyCode || '——';
     document.getElementById('topbarStatus').textContent = g.status || 'lobby';
     document.getElementById('topbarStatus').className   = 'status-pill status-' + (g.status || 'lobby');
