@@ -234,32 +234,6 @@ const characterDatabase = {
         items: []
     },
 
-    // ============================================================
-    // CHARLES STERLING — Old Friend
-    // ============================================================
-    "charles_sterling": {
-        name: "Charles Sterling",
-        nameVariants: { female: "Charlotte Sterling", male: "Charles Sterling" },
-        picker: { role: "Old Friend of William's", involvement: "moderate", isKiller: false },
-        publicDesc: "A retired banker and one of William Thoreson's oldest friends. Has known William since before Thoreson Toys existed.",
-        hiddenSkills: [],
-        backstory: "You and William Thoreson have been friends for over thirty years — long enough to remember when he was still a young man with a partner named Hartley and a dream about a toy company. You retired from banking five years ago. William called you personally and asked you to come tonight. He said there was something important he needed to do, and he wanted an old friend in the room.",
-        memories: [
-            { text: "William called you two weeks ago. Not the usual social call — something heavier. William said he had been carrying something for a long time and tonight was the night he was going to put it down. You asked what he meant. William said you would understand when you heard it.", unlockedBy: "willsDeath" },
-            { text: "You were William's banker in the early years of Thoreson Toys. You handled accounts for both Thoreson and Hartley before the partnership dissolved. You always thought the dissolution happened very fast. Looking at these documents now — you understand why.", unlockedBy: "forgedDocs", tier: 1 }
-        ],
-        canShare: [
-            { text: "I've known William for over thirty years. Long enough to know when he was carrying something he couldn't put down.", unlockedBy: null },
-            { text: "I was his banker in the early years. I handled accounts for both partners before Hartley disappeared from the picture.", unlockedBy: "stolenCompany" }
-        ],
-        relationships: [
-            { name: "William Thoreson Sr.", relation: "Your oldest friend (deceased)" },
-            { name: "{{scott_thoreson}}", relation: "Watched this one grow up" },
-            { name: "{{raymond_hammond}}", relation: "The business manager — know each other through the company" }
-        ],
-        items: []
-    },
-
 
     // ============================================================
     // CHARLES STERLING — Old Friend, Retired Banker
