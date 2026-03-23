@@ -1811,6 +1811,15 @@
                 html += '<div style="' + sectionStyle + '">Your Story</div>';
                 html += '<div style="' + textStyle + ' margin-bottom: 20px;">' + renderText(charData.backstory) + '</div>';
 
+                // Inject skill backstory if a skill was assigned
+                const mySkill = (skillAssignments || {})[charKey];
+                if (mySkill && typeof SKILL_BACKSTORIES !== 'undefined' && SKILL_BACKSTORIES[mySkill]) {
+                    html += '<div style="background:rgba(39,170,91,0.08);border:1px solid rgba(39,170,91,0.2);border-radius:3px;padding:16px 20px;margin-bottom:20px;">';
+                    html += '<div style="font-family:Special Elite,monospace;font-size:10px;letter-spacing:2px;color:#3fb950;text-transform:uppercase;margin-bottom:8px;">' + mySkill + ' — Your Expertise</div>';
+                    html += '<div style="' + textStyle + '">' + SKILL_BACKSTORIES[mySkill] + '</div>';
+                    html += '</div>';
+                }
+
                 // Inject role overlay if assigned
                 if (assignedRole && typeof rolesConfig !== 'undefined') {
                     const overlay = rolesConfig.overlays && rolesConfig.overlays[assignedRole];
