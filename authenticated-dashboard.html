@@ -1224,6 +1224,12 @@
                        text-transform:uppercase; border-radius:3px;">
                 📷 Take a Photo
             </button>
+            <button id="downloadAllSequential" onclick="downloadAllSequential()" style="display:none;
+                background:transparent; color:#c9a227; border:1px solid rgba(201,162,39,0.5); padding:14px 28px; cursor:pointer;
+                font-family:'Playfair Display',Georgia,serif; font-size:15px; letter-spacing:2px;
+                text-transform:uppercase; border-radius:3px; margin-left:12px;">
+                ↓ Download All
+            </button>
             <div id="uploadStatus" style="margin-top:12px; font-size:14px; color:#8b8b8b; font-style:italic;"></div>
             <div id="uploadBar" style="display:none; margin-top:10px; width:100%; max-width:400px; height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;">
                 <div id="uploadBarFill" style="height:100%; width:0%; background:#c9a227; border-radius:3px; transition:width 0.3s ease;"></div>
@@ -3010,17 +3016,12 @@
                 const fullUrls = photos.filter(p => p.fullUrl && !p.isPoster).map(p => p.fullUrl);
                 window._guestFullUrls = fullUrls;
 
-                // Show/update the download all button
-                let dlBtn = document.getElementById('downloadAllSequential');
-                if (!dlBtn) {
-                    dlBtn = document.createElement('button');
-                    dlBtn.id = 'downloadAllSequential';
-                    dlBtn.style.cssText = 'background:transparent; color:#c9a227; border:1px solid rgba(201,162,39,0.5); padding:10px 28px; cursor:pointer; font-family:\'Playfair Display\',Georgia,serif; font-size:14px; letter-spacing:2px; text-transform:uppercase; border-radius:3px; margin-left:12px;';
-                    dlBtn.onclick = downloadAllSequential;
-                    grid.parentElement.querySelector('div[style*="text-align:center"]').appendChild(dlBtn);
+                // Update the static download button
+                const dlBtn = document.getElementById('downloadAllSequential');
+                if (dlBtn) {
+                    dlBtn.textContent = '↓ Download All (' + fullUrls.length + ')';
+                    dlBtn.style.display = fullUrls.length > 0 ? 'inline-block' : 'none';
                 }
-                dlBtn.textContent = '↓ Download All (' + fullUrls.length + ')';
-                dlBtn.style.display = fullUrls.length > 0 ? 'inline-block' : 'none';
 
                 grid.innerHTML = photos.map(p => `
                     <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(201,162,39,0.2); border-radius:4px; overflow:hidden;">
