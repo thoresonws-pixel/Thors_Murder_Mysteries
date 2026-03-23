@@ -1396,6 +1396,7 @@
                     <div class="player-name">${p.displayName || uid}</div>
                     <div class="player-character">${p.characterId ? p.characterId : 'Choosing character…'}</div>
                     <div style="font-family:'Special Elite',monospace;font-size:10px;color:var(--fog);letter-spacing:1.5px;text-transform:uppercase;">${p.status || 'selecting'}</div>
+                    <button class="btn-danger" style="padding:4px 10px;font-size:10px;margin-left:auto;" onclick="removePlayer('${id}','${uid}','${p.displayName || uid}')">Remove</button>
                 </div>`).join('');
 
         const canStart    = g.status === 'lobby';
@@ -2189,6 +2190,20 @@
         if (Object.keys(removes).length > 0) {
             await db.ref('games/' + gameId + '/players').update(removes);
             showToast('Test players removed.', 'success');
+        }
+    }
+
+    
+    async function removePlayer(gameId, uid, displayName) {
+        if (!confirm('Remove ' + displayName + ' from this game?')) return;
+        try {
+            // Remove from game players
+            await db.ref('games/' + gameId + '/players/' + uid).remove();
+            // Clear their currentGameId so they can join a different game
+            await db.ref('users/' + uid + '/currentGameId').set(null);
+            showToast(displayName + ' removed.', 'success');
+        } catch(err) {
+            showToast('Error removing player: ' + err.message, 'error');
         }
     }
 
