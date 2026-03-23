@@ -1613,10 +1613,179 @@ function renderCharacters() {
     }).join('');
 }
 
+// ── ROLE & SKILL GENERATION ──────────────────────────────────
+let genPlayers     = {};
+let genAssignments = {};
+
 function openGenerateRoles() {
-    switchTab('characters', null);
-    // Trigger the generate modal from admin — for now show inline
-    showToast('Use the ⚄ Generate Roles button in admin.html for full randomizer.', 'success');
+    // Build genPlayers from current players state
+    genPlayers = {};
+    Object.entries(players).forEach(([uid, p]) => {
+        if (p.characterId && p.status === 'ready') {
+            genPlayers[uid] = {
+                uid,
+                displayName: p.displayName || uid,
+                characterId: p.characterId,
+                score: p.questionnaire ? (p.questionnaire.involvementScore || 5) : 5
+            };
+        }
+    });
+
+    if (Object.keys(genPlayers).length === 0) {
+        showToast('No players have chosen characters yet.', 'error');
+        return;
+    }
+
+    genAssignments = {};
+    runGameGeneration();
+    document.getElementById('genModalOverlay').classList.add('open');
+}
+
+function closeGenModal() {
+    document.getElementById('genModalOverlay').classList.remove('open');
+}
+
+function runGameGeneration() {
+    if (!rolesConfig) { showToast('Roles config not loaded yet.', 'error'); return; }
+    genAssignments = {};
+
+    const playerList   = Object.values(genPlayers);
+    const skillWeights = rolesConfig.scoreWeights.skill;
+    const hiWeights    = rolesConfig.scoreWeights.highImpact;
+
+    // Step 1: Fixed roles (pipeline)
+    Object.entries(rolesConfig.roles).forEach(([roleName, roleCfg]) => {
+        if (!roleCfg.assignTo) return;
+        const player = playerList.find(p => p.characterId === roleCfg.assignTo);
+        if (player) genAssignments[player.uid] = { role: roleName, skill: null };
+    });
+
+    // Step 2: Killer
+    const killerCfg = rolesConfig.roles.killer;
+    if (killerCfg && !killerCfg.assignTo) {
+        const eligible = playerList.filter(p => {
+            if (genAssignments[p.uid]) return false;
+            if (killerCfg.ineligibleChars.includes(p.characterId)) return false;
+            return Math.random() < (hiWeights[Math.min(10, Math.max(1, p.score))] || 0);
+        });
+        if (eligible.length > 0) {
+            const killer = weightedPickGame(eligible, hiWeights);
+            genAssignments[killer.uid] = { role: 'killer', skill: null };
+        }
+    }
+
+    // Step 3: Heir
+    const heirCfg = rolesConfig.roles.heir;
+    if (heirCfg && !heirCfg.assignTo) {
+        const eligible = playerList.filter(p => {
+            if (genAssignments[p.uid]) return false;
+            if (heirCfg.ineligibleChars.includes(p.characterId)) return false;
+            return Math.random() < (hiWeights[Math.min(10, Math.max(1, p.score))] || 0);
+        });
+        if (eligible.length > 0) {
+            const heir = weightedPickGame(eligible, hiWeights);
+            genAssignments[heir.uid] = { role: 'heir', skill: null };
+        }
+    }
+
+    // Step 4: Skills
+    const killerUid        = Object.entries(genAssignments).find(([,v]) => v.role === 'killer')?.[0];
+    const killerIneligible = killerCfg?.ineligibleSkills || [];
+    let availableSkills    = [...(rolesConfig.skillPool || [])];
+
+    playerList.slice().sort(() => Math.random() - 0.5).forEach(player => {
+        if (availableSkills.length === 0) return;
+        const score = Math.min(10, Math.max(1, player.score));
+        if (Math.random() > (skillWeights[score] || 0)) return;
+        let pool = [...availableSkills];
+        if (player.uid === killerUid) pool = pool.filter(s => !killerIneligible.includes(s));
+        if (pool.length === 0) return;
+        const skill = pool[Math.floor(Math.random() * pool.length)];
+        availableSkills = availableSkills.filter(s => s !== skill);
+        if (!genAssignments[player.uid]) genAssignments[player.uid] = { role: null, skill };
+        else genAssignments[player.uid].skill = skill;
+    });
+
+    renderGenModal();
+}
+
+function weightedPickGame(arr, weights) {
+    const total = arr.reduce((s, p) => s + (weights[Math.min(10,Math.max(1,p.score))] || 0.1), 0);
+    let rand = Math.random() * total;
+    for (const p of arr) {
+        rand -= (weights[Math.min(10,Math.max(1,p.score))] || 0.1);
+        if (rand <= 0) return p;
+    }
+    return arr[arr.length - 1];
+}
+
+function renderGenModal() {
+    const grid = document.getElementById('genModalGrid');
+    grid.innerHTML = Object.values(genPlayers).map(player => {
+        const a    = genAssignments[player.uid] || {};
+        const char = characterDatabase?.[player.characterId];
+        const name = char?.nameVariants?.female || player.characterId;
+        const roleOptions = ['(no role)', 'killer', 'heir', 'pipeline'].map(r =>
+            `<option value="${r}" ${a.role === r ? 'selected' : ''}>${r}</option>`).join('');
+        const skillOptions = ['(no skill)', ...(rolesConfig.skillPool || [])].map(s =>
+            `<option value="${s}" ${a.skill === s ? 'selected' : ''}>${s}</option>`).join('');
+        return `
+        <div style="background:var(--card);border:1px solid var(--border);padding:14px 16px;">
+            <div style="font-family:'Playfair Display',serif;font-size:15px;color:var(--white);font-weight:700;margin-bottom:2px;">${player.displayName}</div>
+            <div style="font-size:12px;color:var(--gold);font-style:italic;margin-bottom:8px;">${name}</div>
+            <div style="display:flex;gap:6px;margin-bottom:8px;">
+                ${a.role  ? `<span style="font-family:'Special Elite',monospace;font-size:9px;padding:2px 7px;background:rgba(139,26,26,0.25);color:#e08080;border:1px solid rgba(139,26,26,0.4);">${a.role}</span>` : ''}
+                ${a.skill ? `<span style="font-family:'Special Elite',monospace;font-size:9px;padding:2px 7px;background:rgba(39,170,91,0.12);color:#7adba0;border:1px solid rgba(39,170,91,0.25);">${a.skill}</span>` : ''}
+                ${!a.role && !a.skill ? `<span style="font-size:12px;color:var(--fog);font-style:italic;">no assignment</span>` : ''}
+            </div>
+            <select onchange="overrideGenRole('${player.uid}','role',this.value)"
+                style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(201,162,39,0.2);color:var(--white);font-family:'Cormorant Garamond',serif;font-size:13px;padding:6px 8px;margin-bottom:6px;">
+                ${roleOptions}
+            </select>
+            <select onchange="overrideGenRole('${player.uid}','skill',this.value)"
+                style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(201,162,39,0.2);color:var(--white);font-family:'Cormorant Garamond',serif;font-size:13px;padding:6px 8px;">
+                ${skillOptions}
+            </select>
+        </div>`;
+    }).join('');
+}
+
+function overrideGenRole(uid, field, value) {
+    if (!genAssignments[uid]) genAssignments[uid] = { role: null, skill: null };
+    genAssignments[uid][field] = (value === '(no role)' || value === '(no skill)') ? null : value;
+    renderGenModal();
+}
+
+async function lockGameAssignments() {
+    const btn = document.getElementById('lockGenBtn');
+    btn.disabled = true;
+    btn.textContent = 'Locking…';
+
+    try {
+        await db.ref('games/' + gameId + '/state/roleAssignments').set(genAssignments);
+
+        const skillMap = {}, roleMap = {};
+        Object.entries(genAssignments).forEach(([uid, a]) => {
+            const p = genPlayers[uid];
+            if (p && a.skill) skillMap[p.characterId] = a.skill;
+            if (p && a.role)  roleMap[p.characterId]  = a.role;
+        });
+        await db.ref('games/' + gameId + '/state/skillAssignments').set(skillMap);
+        await db.ref('games/' + gameId + '/state/characterRoles').set(roleMap);
+
+        roleAssign  = roleMap;
+        skillAssign = skillMap;
+
+        showToast('Roles locked and applied.', 'success');
+        closeGenModal();
+        renderCharacters();
+        renderChecklist();
+
+    } catch(err) {
+        btn.disabled = false;
+        btn.textContent = '✓ Lock & Apply';
+        showToast('Error: ' + err.message, 'error');
+    }
 }
 
 // ── RUN GAME TAB ──────────────────────────────────────────────
@@ -2040,6 +2209,25 @@ ${inviteUrl}
             <div class="tp-actions">
                 <button class="btn-danger" style="padding:10px 24px;" onclick="confirmCancelGame()">Cancel Game</button>
                 <button class="btn-ghost" onclick="closeCancelModal()">Keep Game</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ── GENERATE ROLES MODAL ──────────────────────────────────── -->
+<div class="tp-overlay" id="genModalOverlay" onclick="if(event.target===this)closeGenModal()">
+    <div class="tp-modal" style="max-width:700px;">
+        <div class="tp-header">
+            <div class="tp-title">⚄ Generate Roles & Skills</div>
+            <button class="btn-signout" onclick="closeGenModal()">✕</button>
+        </div>
+        <div class="tp-body">
+            <div id="genModalGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:20px;"></div>
+            <div class="tp-actions">
+                <button class="btn-gold" onclick="runGameGeneration()">⚄ Randomize Again</button>
+                <button class="btn-green" id="lockGenBtn" onclick="lockGameAssignments()">✓ Lock & Apply</button>
+                <button class="btn-ghost" onclick="closeGenModal()">Cancel</button>
             </div>
         </div>
     </div>
