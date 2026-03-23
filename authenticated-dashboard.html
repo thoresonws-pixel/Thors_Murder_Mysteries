@@ -1692,8 +1692,15 @@
                     // Persist for BroadcastChannel / reload resilience
                     localStorage.setItem('userSession', JSON.stringify(userSession));
 
+                    // Load game record to get storyId
+                    let storyId = 'thoreson_estate_dinner';
+                    try {
+                        const gameSnap = await database.ref('games/' + gameId).once('value');
+                        const gd = gameSnap.val();
+                        if (gd && gd.storyId) storyId = gd.storyId;
+                    } catch(e) { /* use default */ }
+
                     // Load story-specific scripts, then init
-                    const storyId = gameData.storyId || 'thoreson_estate_dinner';
                     loadStoryScripts(storyId, initializeAuthenticatedView);
 
                 } catch(err) {
