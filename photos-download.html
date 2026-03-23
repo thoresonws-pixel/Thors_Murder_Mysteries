@@ -1,12 +1,202 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="refresh" content="0;url=https://photos.app.goo.gl/w8JugAUUyWCrBZ9n9">
-<title>Photos — Thoreson Estate Dinner</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thoreson Estate — Photos</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0d0b08; color: #e8e8e8; font-family: 'Playfair Display', Georgia, serif; min-height: 100vh; }
+  .header { text-align: center; padding: 40px 20px 20px; }
+  .header h1 { font-size: 28px; color: #c9a227; letter-spacing: 4px; margin-bottom: 6px; }
+  .header p { font-size: 13px; color: #666; letter-spacing: 2px; }
+  .count { text-align: center; font-size: 15px; color: #8b7355; margin: 10px 0 20px; }
+  .download-bar { text-align: center; padding: 10px 20px 30px; }
+  .download-btn {
+    display: inline-block; padding: 14px 36px; border: 1px solid #c9a227;
+    background: transparent; color: #c9a227; font-family: 'Playfair Display', serif;
+    font-size: 15px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+    border-radius: 3px; transition: all 0.2s;
+  }
+  .download-btn:hover { background: rgba(201,162,39,0.1); }
+  .download-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .progress { font-size: 13px; color: #8b7355; margin-top: 10px; display: none; }
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 12px; padding: 0 20px 40px; max-width: 1200px; margin: 0 auto;
+  }
+  .photo-card {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(201,162,39,0.15);
+    border-radius: 4px; overflow: hidden;
+  }
+  .photo-card img { width: 100%; display: block; max-height: 300px; object-fit: contain; background: #000; }
+  .photo-info { padding: 8px 12px; font-size: 12px; color: #8b7355; display: flex; justify-content: space-between; }
+  .caption { padding: 6px 12px; font-size: 14px; color: #c9a227; font-style: italic; }
+  .loading { text-align: center; padding: 60px; color: #666; font-style: italic; }
+  .section-title { font-size: 18px; color: #c9a227; letter-spacing: 3px; text-transform: uppercase; text-align: center; padding: 20px 0 10px; }
+</style>
 </head>
 <body>
-<script>window.location.href = 'https://photos.app.goo.gl/w8JugAUUyWCrBZ9n9';</script>
-<p>Redirecting to photos... <a href="https://photos.app.goo.gl/w8JugAUUyWCrBZ9n9">Click here if not redirected</a></p>
+
+<div class="header">
+  <h1>The Thoreson Estate</h1>
+  <p>MARCH 21, 1935 — PHOTOGRAPHS</p>
+</div>
+<div class="count" id="count">Loading...</div>
+<div class="download-bar">
+  <button class="download-btn" id="downloadPhotosBtn" onclick="downloadSet('photos')" disabled>↓ Download ZIP (PC)</button>
+  <span style="display:inline-block; width:20px;"></span>
+  <a class="download-btn" id="googlePhotosBtn" href="https://photos.app.goo.gl/w8JugAUUyWCrBZ9n9" target="_blank"
+     style="border-color:#8bc34a; color:#8bc34a; display:none; text-decoration:none;">📷 Save to Google Photos</a>
+  <div id="googlePhotosHint" style="display:none; margin-top:10px; font-size:12px; color:#555; font-style:italic;">Open in the Google Photos app → tap ⋮ → "Add to Library" to save all photos to your camera roll.</div>
+  <span style="display:inline-block; width:20px;"></span>
+  <button class="download-btn" id="downloadSpecialsBtn" onclick="downloadSet('specials')" disabled style="border-color:#8b6914; color:#8b6914;">↓ Download QR Specials (ZIP)</button>
+  <div class="progress" id="progress"></div>
+  <div style="margin-top:24px; padding-top:20px; border-top:1px solid rgba(201,162,39,0.2);">
+    <a href="survey.html" style="color:#c9a227; font-family:'Playfair Display',serif; font-size:15px; text-decoration:none; letter-spacing:2px;">✦ Please take our 2-minute survey ✦</a>
+    <div style="font-size:12px; color:#666; margin-top:6px; font-style:italic;">Your feedback helps us make the next one even better</div>
+  </div>
+</div>
+<div id="photosSection">
+  <div class="section-title">Guest Photos</div>
+  <div class="grid" id="photosGrid">
+    <div class="loading">Loading photographs...</div>
+  </div>
+</div>
+<div id="specialsSection">
+  <div class="section-title">QR Specials</div>
+  <div class="grid" id="specialsGrid"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+<script>
+  firebase.initializeApp({
+    apiKey: "AIzaSyApHrYubqWrR4m0ihdpq6Ym40jv4HTQ5i0",
+    authDomain: "thoreson-estate.firebaseapp.com",
+    databaseURL: "https://thoreson-estate-default-rtdb.firebaseio.com",
+    projectId: "thoreson-estate",
+    storageBucket: "thoreson-estate.firebasestorage.app",
+    messagingSenderId: "182924616892",
+    appId: "1:182924616892:web:8153e1c69895cee665dcb9"
+  });
+
+  var guestPhotos = [];
+  var specialPhotos = [];
+
+  function loadPhotos() {
+    firebase.database().ref('photos').orderByChild('time').once('value', function(snap) {
+    var data = snap.val();
+    if (!data) {
+      document.getElementById('photosGrid').innerHTML = '<div class="loading">No photos found.</div>';
+      document.getElementById('count').textContent = '0 photos';
+      return;
+    }
+
+    var all = Object.values(data).sort(function(a, b) { return a.time - b.time; });
+    
+    all.forEach(function(p) {
+      if (p.isPoster) {
+        if (p.fullUrl) specialPhotos.push(p);
+      } else {
+        if (p.fullUrl) guestPhotos.push(p);
+      }
+    });
+
+    document.getElementById('count').textContent = guestPhotos.length + ' guest photos · ' + specialPhotos.length + ' QR specials';
+    if (guestPhotos.length > 0) {
+      document.getElementById('downloadPhotosBtn').disabled = false;
+      document.getElementById('googlePhotosBtn').style.display = 'inline-block';
+      document.getElementById('googlePhotosHint').style.display = 'block';
+    }
+    if (specialPhotos.length > 0) document.getElementById('downloadSpecialsBtn').disabled = false;
+
+    function renderGrid(photos, gridId, emptyMsg) {
+      var grid = document.getElementById(gridId);
+      if (photos.length === 0) {
+        grid.innerHTML = '<div class="loading">' + emptyMsg + '</div>';
+        return;
+      }
+      grid.innerHTML = photos.map(function(p) {
+        var url = p.fullUrl;
+        var time = new Date(p.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        var caption = p.caption ? '<div class="caption">' + p.caption + '</div>' : '';
+        return '<div class="photo-card">' +
+          '<img src="' + url + '" loading="lazy">' +
+          caption +
+          '<div class="photo-info"><span>' + p.player + '</span><span>' + time + '</span></div>' +
+          '</div>';
+      }).join('');
+    }
+
+    renderGrid(guestPhotos, 'photosGrid', 'No guest photos.');
+    renderGrid(specialPhotos, 'specialsGrid', 'No QR specials.');
+  }, function(err) {
+    document.getElementById('count').textContent = 'Database error: ' + err.message;
+    document.getElementById('photosGrid').innerHTML = '<div class="loading">Could not load photos: ' + err.message + '</div>';
+  });
+  }
+
+  // Call directly — main dashboard reads photos without Firebase Auth, rules are open
+  loadPhotos();
+
+  async function downloadSet(which) {
+    var photos = which === 'photos' ? guestPhotos : specialPhotos;
+    var btnId = which === 'photos' ? 'downloadPhotosBtn' : 'downloadSpecialsBtn';
+    var zipName = which === 'photos' ? 'thoreson_guest_photos.zip' : 'thoreson_qr_specials.zip';
+    var folderName = which === 'photos' ? 'guest_photos' : 'qr_specials';
+    
+    var btn = document.getElementById(btnId);
+    var prog = document.getElementById('progress');
+    btn.disabled = true;
+    btn.textContent = 'Preparing...';
+    prog.style.display = 'block';
+
+    var zip = new JSZip();
+    var folder = zip.folder(folderName);
+    var total = photos.length;
+    var done = 0;
+
+    for (var i = 0; i < photos.length; i++) {
+      var url = photos[i].fullUrl || photos[i].wallUrl;
+      var player = photos[i].player || 'unknown';
+      var ext = url.match(/\.(jpe?g|png|gif)/i) ? url.match(/\.(jpe?g|png|gif)/i)[0] : '.jpg';
+      var filename = (i + 1).toString().padStart(2, '0') + '_' + player + ext;
+
+      prog.textContent = 'Downloading ' + (i + 1) + ' of ' + total + '...';
+
+      try {
+        var response = await fetch(url);
+        var blob = await response.blob();
+        folder.file(filename, blob);
+        done++;
+      } catch (e) {
+        console.error('Failed to download:', url, e);
+      }
+    }
+
+    prog.textContent = 'Creating ZIP file...';
+
+    zip.generateAsync({ type: 'blob' }).then(function(content) {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(content);
+      a.download = zipName;
+      a.click();
+      URL.revokeObjectURL(a.href);
+
+      btn.textContent = '✓ Downloaded ' + done + ' photos';
+      prog.textContent = '';
+      prog.style.display = 'none';
+
+      setTimeout(function() {
+        btn.textContent = which === 'photos' ? '↓ Download ZIP (PC)' : '↓ Download QR Specials (ZIP)';
+        btn.disabled = false;
+      }, 3000);
+    });
+  }
+</script>
+
 </body>
 </html>
