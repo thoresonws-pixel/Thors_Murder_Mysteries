@@ -705,6 +705,273 @@
             .game-card-top { flex-direction: column; }
             .game-right { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
         }
+
+        /* ── GM CONTROL PANEL ──────────────────────────────────── */
+        .gm-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: var(--black);
+            z-index: 200;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .gm-overlay.open { display: flex; }
+
+        .gm-topbar {
+            height: 56px;
+            background: var(--deep);
+            border-bottom: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            flex-shrink: 0;
+        }
+
+        .gm-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 18px;
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .gm-title span {
+            font-family: 'Special Elite', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: var(--fog);
+            display: block;
+            margin-top: 1px;
+        }
+
+        .gm-close {
+            font-family: 'Special Elite', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--fog);
+            background: none;
+            border: 1px solid rgba(154,144,128,0.3);
+            padding: 8px 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .gm-close:hover { color: var(--mist); border-color: var(--fog); }
+
+        .gm-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 28px 32px 60px;
+        }
+
+        .gm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .gm-act {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--gold-dk);
+            padding: 18px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .gm-act-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 15px;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 4px;
+        }
+
+        .gm-toggle-btn {
+            width: 100%;
+            padding: 10px 12px;
+            border: none;
+            cursor: pointer;
+            border-radius: 2px;
+            text-align: left;
+            line-height: 1.4;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .gm-toggle-btn.off { background: #2d7a2d; color: white; }
+        .gm-toggle-btn.on  { background: #8b1a1a; color: white; }
+
+        .gm-toggle-label {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .gm-toggle-meta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+            margin-left: 8px;
+        }
+
+        .gm-badge {
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 2px;
+        }
+        .badge-story { background: #8b7355; color: white; }
+        .badge-clue  { background: var(--gold); color: var(--black); }
+
+        .gm-send-btn {
+            width: 100%;
+            padding: 8px 0;
+            border: none;
+            cursor: pointer;
+            border-radius: 2px;
+            font-family: 'Special Elite', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            margin-top: 4px;
+        }
+        .gm-send-btn.unsent { background: #3a8fd4; color: white; }
+        .gm-send-btn.sent   { background: #444; color: #888; cursor: default; }
+
+        .gm-section {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 20px 22px;
+            margin-bottom: 16px;
+        }
+
+        .gm-section-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 16px;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .gm-section-desc {
+            font-size: 14px;
+            color: var(--fog);
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+
+        .gm-confession-btn {
+            width: 100%;
+            padding: 10px 0;
+            cursor: pointer;
+            border-radius: 2px;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: 1px solid var(--gold);
+            background: rgba(201,162,39,0.1);
+            color: var(--gold);
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+        .gm-confession-btn:hover { background: rgba(201,162,39,0.2); }
+
+        .gm-danger-btn {
+            background: #8b1a1a;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            cursor: pointer;
+            border-radius: 2px;
+            font-family: 'Special Elite', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+        .gm-danger-btn:hover { background: var(--crimson-lt); }
+
+        .gm-action-btn {
+            background: transparent;
+            color: var(--gold);
+            border: 1px solid var(--gold-dk);
+            padding: 10px 22px;
+            cursor: pointer;
+            border-radius: 2px;
+            font-family: 'Special Elite', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            margin-right: 10px;
+        }
+        .gm-action-btn:hover { border-color: var(--gold); background: rgba(201,162,39,0.08); }
+
+        .gm-leaderboard-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(0,0,0,0.3);
+            margin-bottom: 6px;
+            border-radius: 2px;
+        }
+
+        .gm-player-name { font-family: 'Playfair Display', Georgia, serif; color: var(--gold); }
+        .gm-player-count { color: var(--white); font-size: 16px; font-weight: bold; }
+
+        .chase-item {
+            border: 1px solid var(--border);
+            margin-bottom: 8px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .chase-header {
+            padding: 10px 14px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.02);
+        }
+        .chase-header:hover { background: rgba(201,162,39,0.05); }
+        .chase-timing {
+            font-family: 'Special Elite', monospace;
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: var(--gold);
+        }
+        .chase-hint {
+            font-family: 'Special Elite', monospace;
+            font-size: 10px;
+            color: var(--fog);
+        }
+        .chase-body {
+            display: none;
+            padding: 10px 14px 14px;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #d4c090;
+            font-style: italic;
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .gm-body { padding: 20px 16px 40px; }
+            .gm-grid { grid-template-columns: 1fr; }
+        }
+
     </style>
 </head>
 <body>
@@ -1041,9 +1308,10 @@
                 </div>
 
                 <div class="game-actions">
-                    ${canStart    ? `<button class="btn-status btn-start"    onclick="setStatus('${id}','active')">▶ Start Game</button>` : ''}
-                    ${canComplete ? `<button class="btn-status btn-complete" onclick="setStatus('${id}','complete')">■ Mark Complete</button>` : ''}
-                    <button class="btn-copy" onclick="copyText('${inviteUrl}', 'invite-${id}')">Copy Invite Link</button>
+                    <button class="btn-gold" onclick="openGMPanel('${id}')">🎭 Run Game</button>
+                    ${canStart    ? `<button class="btn-status btn-start"    onclick="setStatus('${id}','active')">▶ Start</button>` : ''}
+                    ${canComplete ? `<button class="btn-status btn-complete" onclick="setStatus('${id}','complete')">■ Complete</button>` : ''}
+                    <button class="btn-copy" onclick="copyText('${inviteUrl}', 'invite-${id}')">Copy Invite</button>
                     <span class="copy-confirm" id="invite-${id}">Copied!</span>
                     <button class="btn-danger" onclick="deleteGame('${id}', '${g.storyName}')">Delete</button>
                 </div>
@@ -1188,6 +1456,293 @@
         clearTimeout(toastTimer);
         toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
     }
-</script>
+
+    // ── GM CONTROL PANEL ──────────────────────────────────────────
+    let gmGameId   = null;
+    let gmActive   = {};   // activeItems for this game
+    let gmUnsubscribe = null;
+
+    const DR_TEXTS = {
+        djCountyClerk: { label: 'County Clerk Report',       preview: 'Original 1902 filing — Thoreson & Hartley Toys' },
+        djCoroner:     { label: "Coroner's Report",           preview: 'Preliminary autopsy — needs medical interpretation' },
+        djPinkerton:   { label: 'Pinkerton Background Checks', preview: 'Two name changes flagged among party guests' }
+    };
+    const DR_BY_ACT = { act1: 'djCountyClerk', act2: 'djCoroner', act3: 'djPinkerton' };
+    const CONFESSION_BY_ACT = {
+        act1: 'audio/confession_act1.mp3',
+        act2: 'audio/confession_act2.mp3',
+        act3: 'audio/confession_act3.mp3'
+    };
+    const CHASE_UPDATES = [
+        { timing: 'COCKTAIL HOUR',  text: "Ladies and gentlemen — I've just received word from the sheriff's office. Thomas Bradford, who was expected this evening, has fled Dallas County. His home was found empty this afternoon. Deputies are in pursuit. A wanted notice has been posted. I'm told he should be considered... well, let's say 'uncooperative.'" },
+        { timing: 'MID ACT 1',     text: "Update from the sheriff — Bradford's automobile was spotted heading south on Route 77 at considerable speed. He ran two stop signs in Waxahachie. Officers are in pursuit. I'm sure this has nothing to do with the patent letter he sent three weeks ago." },
+        { timing: 'LATE ACT 1',    text: "I'm told Bradford's car ran out of fuel near Corsicana. He was last seen on foot, heading into a cotton field. The deputy described him as 'surprisingly fast for a man of his build.'" },
+        { timing: 'ACT 2',         text: "Bradford update — he was briefly apprehended hiding in a barn outside Ennis. He escaped custody when the deputy went inside for coffee. The sheriff has requested additional resources. And, apparently, faster deputies." },
+        { timing: 'ACT 3',         text: "Final update on our friend Mr. Bradford — he was spotted boarding a southbound freight train near Waco, disguised as a feed salesman. The five-hundred-dollar reward remains available. The sheriff's department asks that if you see a nervous man in a bad hat asking questions about grain prices, please contact the authorities." }
+    ];
+
+    function openGMPanel(gameId) {
+        gmGameId = gameId;
+        const g = allGames[gameId];
+        document.getElementById('gmGameTitle').textContent =
+            (g ? g.storyName : gameId) + (g && g.venueName ? ' — ' + g.venueName : '');
+        document.getElementById('gmOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+
+        // Live listener for activeItems
+        if (gmUnsubscribe) gmUnsubscribe();
+        const ref = db.ref('players'); // shared game state — same path as dashboard
+        ref.on('value', snap => {
+            // activeItems lives at /activeItems (shared across all games for now)
+        });
+
+        // Load activeItems
+        db.ref('activeItems').on('value', snap => {
+            gmActive = {};
+            const items = snap.val() || [];
+            items.forEach(id => gmActive[id] = true);
+            renderGMPanel();
+        });
+
+        // Live leaderboard
+        db.ref('scans').on('value', snap => {
+            const data = snap.val() || {};
+            const el = document.getElementById('gmLeaderboard');
+            if (!el) return;
+            const sorted = Object.entries(data).sort((a,b) => b[1]-a[1]);
+            if (sorted.length === 0) {
+                el.innerHTML = '<div style="color:var(--fog);font-style:italic;">No scans yet.</div>';
+                return;
+            }
+            const medals = ['🥇','🥈','🥉'];
+            el.innerHTML = sorted.map(([player, count], i) => `
+                <div class="gm-leaderboard-row" style="border-left:3px solid ${i===0?'#c9a227':i===1?'#aaa':i===2?'#cd7f32':'#444'};">
+                    <span class="gm-player-name">${medals[i]||'✦'} ${player}</span>
+                    <span class="gm-player-count">${count}</span>
+                </div>`).join('');
+        });
+    }
+
+    function closeGMPanel() {
+        document.getElementById('gmOverlay').classList.remove('open');
+        document.body.style.overflow = '';
+        db.ref('activeItems').off();
+        db.ref('scans').off();
+        gmGameId = null;
+        gmActive = {};
+    }
+
+    function renderGMPanel() {
+        // Load revelations from the page's data files
+        if (typeof revelationsDatabase === 'undefined') {
+            // Revelations not loaded — inject script then retry
+            const s = document.createElement('script');
+            s.src = 'revelations.js';
+            s.onload = () => renderGMPanel();
+            document.head.appendChild(s);
+            return;
+        }
+
+        let html = '';
+
+        // ── START GAME BUTTON ─────────────────────────────────
+        const gameStarted = !!gmActive['willsDeath'];
+        html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--panel);border:2px solid ${gameStarted?'var(--green)':'var(--gold)'};margin-bottom:20px;">
+            <div>
+                <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);margin-bottom:3px;">🕯 Start the Game</div>
+                <div style="font-size:13px;color:var(--fog);">Reveals Will's death to all guests and opens the investigation.</div>
+            </div>
+            <button onclick="gmToggleItem('willsDeath')" style="background:${gameStarted?'#8b1a1a':'var(--gold)'};color:${gameStarted?'white':'var(--black)'};border:none;padding:10px 24px;cursor:pointer;border-radius:2px;font-size:14px;font-weight:bold;white-space:nowrap;margin-left:20px;">
+                ${gameStarted ? '✕ Hide' : '▶ Begin'}
+            </button>
+        </div>`;
+
+        // ── ACT COLUMNS ───────────────────────────────────────
+        html += '<div class="gm-grid">';
+        Object.entries(revelationsDatabase).forEach(([actKey, act]) => {
+            const drId   = DR_BY_ACT[actKey];
+            const drSent = drId && !!gmActive[drId];
+            const drInfo = drId && DR_TEXTS[drId];
+
+            html += `<div class="gm-act">
+                <div class="gm-act-title">${act.label}</div>`;
+
+            act.items.forEach(item => {
+                const isOn = !!gmActive[item.id];
+                html += `
+                <button class="gm-toggle-btn ${isOn?'on':'off'}" onclick="gmToggleItem('${item.id}')">
+                    <span class="gm-toggle-label">${item.title}</span>
+                    <span class="gm-toggle-meta">
+                        <span class="gm-badge ${item.type==='story'?'badge-story':'badge-clue'}">${item.type==='story'?'STORY':'CLUE'}</span>
+                        <span style="font-size:12px;opacity:0.8;">${isOn?'✕ Hide':'✓ Reveal'}</span>
+                    </span>
+                </button>`;
+            });
+
+            html += `<div style="flex:1;"></div>`;
+
+            // David Richardson text button
+            if (drInfo) {
+                html += `
+                <div style="margin-top:10px;padding:10px;background:rgba(0,0,0,0.3);border-radius:2px;border-left:3px solid ${drSent?'var(--green)':'#3a8fd4'};${drSent?'opacity:0.6;':''}">
+                    <div style="font-size:12px;color:var(--gold);margin-bottom:3px;">📱 ${drInfo.label}</div>
+                    <div style="font-size:11px;color:var(--fog);font-style:italic;margin-bottom:8px;">${drInfo.preview}</div>
+                    <button class="gm-send-btn ${drSent?'sent':'unsent'}" onclick="gmFireDRText('${drId}')" ${drSent?'disabled':''}>
+                        ${drSent ? '✓ Sent to David' : 'Send to David Richardson'}
+                    </button>
+                </div>`;
+            }
+
+            // Confession audio
+            html += `
+            <button class="gm-confession-btn" onclick="gmPlayConfession('${actKey}')">
+                🎙 Play Confession Audio
+            </button>
+            </div>`;
+        });
+        html += '</div>';
+
+        // ── LEADERBOARD ───────────────────────────────────────
+        html += `
+        <div class="gm-section">
+            <div class="gm-section-title">🔎 Clue Scan Leaderboard</div>
+            <div class="gm-section-desc">Updates in real time as guests scan QR codes.</div>
+            <div id="gmLeaderboard" style="color:var(--fog);font-style:italic;">Loading…</div>
+        </div>`;
+
+        // ── BRADFORD CHASE ────────────────────────────────────
+        html += `
+        <div class="gm-section">
+            <div class="gm-section-title">🚔 Bradford Chase Updates</div>
+            <div class="gm-section-desc">Read aloud in character throughout the night. Tap to expand.</div>
+            ${CHASE_UPDATES.map(u => `
+            <div class="chase-item">
+                <div class="chase-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+                    <span class="chase-timing">${u.timing}</span>
+                    <span class="chase-hint">tap to read</span>
+                </div>
+                <div class="chase-body">"${u.text}"</div>
+            </div>`).join('')}
+        </div>`;
+
+        // ── TEST MODE ─────────────────────────────────────────
+        html += `
+        <div class="gm-section">
+            <div class="gm-section-title">🧪 Test Mode</div>
+            <div class="gm-section-desc">When ON — guest devices receive no live updates. Only you see changes in real time.</div>
+            <button class="gm-action-btn" id="gmTestModeBtn" onclick="gmToggleTestMode()">Checking…</button>
+        </div>`;
+
+        // ── FORCE RELOAD ──────────────────────────────────────
+        html += `
+        <div class="gm-section">
+            <div class="gm-section-title">🔄 Force Reload All Devices</div>
+            <div class="gm-section-desc">After a code deploy, press this to reload every connected device.</div>
+            <button class="gm-action-btn" onclick="gmForceReload()">Force Reload All</button>
+        </div>`;
+
+        // ── RESET ─────────────────────────────────────────────
+        html += `
+        <div class="gm-section" style="border-color:rgba(139,26,26,0.4);">
+            <div class="gm-section-title" style="color:#e74c3c;">⚠ Game Reset</div>
+            <div class="gm-section-desc">Clears ALL revelations, skill discoveries, scan counts and popup history across every device. Use before the event to start fresh.</div>
+            <button class="gm-danger-btn" onclick="gmResetGame()">Reset & Start Fresh</button>
+        </div>`;
+
+        document.getElementById('gmBody').innerHTML = html;
+        gmUpdateTestModeBtn();
+    }
+
+    // ── GM action functions ────────────────────────────────────────
+
+    function gmToggleItem(itemId) {
+        db.ref('activeItems').once('value').then(snap => {
+            let items = snap.val() || [];
+            const idx = items.indexOf(itemId);
+            if (idx === -1) items.push(itemId);
+            else items.splice(idx, 1);
+            db.ref('activeItems').set(items);
+        });
+    }
+
+    function gmFireDRText(itemId) {
+        db.ref('activeItems').once('value').then(snap => {
+            let items = snap.val() || [];
+            if (!items.includes(itemId)) {
+                items.push(itemId);
+                db.ref('activeItems').set(items);
+            }
+        });
+    }
+
+    function gmPlayConfession(act) {
+        const files = CONFESSION_BY_ACT;
+        const audio = document.getElementById('gmConfessionAudio');
+        if (!audio) return;
+        if (!audio.paused && audio.src.includes(files[act])) {
+            audio.pause(); audio.currentTime = 0; return;
+        }
+        audio.src = files[act];
+        audio.play();
+    }
+
+    function gmUpdateTestModeBtn() {
+        const btn = document.getElementById('gmTestModeBtn');
+        if (!btn) return;
+        db.ref('testMode').once('value').then(snap => {
+            const on = snap.val() === true;
+            btn.textContent = on ? '✓ Test Mode ON — Turn Off' : 'Test Mode OFF — Turn On';
+            btn.style.background = on ? 'rgba(201,162,39,0.2)' : '';
+            btn.style.borderColor = on ? 'var(--gold)' : '';
+        });
+    }
+
+    function gmToggleTestMode() {
+        db.ref('testMode').once('value').then(snap => {
+            db.ref('testMode').set(!(snap.val() === true)).then(gmUpdateTestModeBtn);
+        });
+    }
+
+    function gmForceReload() {
+        if (!confirm('Reload all connected devices?')) return;
+        db.ref('appVersion').set(Date.now());
+        showToast('Reload signal sent to all devices.', 'success');
+    }
+
+    function gmResetGame() {
+        if (!confirm('Reset ALL game data across every device? This cannot be undone.')) return;
+        db.ref('activeItems').set([]);
+        db.ref('discoveredSkills').set([]);
+        db.ref('memoryReset').set(Date.now());
+        db.ref('scans').remove();
+        db.ref('scanLog').remove();
+        db.ref('photos').remove();
+        try {
+            const storage = firebase.storage();
+            storage.ref('photos/wall').listAll().then(res => res.items.forEach(i => i.delete()));
+            storage.ref('photos/full').listAll().then(res => res.items.forEach(i => i.delete()));
+        } catch(e) {}
+        showToast('Game reset complete.', 'success');
+        renderGMPanel();
+    }
+
+    </script>
+
+<!-- ── GM CONTROL PANEL OVERLAY ───────────────────────────── -->
+<div class="gm-overlay" id="gmOverlay">
+    <div class="gm-topbar">
+        <div class="gm-title">
+            GM Controls
+            <span id="gmGameTitle">—</span>
+        </div>
+        <button class="gm-close" onclick="closeGMPanel()">✕ Close</button>
+    </div>
+    <div class="gm-body" id="gmBody">
+        <div style="text-align:center; padding:60px; color:var(--fog); font-style:italic;">Loading game data…</div>
+    </div>
+</div>
+
+<audio id="gmConfessionAudio" style="display:none;"></audio>
+
 </body>
 </html>
