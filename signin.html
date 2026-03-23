@@ -107,8 +107,11 @@
     const db   = firebase.database();
 
     const ADMIN_EMAILS = ['thoresonws@gmail.com'];
+    let routed = false;
 
     async function routeUser(user) {
+        if (routed) return;
+        routed = true;
         // Fast path for known admins
         if (ADMIN_EMAILS.includes((user.email || '').toLowerCase())) {
             window.location.href = 'admin.html';
@@ -221,6 +224,15 @@
             showError('Could not send reset email. Check the address and try again.');
         }
     }
+
+    // Catch any auth state change (e.g. already logged in)
+    auth.onAuthStateChanged(async user => {
+        if (routed) return;
+        if (!user || user.isAnonymous || !user.email) return;
+        // Only auto-route if they didn't just manually sign in
+        // (handleLogin and handleGoogleSignIn set routed=true first)
+        if (!routed) routeUser(user);
+    });
 
     document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
 </script>
