@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#c9a227">
+    <meta name="description" content="Tell us a bit about yourself before the evening begins">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Thoreson Estate">
+    <title>A Few Questions — Thoreson Estate Dinner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container { width: 100%; max-width: 480px; }
+
+        .card {
+            position: relative;
+            background: linear-gradient(145deg, #f5f0e6 0%, #e8e0d0 50%, #d4c9b5 100%);
+            border: 3px solid #8b7355;
+            box-shadow:
+                0 0 0 1px #a08060,
+                0 0 0 6px #2a2520,
+                0 0 0 8px #8b7355,
+                0 20px 60px rgba(0,0,0,0.5);
+            padding: 50px 40px 44px;
+        }
+
+        .corner { position: absolute; width: 40px; height: 40px; border: 2px solid #8b7355; }
+        .corner-tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+        .corner-tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+        .corner-br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+        .header { text-align: center; margin-bottom: 6px; }
+
+        .title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 30px;
+            color: #2a2520;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #8b7355;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0 28px;
+        }
+        .divider-line { flex: 1; height: 1px; background: #8b7355; opacity: 0.4; }
+        .divider-diamond {
+            width: 8px; height: 8px;
+            background: #c9a227;
+            transform: rotate(45deg);
+            flex-shrink: 0;
+        }
+
+        .intro {
+            font-size: 16px;
+            color: #4a3a2a;
+            line-height: 1.7;
+            margin-bottom: 32px;
+            font-style: italic;
+            text-align: center;
+        }
+
+        /* ── Question blocks ─────────────────────────────── */
+        .question-block {
+            margin-bottom: 32px;
+        }
+
+        .question-label {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 18px;
+            color: #2a2520;
+            margin-bottom: 6px;
+        }
+
+        .question-hint {
+            font-size: 13px;
+            color: #8b7355;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        /* ── Choice tiles ──────────────────────────────────── */
+        .tile-group {
+            display: grid;
+            gap: 10px;
+        }
+
+        .tile-group.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+        .tile-group.cols-2 { grid-template-columns: 1fr 1fr; }
+        .tile-group.cols-1 { grid-template-columns: 1fr; }
+
+        .tile {
+            position: relative;
+            cursor: pointer;
+            border: 2px solid #a09070;
+            background: rgba(255,255,255,0.5);
+            border-radius: 4px;
+            padding: 14px 12px;
+            text-align: center;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .tile:hover {
+            border-color: #c9a227;
+            background: rgba(201,162,39,0.08);
+        }
+
+        .tile.selected {
+            border-color: #c9a227;
+            background: rgba(201,162,39,0.15);
+            box-shadow: 0 0 0 1px #c9a227;
+        }
+
+        .tile-icon {
+            font-size: 24px;
+            margin-bottom: 6px;
+            display: block;
+            line-height: 1;
+        }
+
+        .tile-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 15px;
+            color: #2a2520;
+            margin-bottom: 3px;
+        }
+
+        .tile-desc {
+            font-size: 12px;
+            color: #7a6a5a;
+            line-height: 1.4;
+        }
+
+        /* Selected checkmark */
+        .tile-check {
+            display: none;
+            position: absolute;
+            top: 7px;
+            right: 8px;
+            width: 16px; height: 16px;
+            background: #c9a227;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+        }
+        .tile-check::after {
+            content: '✓';
+            font-size: 10px;
+            color: #2a2520;
+            font-weight: bold;
+        }
+        .tile.selected .tile-check { display: flex; }
+
+        /* ── Progress indicator ────────────────────────────── */
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 28px;
+        }
+        .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #c4b49a;
+            transition: background 0.3s;
+        }
+        .dot.active { background: #c9a227; }
+        .dot.done {
+            background: #8b7355;
+        }
+
+        /* ── Submit button ──────────────────────────────────── */
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            background: #c9a227;
+            color: #2a2520;
+            border: none;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.3s;
+            margin-top: 8px;
+        }
+        .btn-primary:hover:not(:disabled) { background: #e8c55a; transform: scale(1.02); }
+        .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+        .error-msg {
+            display: none;
+            color: #c0392b;
+            font-size: 14px;
+            margin-top: 14px;
+            padding: 10px 14px;
+            background: rgba(192,57,43,0.08);
+            border: 1px solid rgba(192,57,43,0.25);
+            border-radius: 3px;
+        }
+
+        /* ── Loading screen ─────────────────────────────────── */
+        .auth-loading {
+            text-align: center;
+            color: #8b7355;
+            font-size: 16px;
+            font-style: italic;
+            padding: 30px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner {
+            display: inline-block;
+            width: 16px; height: 16px;
+            border: 2px solid rgba(42,37,32,0.3);
+            border-top-color: #2a2520;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        /* Subtle entrance animation */
+        .question-block {
+            opacity: 0;
+            transform: translateY(12px);
+            animation: fadeUp 0.4s ease forwards;
+        }
+        .question-block:nth-child(1) { animation-delay: 0.1s; }
+        .question-block:nth-child(2) { animation-delay: 0.2s; }
+        .question-block:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div>
+        <div class="corner corner-br"></div>
+
+        <div id="authLoading" class="auth-loading">
+            <div class="spinner"></div> One moment…
+        </div>
+
+        <div id="mainContent" style="display:none">
+            <div class="header">
+                <h1 class="title">Before We Begin</h1>
+                <p class="subtitle">A few quick questions</p>
+            </div>
+
+            <div class="divider">
+                <div class="divider-line"></div>
+                <div class="divider-diamond"></div>
+                <div class="divider-line"></div>
+            </div>
+
+            <p class="intro">
+                Your answers help us tailor your character to the evening's drama.
+                There are no wrong choices here.
+            </p>
+
+            <!-- Q1: Gender / character presentation -->
+            <div class="question-block">
+                <div class="question-label">How would you like your character presented?</div>
+                <div class="question-hint">Characters are gender-fluid — names and presentation will match your preference.</div>
+                <div class="tile-group cols-3" id="genderGroup">
+                    <div class="tile" data-group="gender" data-value="male" onclick="selectTile(this)">
+                        <div class="tile-check"></div>
+                        <span class="tile-icon">♂</span>
+                        <div class="tile-title">Male</div>
+                    </div>
+                    <div class="tile" data-group="gender" data-value="female" onclick="selectTile(this)">
+                        <div class="tile-check"></div>
+                        <span class="tile-icon">♀</span>
+                        <div class="tile-title">Female</div>
+                    </div>
+                    <div class="tile" data-group="gender" data-value="any" onclick="selectTile(this)">
+                        <div class="tile-check"></div>
+                        <span class="tile-icon">✦</span>
+                        <div class="tile-title">Either</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q2: Involvement level -->
+            <div class="question-block">
+                <div class="question-label">How involved do you want to be?</div>
+                <div class="question-hint">This helps us match you to a character whose role fits your comfort level.</div>
+                <div class="tile-group cols-1" id="involvementGroup">
+
+                    <div class="tile" data-group="involvement" data-value="all-in" onclick="selectTile(this)">
+                        <div class="tile-check"></div>
+                        <div class="tile-title">I'm down for whatever</div>
+                        <div class="tile-desc">Give me the juiciest role available. Secrets, drama, confrontations — bring it.</div>
+                    </div>
+
+                    <div class="tile" data-group="involvement" data-value="moderate" onclick="selectTile(this)">
+                        <div class="tile-check"></div>
+                        <div class="tile-title">I'll play along, but keep it moderate</div>
+                        <div class="tile-desc">I want to participate and have fun, just nothing that puts me on the spot too much.</div>
+                    </div>
+
+                    <div class="tile" data-group="involvement" data-value="light" onclick="selectTile(this)">
+                        <div class="tile-check"></div>
+                        <div class="tile-title">Low-key is fine by me</div>
+                        <div class="tile-desc">I'd rather enjoy the evening than carry a heavy role. Something simple works great.</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Q3: Kept secrets  -->
+            <div class="question-block">
+                <div class="question-label">Can you keep a secret?</div>
+                <div class="question-hint">Some characters hold information critical to the mystery. How are you with that?</div>
+                <div class="tile-group cols-2" id="secretsGroup">
+                    <div class="tile" data-group="secrets" data-value="yes" onclick="selectTile(this)">
+                        <div class="tile-check"></div>
+                        <span class="tile-icon">🤫</span>
+                        <div class="tile-title">My lips are sealed</div>
+                    </div>
+                    <div class="tile" data-group="secrets" data-value="no" onclick="selectTile(this)">
+                        <div class="tile-check"></div>
+                        <span class="tile-icon">😅</span>
+                        <div class="tile-title">I'm terrible at this</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="continueBtn" disabled onclick="handleContinue()">
+                Continue to Character Selection
+            </button>
+
+            <div class="error-msg" id="errorMsg"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyApHrYubqWrR4m0ihdpq6Ym40jv4HTQ5i0",
+        authDomain: "thoreson-estate.firebaseapp.com",
+        databaseURL: "https://thoreson-estate-default-rtdb.firebaseio.com",
+        projectId: "thoreson-estate",
+        storageBucket: "thoreson-estate.firebasestorage.app",
+        messagingSenderId: "182924616892",
+        appId: "1:182924616892:web:8153e1c69895cee665dcb9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db   = firebase.database();
+
+    let currentUser = null;
+    let currentGameId = null;
+
+    // ── Required groups — all must be answered to enable Continue ──
+    const REQUIRED_GROUPS = ['gender', 'involvement', 'secrets'];
+    const answers = {};
+
+    // ── Auth check ────────────────────────────────────────────────
+    auth.onAuthStateChanged(async user => {
+        document.getElementById('authLoading').style.display = 'none';
+
+        if (!user) {
+            window.location.href = 'register.html';
+            return;
+        }
+
+        currentUser = user;
+
+        // Get their current game
+        const userSnap = await db.ref(`users/${user.uid}`).once('value');
+        const userData = userSnap.val();
+
+        if (!userData || !userData.currentGameId) {
+            // No game — back to join
+            window.location.href = 'join.html';
+            return;
+        }
+
+        currentGameId = userData.currentGameId;
+
+        // Check if they've already completed the questionnaire
+        const playerSnap = await db.ref(`games/${currentGameId}/players/${user.uid}`).once('value');
+        const playerData = playerSnap.val();
+
+        if (playerData && playerData.questionnaire && playerData.status !== 'selecting') {
+            // Already done — skip to character picker
+            window.location.href = 'pick.html';
+            return;
+        }
+
+        // Pre-fill if they partially answered before
+        if (playerData && playerData.questionnaire) {
+            const q = playerData.questionnaire;
+            if (q.gender)      prefill('gender', q.gender);
+            if (q.involvement) prefill('involvement', q.involvement);
+            if (q.secrets)     prefill('secrets', q.secrets);
+        }
+
+        document.getElementById('mainContent').style.display = 'block';
+    });
+
+    // ── Tile selection ────────────────────────────────────────────
+    function selectTile(tile) {
+        const group = tile.dataset.group;
+        const value = tile.dataset.value;
+
+        // Deselect others in same group
+        document.querySelectorAll(`.tile[data-group="${group}"]`).forEach(t => {
+            t.classList.remove('selected');
+        });
+
+        tile.classList.add('selected');
+        answers[group] = value;
+
+        checkComplete();
+    }
+
+    function prefill(group, value) {
+        const tile = document.querySelector(`.tile[data-group="${group}"][data-value="${value}"]`);
+        if (tile) {
+            tile.classList.add('selected');
+            answers[group] = value;
+        }
+        checkComplete();
+    }
+
+    function checkComplete() {
+        const allAnswered = REQUIRED_GROUPS.every(g => answers[g]);
+        document.getElementById('continueBtn').disabled = !allAnswered;
+    }
+
+    // ── Save and continue ─────────────────────────────────────────
+    async function handleContinue() {
+        if (!REQUIRED_GROUPS.every(g => answers[g])) return;
+
+        const btn = document.getElementById('continueBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span>Saving…';
+
+        try {
+            await db.ref(`games/${currentGameId}/players/${currentUser.uid}`).update({
+                questionnaire: {
+                    gender:      answers.gender,
+                    involvement: answers.involvement,
+                    secrets:     answers.secrets,
+                    completedAt: new Date().toISOString()
+                }
+            });
+
+            window.location.href = 'pick.html';
+
+        } catch (err) {
+            btn.disabled = false;
+            btn.textContent = 'Continue to Character Selection';
+            const el = document.getElementById('errorMsg');
+            el.textContent = 'Something went wrong saving your answers. Please try again.';
+            el.style.display = 'block';
+        }
+    }
+</script>
+</body>
+</html>
