@@ -434,6 +434,19 @@
     }
 
     // ── Shared: write user to database ───────────────────────────
+    // Handle Google redirect result on page load
+    auth.getRedirectResult().then(async result => {
+        if (result && result.user) {
+            await writeUserRecord(result.user, result.user.displayName);
+            showSuccess('Signed in! Redirecting…');
+            const params = new URLSearchParams(window.location.search);
+            const dest = params.get('code') ? 'join.html?code=' + params.get('code') : 'join.html';
+            setTimeout(() => window.location.href = dest, 800);
+        }
+    }).catch(err => {
+        if (err.code !== 'auth/no-auth-event') showError('Google sign-in failed. Please try again.');
+    });
+
     async function writeUserRecord(user, displayName) {
         // Only write if record doesn't exist yet
         const snap = await db.ref('users/' + user.uid).once('value');
@@ -456,7 +469,9 @@
 
         try {
             const provider = new firebase.auth.GoogleAuthProvider();
-            const cred     = await auth.signInWithPopup(provider);
+            // Always use redirect — works on all browsers including Firefox/Safari on mobile
+            await auth.signInWithRedirect(provider);
+            return; // Page reloads after redirect, getRedirectResult handles the rest
             await writeUserRecord(cred.user, cred.user.displayName);
 
             showSuccess('Signed in! Redirecting…');
