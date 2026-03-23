@@ -67,6 +67,7 @@
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
 <script>
   firebase.initializeApp({
@@ -82,7 +83,8 @@
   var guestPhotos = [];
   var specialPhotos = [];
 
-  firebase.database().ref('photos').orderByChild('time').once('value', function(snap) {
+  function loadPhotos() {
+    firebase.database().ref('photos').orderByChild('time').once('value', function(snap) {
     var data = snap.val();
     if (!data) {
       document.getElementById('photosGrid').innerHTML = '<div class="loading">No photos found.</div>';
@@ -125,6 +127,16 @@
     renderGrid(guestPhotos, 'photosGrid', 'No guest photos.');
     renderGrid(specialPhotos, 'specialsGrid', 'No QR specials.');
   });
+  }
+
+  // Sign in anonymously so Firebase rules allow the read
+  firebase.auth().signInAnonymously()
+    .then(loadPhotos)
+    .catch(function(err) {
+      // Anonymous auth not enabled — try reading anyway (works if rules are open)
+      console.warn('Anonymous auth failed, trying direct read:', err.message);
+      loadPhotos();
+    });
 
   async function downloadSet(which) {
     var photos = which === 'photos' ? guestPhotos : specialPhotos;
