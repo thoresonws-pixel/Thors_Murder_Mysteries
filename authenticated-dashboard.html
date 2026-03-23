@@ -1560,61 +1560,73 @@
             });
         }
 
-        // ── Initialize on load ─────────────────────────────────────
-        // Priority: Firebase Auth (new system) → localStorage (legacy system)
+        // ── FIREBASE AUTH BOOTSTRAP ─────────────────────────────────
+        // Supports both new Firebase Auth users and legacy localStorage sessions.
+        // New users: characterId comes from Firebase game player record.
+        // Legacy users (GM shortcut): session comes from localStorage as before.
         (function() {
-            const auth = firebase.auth();
+            const legacySession = localStorage.getItem('userSession');
 
-            auth.onAuthStateChanged(async function(user) {
-                // Real email/password user from the new registration flow
-                if (user && !user.isAnonymous && user.email) {
-                    try {
-                        const db = firebase.database();
-
-                        // Look up their game and character from Firebase
-                        const userSnap = await db.ref('users/' + user.uid).once('value');
-                        const userData = userSnap.val();
-
-                        if (userData && userData.currentGameId) {
-                            const playerSnap = await db.ref(
-                                'games/' + userData.currentGameId + '/players/' + user.uid
-                            ).once('value');
-                            const playerData = playerSnap.val();
-
-                            if (playerData && playerData.characterId) {
-                                // Build a session object in the format the dashboard expects
-                                const firebaseSession = {
-                                    username:        playerData.characterId,
-                                    displayName:     user.displayName || user.email,
-                                    role:            userData.role === 'admin' ? 'master' : 'guest',
-                                    loginTime:       new Date().toISOString(),
-                                    activeItems:     [],
-                                    discoveredSkills: []
-                                };
-                                userSession = firebaseSession;
-                                localStorage.setItem('userSession', JSON.stringify(firebaseSession));
-                                initializeAuthenticatedView();
-                                return;
-                            }
-                        }
-
-                        // Logged in but no character yet — send to picker
-                        window.location.href = 'pick.html';
-                        return;
-
-                    } catch(e) {
-                        console.warn('Firebase Auth bridge error:', e.message);
-                        // Fall through to legacy session check
+            firebase.auth().onAuthStateChanged(async function(user) {
+                // ── LEGACY LOGIN (GM / old system) ───────────────────
+                if (!user || user.isAnonymous || !user.email) {
+                    if (legacySession) {
+                        userSession = JSON.parse(legacySession);
+                        initializeAuthenticatedView();
+                    } else {
+                        document.getElementById('invitation').style.display = 'block';
                     }
+                    return;
                 }
 
-                // Legacy path: localStorage session (existing players, GM, greeter)
-                const session = localStorage.getItem('userSession');
-                if (session) {
-                    userSession = JSON.parse(session);
+                // ── NEW FIREBASE AUTH USER ───────────────────────────
+                try {
+                    // Load user record
+                    const userSnap = await database.ref('users/' + user.uid).once('value');
+                    const userData = userSnap.val();
+                    if (!userData) {
+                        // Registered but no DB record — send back to register
+                        window.location.href = 'register.html';
+                        return;
+                    }
+
+                    const gameId = userData.currentGameId;
+                    if (!gameId) {
+                        window.location.href = 'join.html';
+                        return;
+                    }
+
+                    // Load player record from game
+                    const playerSnap = await database.ref('games/' + gameId + '/players/' + user.uid).once('value');
+                    const playerData = playerSnap.val();
+
+                    if (!playerData || !playerData.characterId || playerData.status !== 'ready') {
+                        window.location.href = 'pick.html';
+                        return;
+                    }
+
+                    // Build userSession identical in shape to the legacy system
+                    // so all existing functions work unchanged
+                    const isAdmin = userData.role === 'admin';
+                    userSession = {
+                        username:        playerData.characterId,       // key into characterDatabase
+                        displayName:     user.displayName || user.email,
+                        characterName:   playerData.characterName,
+                        role:            isAdmin ? 'master' : 'guest',
+                        loginTime:       new Date().toISOString(),
+                        activeItems:     [],
+                        discoveredSkills:[],
+                        currentGameId:   gameId,
+                        firebaseUid:     user.uid
+                    };
+
+                    // Persist for BroadcastChannel / reload resilience
+                    localStorage.setItem('userSession', JSON.stringify(userSession));
+
                     initializeAuthenticatedView();
-                } else {
-                    // Not logged in either way — show invitation / RSVP section
+
+                } catch(err) {
+                    console.error('Auth bootstrap error:', err);
                     document.getElementById('invitation').style.display = 'block';
                 }
             });
@@ -1787,7 +1799,7 @@
                 html += '</div>'; // close main container
                 
                 // SECRET SECTION (Miranda/Leanna only)
-                if (userSession.username === 'Leanna' && charData.secret) {
+                if (charData.secret) {
                     html += '<div style="background: linear-gradient(145deg, #2a1010 0%, #1a0a0a 100%); border: 2px solid #8b4a4a; border-radius: 5px; padding: 30px; margin-bottom: 30px;">';
                     html += '<div style="font-family: \'Playfair Display\', Georgia, serif; font-size: 22px; color: #8b4a4a; text-transform: uppercase; text-align: center; margin-bottom: 5px;">\u26A0 YOUR SECRET \u26A0</div>';
                     html += '<div style="font-size: 12px; color: #8b4a4a; text-align: center; margin-bottom: 25px; font-style: italic;">Do not share this information until the confession scene.</div>';
@@ -2348,7 +2360,7 @@
                 var v = snap.val();
                 // Only reload if version was set AFTER this session loaded
                 // and we're not the master (master just set it, no need to reload)
-                if (v && v > myLoadTime && userSession.username !== 'Scott') {
+                if (v && v > myLoadTime && userSession.role !== 'master') {
                     console.log('New app version detected, reloading...');
                     setTimeout(function() { window.location.reload(true); }, 1500);
                 }
@@ -3087,101 +3099,66 @@
         function logout() {
             if (confirm('Logout?')) {
                 localStorage.removeItem('userSession');
-                window.location.href = 'index.html';
+                localStorage.removeItem('shownMemories');
+                localStorage.removeItem('personalDiscoveries');
+                firebase.auth().signOut().then(function() {
+                    window.location.href = 'register.html';
+                }).catch(function() {
+                    window.location.href = 'register.html';
+                });
             }
         }
 
-            const charactersList = [
-            // Family
-            { name: "William 'Scott' Thoreson Jr.", irlName: "Scott", role: "The Host / Game Master", publicDesc: "Eldest son of William Thoreson Sr. and the family's attorney. A man of integrity who has dedicated his career to managing the family's legal affairs." },
-            { name: "Frederick Thoreson", irlName: "BrianT", role: "The Younger Brother", publicDesc: "Younger son of William Thoreson Sr. The easygoing one. Here for the food and the drinks." },
-            { name: "Charlotte Waverly", irlName: "Clara", role: "Scott's Wife / The Bartender", publicDesc: "Scott's wife. Warm, practical, and the one keeping things running tonight." },
-            { name: "Eleanor Thoreson (Linda)", irlName: "", role: "The Grieving Widow", publicDesc: "William Thoreson's wife of many years. Dignified in grief, as she has always been dignified in everything. Knows more than she has said." },
-            { name: "Rupert Thoreson (Bill)", irlName: "", role: "Will's Identical Twin", publicDesc: "William Thoreson's identical twin brother. An amateur photographer who has spent the evening behind a camera. Quietly devastated by the loss of his brother." },
-            // Mixed
-            { name: "Charles Sterling", irlName: "Jeff", role: "The Retired Banker", publicDesc: "A retired Dallas banker and old friend of the Thoreson family. Traditional, principled, and sharp as ever." },
-            { name: "Lillian Ashford", irlName: "Katie", role: "The Family Friend", publicDesc: "A dear friend of the Thoreson family for over thirty years. Warm, sharp-tongued, and the best-dressed woman in any room she enters." },
-            { name: "Raymond Hammond", irlName: "Peter", role: "The Business Manager", publicDesc: "Business Manager at Thoreson Toys for fifteen years. Handles operations, vendor relationships, and day-to-day management." },
-            { name: "Victoria Grant", irlName: "Krystal", role: "The Importer's Wife", publicDesc: "Her husband runs a successful import business with ties to Thoreson Toys. Sophisticated, socially savvy, and sharper than people expect." },
-            { name: "Vivienne Ashford", irlName: "Hannah", role: "The Worldly Cousin", publicDesc: "Scott and Frederick's cousin on their mother's side. Recently returned from years living in Paris. Cultured, worldly, and fluent in French." },
-            { name: "Patricia Chamberlain", irlName: "Casey", role: "The Guardian", publicDesc: "An independent woman of means and strong will. Guardian to two young men. Protective, perceptive, and doesn't suffer fools." },
-            { name: "Elizabeth Monroe", irlName: "Lindsey", role: "The Socialite", publicDesc: "A fixture of Dallas society and the life of every party she has ever attended. Knows everyone, remembers everything, and makes it all look effortless." },
-            { name: "Walter Lippman", irlName: "Marc", role: "The Journalist", publicDesc: "A journalist for the Dallas Herald, covering business and society. Known for thorough, honest reporting." },
-            { name: "Thomas Bradford", irlName: "BrianS", role: "The Competitor", publicDesc: "Runs Bradford & Sons, a competing toy manufacturer. Charming, ambitious, and very interested in Thoreson Toys' secrets." },
-            { name: "Marcus Brennan", irlName: "Arash", role: "The Investor", publicDesc: "A successful Dallas businessman with a significant stake in Thoreson Toys. Analytical, measured, and protective of his money." },
-            { name: "Dorothy Wells", irlName: "Michelle", role: "The Society Elder", publicDesc: "One of the most well-connected women in Dallas society. Knows what's happening in every corner of the city." },
-            { name: "David Richardson", irlName: "DJ", role: "The Private Investigator", publicDesc: "A cousin on the Thoreson side and a licensed private investigator. Invited to tonight's dinner — now using his connections to help the family get answers." },
-            { name: "Theodore 'Teddy' Winslow", irlName: "Dylan", role: "Vivienne's Guest", publicDesc: "Vivienne's boyfriend and an accounting student at SMU. Quiet until someone puts numbers in front of him." },
-            { name: "Victoria Ashworth", irlName: "Becky", role: "The Investor", publicDesc: "A sharp businesswoman and Thoreson Toys investor. Active in Dallas society with a keen eye for detail." },
-            { name: "Sophie Vanderpool", irlName: "Maisy", role: "The Journalist's Assistant", publicDesc: "Walter Lippman's assistant at the Dallas Herald. Smart, energetic, and eager to prove herself." },
-            { name: "James Sterling", irlName: "Bradey", role: "The Banker's Son", publicDesc: "Son of Charles Sterling, the retired banker. Young, ambitious, and seeing the Thoreson family with fresh eyes." },
-            { name: "Miranda Longfellow", irlName: "Leanna", role: "Legal Assistant", publicDesc: "Scott Thoreson's legal assistant. Professional, competent, and discreet. Has worked for the family for nearly ten years." },
-            { name: "William Chamberlain", irlName: "Alexander", role: "The Ward (age 17)", publicDesc: "A young man under the guardianship of Patricia Chamberlain. Intelligent, thoughtful, and quietly ambitious." },
-            { name: "Henry Caldwell", irlName: "Preston", role: "Late Arrival", publicDesc: "Arrived late to the evening. Knows Scott through mutual friends. Seems to be taking all of this remarkably in stride." },
-            { name: "Robert Chamberlain", irlName: "Jesse", role: "The Ward (age 15)", publicDesc: "The younger of Patricia Chamberlain's two wards. Loyal, protective, and more emotionally attuned than people give him credit for." },
-        ];
-        
-        function loadGuests() {
-            displayGuests(charactersList);
-        }
-        
-        function displayGuests(guests) {
-            const container = document.getElementById('guestList');
-            if (!guests || guests.length === 0) {
-                container.innerHTML = '<div class="loading">Awaiting responses...</div>';
+            // ── DYNAMIC GUEST LIST ───────────────────────────────────────
+        // Loads all players from the current game in Firebase.
+        // Falls back to characterDatabase publicDesc if available.
+        async function loadGuests() {
+            const container = document.getElementById('guestsContent');
+            if (!container) return;
+
+            // Legacy session — use hardcoded list
+            if (!userSession || !userSession.currentGameId) {
+                container.innerHTML = '<div style="color:#888; font-style:italic; padding:20px;">Guest list unavailable in legacy mode.</div>';
                 return;
             }
-            container.innerHTML = guests.map((c, i) => `
-                <div class="guest-card" id="gc${i}">
-                    <div class="guest-card-header" onclick="toggleGuestCard(${i})">
-                        <div class="guest-card-left">
-                            <div class="guest-card-name">${c.name} <span class="guest-card-player">(${c.irlName})</span></div>
-                            <div class="guest-card-role">${c.role || ''}</div>
+
+            try {
+                const snap = await database.ref('games/' + userSession.currentGameId + '/players').once('value');
+                const players = snap.val() || {};
+
+                const entries = Object.values(players).filter(p => p.characterId && p.status === 'ready');
+
+                if (entries.length === 0) {
+                    container.innerHTML = '<div style="color:#888; font-style:italic; padding:20px;">No guests have chosen their characters yet.</div>';
+                    return;
+                }
+
+                container.innerHTML = entries.map((p, i) => {
+                    const charData = characterDatabase[p.characterId];
+                    const charName = p.characterName || (charData ? charData.name : p.characterId);
+                    const publicDesc = charData ? charData.publicDesc : '';
+                    // Don't show own character to self — show as "You"
+                    const isSelf = p.characterId === userSession.username;
+
+                    return `
+                    <div class="guest-card ${isSelf ? 'guest-card-self' : ''}" id="gc${i}">
+                        <div class="guest-card-header" onclick="toggleGuestCard(${i})">
+                            <div class="guest-card-left">
+                                <div class="guest-card-name">${charName}${isSelf ? ' <span style="color:#c9a227;font-size:13px;">(You)</span>' : ''}</div>
+                                <div class="guest-card-role">${charData ? charData.publicDesc.substring(0, 60) + '…' : ''}</div>
+                            </div>
+                            <div class="guest-card-chevron">&#9660;</div>
                         </div>
-                        <div class="guest-card-chevron">&#9660;</div>
-                    </div>
-                    <div class="guest-card-body">
-                        <div class="guest-card-desc">${c.publicDesc || ''}</div>
-                    </div>
-                </div>`).join('');
-        }
+                        <div class="guest-card-body">
+                            <div class="guest-card-desc">${publicDesc || 'A guest of the estate.'}</div>
+                        </div>
+                    </div>`;
+                }).join('');
 
-        function toggleGuestCard(i) {
-            document.getElementById('gc' + i).classList.toggle('open');
-        }
-
-        function toggleGuestInfo(element) {
-            const info = element.querySelector('.guest-info');
-            const toggle = element.querySelector('.guest-toggle');
-            if (info.style.display === 'none') {
-                info.style.display = 'block';
-                toggle.style.transform = 'rotate(180deg)';
-            } else {
-                info.style.display = 'none';
-                toggle.style.transform = 'rotate(0deg)';
+            } catch(err) {
+                container.innerHTML = '<div style="color:#e74c3c; padding:20px;">Error loading guests: ' + err.message + '</div>';
             }
         }
-        
-        // Handle section navigation
-        document.querySelectorAll('nav a').forEach(link => {
-            link.addEventListener('click', function(e) {
-                const href = this.getAttribute('href');
-                if (href && href.startsWith('#')) {
-                    e.preventDefault();
-                    // Hide all sections
-                    document.querySelectorAll('section').forEach(section => {
-                        section.style.display = 'none';
-                    });
-                    // Show clicked section
-                    const sectionId = href.substring(1);
-                    const section = document.getElementById(sectionId);
-                    if (section) {
-                        section.style.display = 'block';
-                        window.scrollTo(0, 0);
-                    }
-                }
-            });
-        });
 
         document.addEventListener('DOMContentLoaded', loadGuests);
     </script>
