@@ -562,6 +562,9 @@
     </button>
 </div>
 
+<!-- Character data -->
+<script src="characters.js"></script>
+
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
@@ -582,121 +585,31 @@ const auth = firebase.auth();
 const db   = firebase.database();
 
 // ─────────────────────────────────────────────────────────────
-// CHARACTER ROSTER — Thoreson Estate Dinner
-// nameVariants: { female, male } — resolved from questionnaire
-// involvement: light | moderate | heavy
-// isKiller: true only for Miranda — revealed after selection
+// CHARACTER ROSTER — built dynamically from characterDatabase
+// characterDatabase is loaded from characters.js
+// picker metadata on each character drives this page
 // ─────────────────────────────────────────────────────────────
-const THORESON_CHARACTERS = [
-    {
-        id: 'Leanna',
-        nameVariants: { female: 'Miranda Longfellow', male: 'Milo Longfellow' },
-        role: "Legal Assistant",
-        desc: "Scott Thoreson's legal assistant for nearly ten years. Professional, precise, and discreet. Has been present for nearly every significant family moment — and most of the significant paperwork.",
-        involvement: 'heavy',
-        isKiller: true,
-        gender: 'female'
-    },
-    {
-        id: 'Marc',
-        nameVariants: { female: 'Winifred Lippman', male: 'Walter Lippman' },
-        role: "Journalist, Dallas Herald",
-        desc: "A business and society reporter for the Dallas Herald with a reputation for honest, thorough coverage. Not a family member — here because the story brought him here.",
-        involvement: 'heavy',
-        isKiller: false,
-        gender: 'male'
-    },
-    {
-        id: 'DJ',
-        nameVariants: { female: 'Diana Richardson', male: 'David Richardson' },
-        role: "Private Investigator",
-        desc: "A licensed private investigator and a cousin on the Thoreson side. Quiet, methodical, and better-connected than he looks. Has a way of finding things out.",
-        involvement: 'heavy',
-        isKiller: false,
-        gender: 'male'
-    },
-    {
-        id: 'Clara',
-        nameVariants: { female: 'Charlotte Waverly', male: 'Charles Waverly' },
-        role: "Scott's Spouse",
-        desc: "Warm, practical, and the one making sure tonight actually functions. Has a calm that comes from having seen people at their worst. Sharper than most people in this room realize.",
-        involvement: 'moderate',
-        isKiller: false,
-        gender: 'female'
-    },
-    {
-        id: 'Maisy',
-        nameVariants: { female: 'Sophie Vanderpool', male: 'Simon Vanderpool' },
-        role: "Reporter's Assistant",
-        desc: "Walter's assistant — though most people here assume she's just a date. Quietly good at her job. Has been listening carefully all evening.",
-        involvement: 'moderate',
-        isKiller: false,
-        gender: 'female'
-    },
-    {
-        id: 'Hannah',
-        nameVariants: { female: 'Vivienne Ashford', male: 'Vincent Ashford' },
-        role: "The Cousin — Just Back from Paris",
-        desc: "Scott and Frederick's cousin on Eleanor's side. Spent six years in Paris and came back with fluent French and a slightly different way of seeing things. Fond of the family. Not blind to them.",
-        involvement: 'moderate',
-        isKiller: false,
-        gender: 'female'
-    },
-    {
-        id: 'Casey',
-        nameVariants: { female: 'Patricia Chamberlain', male: 'Patrick Chamberlain' },
-        role: "Physician",
-        desc: "A physician and a family friend. Brought in to assist with the situation. Has a clinical eye and knows more about cause of death than most of the other guests.",
-        involvement: 'moderate',
-        isKiller: false,
-        gender: 'female'
-    },
-    {
-        id: 'Michelle',
-        nameVariants: { female: 'Dorothy Wells', male: 'Douglas Wells' },
-        role: "Botanist",
-        desc: "An academic botanist and a former colleague of the family. Has expertise in plants — including ones that shouldn't be anywhere near a dinner party.",
-        involvement: 'moderate',
-        isKiller: false,
-        gender: 'female'
-    },
-    {
-        id: 'Dylan',
-        nameVariants: { female: 'Theodora Winslow', male: 'Theodore "Teddy" Winslow' },
-        role: "Accounting Student, SMU",
-        desc: "Vivienne's companion — earnest, genuinely nice, and slightly overwhelmed by the Thoreson family. Has a knack for numbers and a habit of reading documents more carefully than people expect.",
-        involvement: 'moderate',
-        isKiller: false,
-        gender: 'male'
-    },
-    {
-        id: 'Bill',
-        nameVariants: { female: 'Ruth Thoreson', male: 'Rupert Thoreson' },
-        role: "The Twin — William's Identical Brother",
-        desc: "William Thoreson Sr.'s identical twin brother. An amateur photographer who has lived in the family's shadow his entire life and seems entirely at peace with that. Notices more than he lets on.",
-        involvement: 'light',
-        isKiller: false,
-        gender: 'male'
-    },
-    {
-        id: 'Linda',
-        nameVariants: { female: 'Eleanor Thoreson', male: 'Elliot Thoreson' },
-        role: "The Widow",
-        desc: "William's spouse of forty years. Grieving and dignified. Has built her life around this family and this man — and is beginning to understand there were things about both she didn't fully know.",
-        involvement: 'moderate',
-        isKiller: false,
-        gender: 'female'
-    },
-    {
-        id: 'BrianT',
-        nameVariants: { female: 'Francesca Thoreson', male: 'Frederick Thoreson' },
-        role: "The Younger Sibling",
-        desc: "Scott's younger sibling. Easygoing, funny, and apparently here for the food and the drinks. Pays considerably more attention than that impression suggests.",
-        involvement: 'light',
-        isKiller: false,
-        gender: 'male'
-    }
-];
+function buildRoster(excludeOptional) {
+    return Object.entries(characterDatabase)
+        .filter(([slug, char]) => {
+            if (!char.picker) return false;
+            // Skip optional characters if excludeOptional is true
+            if (excludeOptional && char.note && char.note.startsWith('OPTIONAL')) return false;
+            return true;
+        })
+        .map(([slug, char]) => ({
+            id:           slug,
+            nameVariants: char.nameVariants,
+            role:         char.picker.role,
+            desc:         char.publicDesc,
+            involvement:  char.picker.involvement,
+            isKiller:     char.picker.isKiller
+        }));
+}
+
+// Build the roster — optional character included by default
+// If the game has fewer than 12 players registered, elizabeth_monroe is hidden
+let ROSTER = buildRoster(false);
 
 // ─────────────────────────────────────────────────────────────
 // STATE
@@ -765,17 +678,29 @@ auth.onAuthStateChanged(async user => {
 // ─────────────────────────────────────────────────────────────
 // RENDER
 // ─────────────────────────────────────────────────────────────
+// Strip {{slug}} tokens from picker display text
+// Full resolution happens in the dashboard once gender is known
+// On the picker we just remove the braces to show a clean name
+function stripTokens(str) {
+    if (!str) return str;
+    return str.replace(/\{\{([a-z_]+)\}\}/g, function(match, slug) {
+        const char = characterDatabase[slug];
+        if (char && char.nameVariants) return char.nameVariants.female;
+        return slug.replace(/_/g, ' ');
+    });
+}
+
 function resolvedName(char) {
     if (genderPref === 'male')   return char.nameVariants.male;
     if (genderPref === 'female') return char.nameVariants.female;
-    // 'any' → show their original canonical name
-    return char.gender === 'male' ? char.nameVariants.male : char.nameVariants.female;
+    // 'any' → default to female (canonical names)
+    return char.nameVariants.female;
 }
 
 function renderGrid() {
     const grid = document.getElementById('charGrid');
 
-    grid.innerHTML = THORESON_CHARACTERS.map(char => {
+    grid.innerHTML = ROSTER.map(char => {
         const name   = resolvedName(char);
         const taken  = !!takenCharacters[char.id];
         const hidden = activeFilter !== 'all' && char.involvement !== activeFilter;
@@ -792,7 +717,7 @@ function renderGrid() {
             <div class="char-card-body">
                 <div class="char-role">${char.role}</div>
                 <div class="char-name">${name}</div>
-                <div class="char-desc">${char.desc}</div>
+                <div class="char-desc">${stripTokens(char.desc)}</div>
             </div>
             <div class="char-card-footer">
                 <span class="involvement-tag ${tagClass}">${involvementLabel[char.involvement]}</span>
@@ -816,7 +741,7 @@ function setFilter(value, btn) {
 // MODAL
 // ─────────────────────────────────────────────────────────────
 function openModal(charId) {
-    const char = THORESON_CHARACTERS.find(c => c.id === charId);
+    const char = ROSTER.find(c => c.id === charId);
     if (!char || takenCharacters[charId]) return;
 
     selectedChar = char;
@@ -824,7 +749,7 @@ function openModal(charId) {
 
     document.getElementById('modalName').textContent = name;
     document.getElementById('modalRole').textContent = char.role;
-    document.getElementById('modalDesc').textContent = char.desc;
+    document.getElementById('modalDesc').textContent = stripTokens(char.desc);
     document.getElementById('modalStrip').className  =
         `modal-strip${char.involvement === 'heavy' ? ' heavy' : ''}`;
 

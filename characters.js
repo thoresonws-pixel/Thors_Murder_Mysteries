@@ -52,6 +52,11 @@ const characterDatabase = {
     "miranda_longfellow": {
         name: "Miranda Longfellow",
         nameVariants: { female: "Miranda Longfellow", male: "Milo Longfellow" },
+        picker: {
+            role:        'Legal Assistant',
+            involvement: 'heavy',
+            isKiller:    true
+        },
         publicDesc: "{{scott_thoreson}}'s legal assistant for nearly ten years. Professional, precise, and discreet. Has been present for every significant family moment — and most of the significant paperwork.",
         hiddenSkills: ["Legal"],
         note: "You know everything. You are not in a hurry. Let the investigation find you — don't chase it. Your Legal skill gives you a natural reason to handle documents and weigh in on findings. Use it. The slower the truth comes out, the better the story.",
@@ -85,6 +90,11 @@ const characterDatabase = {
     "scott_thoreson": {
         name: "Scott Thoreson Jr.",
         nameVariants: { female: "Scottie Thoreson Jr.", male: "Scott Thoreson Jr." },
+        picker: {
+            role:        'Family Attorney',
+            involvement: 'heavy',
+            isKiller:    false
+        },
         publicDesc: "Eldest child of William Thoreson Sr. and the family's attorney of record. A person of integrity who has dedicated a career to managing the family's legal affairs.",
         hiddenSkills: [],
         backstory: "You are the eldest child of William and {{eleanor_thoreson}}, and the family's attorney of record. You studied law at SMU on a partial scholarship — your father wasn't the type to hand things to children when those children could earn them. You built your practice from the ground up, handling wills, property disputes, and contract work for several prominent Dallas families before the Thoreson business became your primary focus. You are methodical by nature. You keep notes. You remember things.\n\nYour father has seemed different lately. Anxious. Emotional in ways he wasn't before. Three weeks ago William called to say planning was underway to make something right — something from a long time ago. William wouldn't say more. You assumed it was the will. You drafted the new language yourself. The updated will explicitly names Taylor Hartley as an acknowledged heir.\n\nYou did not know who Taylor Hartley was when you drafted that document. You do now.\n\nTonight was supposed to be the announcement. Instead, your father is dead.\n\nHere is what makes your position uncomfortable: you drafted the will. You are the family attorney with access to every document in this house. You stood to see your inheritance complicated by the introduction of a new heir. Every person in this room has reason to look at you. You are aware of this. You are also genuinely grieving, genuinely confused, and genuinely determined to find out what happened.\n\n{{miranda_longfellow}} has worked alongside you for nearly ten years. You trust {{miranda_longfellow}} completely. That trust is not going to serve you well tonight.",
@@ -113,6 +123,11 @@ const characterDatabase = {
     "walter_lippman": {
         name: "Walter Lippman",
         nameVariants: { female: "Winifred Lippman", male: "Walter Lippman" },
+        picker: {
+            role:        'Journalist, Dallas Herald',
+            involvement: 'heavy',
+            isKiller:    false
+        },
         publicDesc: "A journalist for the Dallas Herald covering business and society. Known for thorough, honest reporting. Personally invited by William Thoreson Sr.",
         hiddenSkills: ["Journalism"],
         note: "You came tonight knowing Will wanted to tell you something personal. You don't fully understand yet what you are to this family. Let that discovery happen in the room — don't get ahead of it.",
@@ -139,6 +154,11 @@ const characterDatabase = {
     "david_richardson": {
         name: "David Richardson",
         nameVariants: { female: "Diana Richardson", male: "David Richardson" },
+        picker: {
+            role:        'Private Investigator',
+            involvement: 'heavy',
+            isKiller:    false
+        },
         publicDesc: "A cousin on the Thoreson side and a licensed private investigator. Using connections to help the family get answers.",
         hiddenSkills: [],
         note: "You are the evidence pipeline — documents and reports come through you at each act transition, not all at once. Make it a moment each time — step away, take the call, react before you share. The timing matters as much as the content.",
@@ -165,6 +185,11 @@ const characterDatabase = {
     "charlotte_waverly": {
         name: "Charlotte Waverly",
         nameVariants: { female: "Charlotte Waverly", male: "Charles Waverly" },
+        picker: {
+            role:        'Scott's Spouse',
+            involvement: 'moderate',
+            isKiller:    false
+        },
         publicDesc: "{{scott_thoreson}}'s spouse. Warm, practical, and the one keeping things running tonight.",
         hiddenSkills: ["Bartender"],
         backstory: "You grew up in Fort Worth — your father ran a dry goods store and your mother kept the books, which is where you learned that the people who actually run things are rarely the ones with their names on the door. You met {{scott_thoreson}} at a mutual friend's dinner party in 1927 and married two years later. You are practical, composed, and quietly sharp.\n\nYou have always been the kind of person other people lean on without realizing they're doing it. At family gatherings you are the one who remembers where the extra chairs are, who is getting along with whom, and when someone has had enough to drink. A room is a system, and you have always been good at understanding systems.\n\nYou trained briefly as a nurse before the marriage, and you still carry that instinct — the calm that comes from having seen people at their worst and knowing that most situations are survivable. You think clearly under pressure. You do not panic. You are possibly the most useful person in this room right now, and almost no one has thought to ask you anything yet.\n\nYou have learned, over years of marriage into this family, that the Thoresons communicate more in what they don't say than in what they do. Tonight the silences are different. Tonight they mean something new. You are paying very close attention.",
@@ -190,6 +215,11 @@ const characterDatabase = {
     "patricia_chamberlain": {
         name: "Patricia Chamberlain",
         nameVariants: { female: "Patricia Chamberlain", male: "Patrick Chamberlain" },
+        picker: {
+            role:        'Physician',
+            involvement: 'moderate',
+            isKiller:    false
+        },
         publicDesc: "An independent person of means and strong will. Protective, perceptive, and doesn't suffer fools.",
         hiddenSkills: ["Medical"],
         backstory: "You spent seventeen years as a registered nurse — first at Baylor University Hospital in Dallas, then as a private duty nurse for several of the city's wealthier families. You have seen the inside of more sick rooms than most people would care to imagine, and you have sat with enough dying people to understand that the body rarely lies, even when the people around it do.\n\nYou left nursing eight years ago when a sibling and a sibling's spouse died within a year of each other, leaving behind two boys. You took them in without hesitation. Not out of obligation, exactly. Out of something closer to recognition. You understood what it was to be the person in the room who does what needs doing.\n\nYour nursing background is not something you advertise in social settings. People do not know what to do with someone who can tell them what's wrong before the doctor arrives. But the knowledge is there, intact, and it does not go away.\n\nYou are at this dinner because you have known the Thoreson family for years through charitable connections, and because William specifically asked you to come. You did not think much of it at the time. You are thinking more of it now.",
@@ -214,6 +244,11 @@ const characterDatabase = {
     "dorothy_wells": {
         name: "Dorothy Wells",
         nameVariants: { female: "Dorothy Wells", male: "Douglas Wells" },
+        picker: {
+            role:        'Dallas Society Elder',
+            involvement: 'moderate',
+            isKiller:    false
+        },
         publicDesc: "One of the most well-connected people in Dallas society. Has been watching this city for longer than most guests have been alive.",
         hiddenSkills: ["Botany"],
         backstory: "You are eighty-one years old and you have outlived most of the people you loved, which gives you a perspective that is sometimes melancholy and sometimes useful. You remember Dallas when it was a smaller city, when the Thoreson family was just beginning, when William was a young man with ambition and a partner named Hartley that nobody talks about anymore.\n\nYou were born in 1854 in Savannah, Georgia. You came to Texas in 1881 with a spouse who built a modest law practice in Dallas and died in 1919, leaving you comfortable, independent, and extremely clear-eyed about the nature of people.\n\nYou have watched three generations of Dallas families rise and fall. In your experience, the ones that came apart were almost always undone not by misfortune but by a secret kept too long. The weight of it eventually becomes structural. The house starts to lean.\n\nYou are {{eleanor_thoreson}}'s great-aunt, which makes you peripheral enough to the family to have seen it without being entirely inside it. You have always believed that the truth, however painful, is better than comfortable silence.\n\nYou are a person who has always known more than those around you assumed. Men tell you things at dinner parties they would never tell another man, because they have decided you are harmless. You have been gathering intelligence about this city for decades with the same methodical patience you bring to botanical classification. Observe carefully. Label accurately. Never mistake a pretty flower for an innocuous one.",
@@ -243,6 +278,11 @@ const characterDatabase = {
     "vivienne_ashford": {
         name: "Vivienne Ashford",
         nameVariants: { female: "Vivienne Ashford", male: "Vincent Ashford" },
+        picker: {
+            role:        'The Cousin from Paris',
+            involvement: 'moderate',
+            isKiller:    false
+        },
         publicDesc: "{{scott_thoreson}}'s cousin on the mother's side. Recently returned from years living in Paris. Cultured, worldly, and fluent in French.",
         hiddenSkills: ["French"],
         backstory: "You are {{scott_thoreson}}'s cousin on the mother's side — {{eleanor_thoreson}}'s niece. You spent the better part of six years living in Paris, studying at the Ecole des Beaux-Arts and immersing yourself in French language and culture more thoroughly than you ever intended to. You speak French fluently, think in it sometimes, and read it without effort. You came home to Dallas eight months ago, partly because money was running thin and partly because your mother wrote that Uncle Will was planning something important.\n\nParis changed you in ways that are difficult to explain to people who haven't been. Not the art exactly — though you loved the art — but the particular freedom of being nobody. Of walking down a street where no one knew your family or what was expected of you. You became someone slightly different there. Looser. More willing to disagree, to take up space in a conversation.\n\nComing back to Dallas has required a certain amount of reassembly. You are fond of your family and you love your cousins, but you see all of it now with the slight detachment of someone who has lived somewhere else — which means you see it more clearly, and sometimes more critically.\n\nThe Thoresons have always been a family defined by what they don't say. Uncle Will in particular carried something heavy — you noticed it as a child and it was still there when you returned.\n\nYou are better at reading people than you let on. In Paris you spent enough time in rooms where everyone was performing something to develop a very good eye for the gap between what people present and what they actually are.",
@@ -268,6 +308,11 @@ const characterDatabase = {
     "eleanor_thoreson": {
         name: "Eleanor Thoreson",
         nameVariants: { female: "Eleanor Thoreson", male: "Elliott Thoreson" },
+        picker: {
+            role:        'The Widow',
+            involvement: 'moderate',
+            isKiller:    false
+        },
         publicDesc: "William Thoreson's spouse of forty years. Dignified in grief, as always dignified in everything.",
         hiddenSkills: [],
         backstory: "You have been Eleanor Thoreson for forty years. Before that you were Eleanor Ashford — a name from a good family, modest money, and a particular kind of Dallas upbringing that taught you to be gracious, composed, and careful about what you said in rooms where it might be repeated.\n\nYou met William when you were twenty-two. Charming, ambitious, absolutely certain of himself in a way you found first attractive and then, over forty years, occasionally exhausting. You built a life together. You raised a family. You chaired committees, hosted dinners, and learned to be fluent in the particular silence that a long marriage produces — the silence that means everything is fine, the silence that means something is wrong but we are not discussing it, and the silence that means there are things you have chosen not to know.\n\nThat last silence is the one that has defined your marriage more than you have ever admitted to anyone.\n\nYou have known, in the way that spouses know things without being told, that William carried something from the early years of the company. Something that happened before {{scott_thoreson}} was born. You asked once, early in the marriage. William told you it was handled. You accepted that. You chose to accept it. You told yourself the company was real, the life was real, the family was real, and that whatever came before was past.\n\nTonight you are sitting in your own parlor watching the past walk through the door and introduce itself.\n\nYou are a person who has spent forty years being strong for this family. Tonight you are going to need to decide how much of what you know — and what you have always suspected — you are willing to say out loud.",
@@ -297,6 +342,11 @@ const characterDatabase = {
     "raymond_hammond": {
         name: "Raymond Hammond",
         nameVariants: { female: "Rachel Hammond", male: "Raymond Hammond" },
+        picker: {
+            role:        'Business Manager',
+            involvement: 'moderate',
+            isKiller:    false
+        },
         publicDesc: "Business Manager at Thoreson Toys for fifteen years. Handles operations, vendor relationships, and day-to-day management.",
         hiddenSkills: ["Accounting"],
         note: "You know about the European deal and the investor losses. Don't lead with it — let it come out when the financial records surface. You're not hiding anything. You just work there.",
@@ -324,6 +374,11 @@ const characterDatabase = {
     "marcus_brennan": {
         name: "Marcus Brennan",
         nameVariants: { female: "Margaret Brennan", male: "Marcus Brennan" },
+        picker: {
+            role:        'Investor',
+            involvement: 'moderate',
+            isKiller:    false
+        },
         publicDesc: "A successful Dallas businessperson with a significant stake in Thoreson Toys. Analytical, measured, and protective of invested money.",
         hiddenSkills: ["Banking"],
         backstory: "You inherited a modest sum and turned it into a considerably larger one through careful investments and a talent for reading people that has served you well in rooms where most people are too busy talking to listen. You have been invested in Thoreson Toys for four years. The returns were excellent until they weren't.\n\nYou understand how money moves, how accounts can be structured to show one thing while concealing another, and what it looks like when a company's books have been managed to protect secrets rather than communicate truth. That expertise is about to become very relevant.\n\nSix months ago William Thoreson made a reckless decision with company capital and the European deal evaporated. You and {{victoria_ashworth}} lost real money. You are not a person who loses money quietly. You have been pursuing answers for months through proper channels. William kept putting you off.\n\nYou came tonight expecting a confrontation. Instead you walked into a murder. You are annoyed, you are composed, and you are paying very close attention to everything happening in this room.",
@@ -350,6 +405,11 @@ const characterDatabase = {
     "victoria_ashworth": {
         name: "Victoria Ashworth",
         nameVariants: { female: "Victoria Ashworth", male: "Victor Ashworth" },
+        picker: {
+            role:        'Investor',
+            involvement: 'moderate',
+            isKiller:    false
+        },
         publicDesc: "A sharp businessperson and Thoreson Toys investor. Active in Dallas society with a keen eye for detail.",
         hiddenSkills: [],
         backstory: "You come from old Dallas money — not a fortune, but enough to open the right doors and enough sense to know which ones to walk through. You married well and invested wisely ever since. You have been a shareholder in Thoreson Toys for six years and an active presence in Dallas business circles for longer than that. You know how companies work. You know how the people who run companies work. You have made a career of understanding the difference between the two.\n\nYou and {{marcus_brennan}} have coordinated on Thoreson investments for years. {{marcus_brennan}} handles the numbers. You handle the people. Between the two of you, very little gets past unnoticed — or so you believed until six months ago, when the European deal collapsed and eight thousand dollars of investor capital evaporated overnight. You have been asking questions since then. William kept putting you off. Tonight was supposed to be the night you finally got answers.\n\nYou came expecting a confrontation with a living person. Instead you are sitting in a room with a dead one.\n\nYou have been accused, more than once, of being cold. You prefer the word precise. You do not make decisions based on what you wish were true. You do not extend trust because someone seems trustworthy — you extend it because they have demonstrated it, incrementally, over time. The people who have called you cold are usually the ones who wanted you to skip that last step.",
@@ -376,6 +436,11 @@ const characterDatabase = {
     "elizabeth_monroe": {
         name: "Elizabeth Monroe",
         nameVariants: { female: "Elizabeth Monroe", male: "Elliot Monroe" },
+        picker: {
+            role:        'Dallas Society',
+            involvement: 'light',
+            isKiller:    false
+        },
         publicDesc: "A fixture of Dallas society and the life of every gathering. Knows everyone, remembers everything, and makes it all look effortless.",
         hiddenSkills: [],
         note: "OPTIONAL CHARACTER — cut first if the guest count is below 12. The mystery functions without this role.",
