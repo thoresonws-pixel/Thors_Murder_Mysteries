@@ -1257,6 +1257,14 @@
                         <label for="partyName">Party Name</label>
                         <input type="text" id="partyName" placeholder="e.g. Smith Party, Johnson Event" required>
                     </div>
+                    <div class="form-group">
+                        <label for="hostEmail">Host Email <span style="color:var(--crimson-lt);">*</span></label>
+                        <input type="email" id="hostEmail" placeholder="host@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hostPhone">Host Phone <span style="color:var(--crimson-lt);">*</span></label>
+                        <input type="tel" id="hostPhone" placeholder="(214) 555-0100" required>
+                    </div>
                     <div class="form-group full">
                         <label for="venueName">Venue Name</label>
                         <input type="text" id="venueName" placeholder="e.g. 123 Elm Street, Dallas TX">
@@ -1618,12 +1626,27 @@
         const venueName  = document.getElementById('venueName').value.trim();
         const notes      = document.getElementById('gameNotes').value.trim();
 
+        const hostEmail  = document.getElementById('hostEmail').value.trim();
+        const hostPhone  = document.getElementById('hostPhone').value.trim();
+
         if (!partyName) {
             document.getElementById('partyName').focus();
             document.getElementById('partyName').style.outline = '2px solid var(--crimson-lt)';
             return showToast('Party name is required.', 'error');
         }
         document.getElementById('partyName').style.outline = '';
+        if (!hostEmail) {
+            document.getElementById('hostEmail').focus();
+            document.getElementById('hostEmail').style.outline = '2px solid var(--crimson-lt)';
+            return showToast('Host email is required.', 'error');
+        }
+        document.getElementById('hostEmail').style.outline = '';
+        if (!hostPhone) {
+            document.getElementById('hostPhone').focus();
+            document.getElementById('hostPhone').style.outline = '2px solid var(--crimson-lt)';
+            return showToast('Host phone is required.', 'error');
+        }
+        document.getElementById('hostPhone').style.outline = '';
         if (!eventDate) return showToast('Please set an event date.', 'error');
 
         const btn = document.getElementById('createBtn');
@@ -1638,6 +1661,8 @@
                 storyId,
                 storyName:   story.name,
                 partyName:   partyName || null,
+                hostEmail,
+                hostPhone,
                 partyCode,
                 status:      'lobby',
                 eventDate,
@@ -1737,6 +1762,8 @@
 
     function resetForm() {
         document.getElementById('partyName').value       = '';
+        document.getElementById('hostEmail').value        = '';
+        document.getElementById('hostPhone').value        = '';
         document.getElementById('storySelect').value    = 'thoreson_estate_dinner';
         document.getElementById('gameDate').value    = new Date().toISOString().split('T')[0];
         document.getElementById('gameTime').value    = '18:30';
@@ -2023,6 +2050,8 @@
                 storyId,
                 storyName:   story.name,
                 partyName:   partyNameEdit || null,
+                hostEmail:   document.getElementById('editHostEmail').value.trim() || null,
+                hostPhone:   document.getElementById('editHostPhone').value.trim() || null,
                 eventDate,
                 eventTime,
                 maxPlayers,
@@ -2459,6 +2488,14 @@
                 <div class="form-group">
                     <label>Player Range</label>
                     <div id="editPlayerRange" style="padding:10px 14px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent-lt);">—</div>
+                </div>
+                <div class="form-group full">
+                    <label for="editHostEmail">Host Email</label>
+                    <input type="email" id="editHostEmail" placeholder="host@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="editHostPhone">Host Phone</label>
+                    <input type="tel" id="editHostPhone" placeholder="(214) 555-0100">
                 </div>
                 <div class="form-group full">
                     <label for="editVenue">Venue</label>

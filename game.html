@@ -958,7 +958,39 @@
             <div style="color:var(--fog);font-style:italic;">Loading checklist…</div>
         </div>
 
-        <div style="margin-top:32px;">
+        <div style="margin-top:28px;margin-bottom:28px;">
+            <div class="section-title" style="margin-bottom:14px;">Host Contact</div>
+            <div class="panel" style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+                <div style="display:flex;gap:32px;flex-wrap:wrap;">
+                    <div>
+                        <div class="panel-label">Email</div>
+                        <div id="hostEmailDisplay" style="font-size:15px;color:var(--white);">—</div>
+                    </div>
+                    <div>
+                        <div class="panel-label">Phone</div>
+                        <div id="hostPhoneDisplay" style="font-size:15px;color:var(--white);">—</div>
+                    </div>
+                    <div>
+                        <div class="panel-label">Party Code</div>
+                        <div id="hostCodeDisplay" style="font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--gold);letter-spacing:4px;">—</div>
+                    </div>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <button class="btn-gold" onclick="sendInviteEmail()" id="sendEmailBtn">
+                        ✉ Send Invite Email
+                    </button>
+                    <button class="btn-gold" onclick="sendInviteSMS()" id="sendSMSBtn" style="background:var(--green);">
+                        💬 Send Invite Text
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top:0;">
+            <div class="section-title" style="margin-bottom:16px;">Pre-Game Checklist</div>
+        </div>
+
+        <div style="margin-top:28px;">
             <div class="section-title" style="margin-bottom:16px;">Quick Actions</div>
             <div class="quick-actions">
                 <a onclick="switchTab('run', document.querySelector('[onclick*=\"run\"]'))" class="quick-card">
@@ -1321,6 +1353,14 @@ function renderHeader() {
     const timeStr = g.eventTime ? ' · ' + formatTime(g.eventTime) : '';
     document.getElementById('headerMeta').innerHTML =
         `<span>${g.venueName || 'No venue set'}</span> · ${dateStr}${timeStr}`;
+
+    // Populate host contact panel
+    const emailEl = document.getElementById('hostEmailDisplay');
+    const phoneEl = document.getElementById('hostPhoneDisplay');
+    const codeEl  = document.getElementById('hostCodeDisplay');
+    if (emailEl) emailEl.textContent = g.hostEmail || '—';
+    if (phoneEl) phoneEl.textContent = g.hostPhone || '—';
+    if (codeEl)  codeEl.textContent  = g.partyCode || '—';
 }
 
 // ── TAB SWITCHING ─────────────────────────────────────────────
@@ -1889,6 +1929,55 @@ function showToast(msg, type='success') {
         } catch(err) {
             showToast('Error: ' + err.message, 'error');
         }
+    }
+
+
+    // ── INVITE SENDING (backbone — wire to SendGrid/Twilio when going commercial) ──
+    function buildInviteMessage() {
+        const inviteUrl = `https://thoresonws-pixel.github.io/Thoreson_Estate_Dinner/join.html?code=${gameData.partyCode}`;
+        return {
+            subject: `You're invited — ${gameData.partyName || gameData.storyName}`,
+            body: `You have been invited to ${gameData.partyName || 'a mystery dinner experience'}.
+
+` +
+                  `Story: ${gameData.storyName}
+` +
+                  `Date: ${gameData.eventDate || 'TBD'}
+` +
+                  `Time: ${gameData.eventTime || 'TBD'}
+` +
+                  `Venue: ${gameData.venueName || 'TBD'}
+
+` +
+                  `To join, visit this link and create your account:
+${inviteUrl}
+
+` +
+                  `Your party code is: ${gameData.partyCode}
+
+` +
+                  `Once you've joined, you'll receive your character assignment before the event.`,
+            url: inviteUrl
+        };
+    }
+
+    function sendInviteEmail() {
+        const msg = buildInviteMessage();
+        // TODO: wire to SendGrid/Resend when going commercial
+        // For now: open mailto as fallback
+        const mailto = `mailto:${gameData.hostEmail || ''}?subject=${encodeURIComponent(msg.subject)}&body=${encodeURIComponent(msg.body)}`;
+        window.open(mailto);
+        showToast('Email client opened — wire to SendGrid for automation.', 'success');
+    }
+
+    function sendInviteSMS() {
+        const msg = buildInviteMessage();
+        // TODO: wire to Twilio when going commercial
+        // For now: open sms as fallback on mobile
+        const smsBody = `You're invited to ${gameData.partyName || gameData.storyName}! Join here: ${msg.url} (Code: ${gameData.partyCode})`;
+        const sms = `sms:${gameData.hostPhone || ''}?body=${encodeURIComponent(smsBody)}`;
+        window.open(sms);
+        showToast('SMS app opened — wire to Twilio for automation.', 'success');
     }
 
 </script>
