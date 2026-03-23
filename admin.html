@@ -1255,7 +1255,7 @@
 
                     <div class="form-group full">
                         <label for="partyName">Party Name</label>
-                        <input type="text" id="partyName" placeholder="e.g. Smith Party, Johnson Event">
+                        <input type="text" id="partyName" placeholder="e.g. Smith Party, Johnson Event" required>
                     </div>
                     <div class="form-group full">
                         <label for="venueName">Venue Name</label>
@@ -1524,7 +1524,7 @@
             <div style="height:4px;background:${STORIES[g.storyId]?.color || 'var(--gold-dk)'};border-bottom:2px solid ${STORIES[g.storyId]?.accent || 'var(--gold)'};" ></div>
         <div class="game-card-top">
                 <div class="game-info">
-                    <div class="game-story">${g.partyName || 'Unnamed Party'}</div>
+                    <div class="game-story">${g.partyName}</div>
                     <div class="game-meta" style="margin-top:4px;">
                         ${dateStr}${g.eventTime ? ' &nbsp;·&nbsp; ' + formatTime(g.eventTime) : ''}
                         ${g.venueName ? ' &nbsp;·&nbsp; ' + g.venueName : ''}
@@ -1597,6 +1597,7 @@
 
     // ── Create game ───────────────────────────────────────
     async function createGame() {
+        const partyName  = document.getElementById('partyName').value.trim();
         const storyId    = document.getElementById('storySelect').value;
         const eventDate  = document.getElementById('gameDate').value;
         const eventTime  = document.getElementById('gameTime').value;
@@ -1604,6 +1605,12 @@
         const venueName  = document.getElementById('venueName').value.trim();
         const notes      = document.getElementById('gameNotes').value.trim();
 
+        if (!partyName) {
+            document.getElementById('partyName').focus();
+            document.getElementById('partyName').style.outline = '2px solid var(--crimson-lt)';
+            return showToast('Party name is required.', 'error');
+        }
+        document.getElementById('partyName').style.outline = '';
         if (!eventDate) return showToast('Please set an event date.', 'error');
 
         const btn = document.getElementById('createBtn');
@@ -2415,7 +2422,7 @@
             <div class="form-grid">
                 <div class="form-group full">
                     <label for="editPartyName">Party Name</label>
-                    <input type="text" id="editPartyName" placeholder="e.g. Smith Party">
+                    <input type="text" id="editPartyName" placeholder="e.g. Smith Party" required>
                 </div>
                 <div class="form-group">
                     <label for="editStory">Mystery</label>
