@@ -1457,6 +1457,7 @@
                     <span class="copy-confirm" id="invite-${id}">Copied!</span>
                     <button class="btn-ghost" onclick="openEditModal('${id}')">Edit</button>
                     <button class="btn-danger" onclick="deleteGame('${id}', '${g.storyName}')">Delete</button>
+                    ${Object.keys(g.players||{}).some(k=>k.startsWith('test_player_')) ? `<button class="btn-ghost" style="color:var(--fog);font-size:10px;" onclick="removeTestPlayers('${id}')">Remove Test Players</button>` : ''}
                 </div>
             </div>
         </div>`;
@@ -1886,8 +1887,15 @@
         });
 
         if (Object.keys(genPlayers).length === 0) {
-            document.getElementById('genPlayerGrid').innerHTML =
-                '<div style="color:var(--fog);font-style:italic;">No players have chosen characters yet.</div>';
+            document.getElementById('genPlayerGrid').innerHTML = `
+                <div style="grid-column:1/-1;">
+                    <div style="color:var(--fog);font-style:italic;margin-bottom:16px;">
+                        No players have chosen characters yet.
+                    </div>
+                    <button class="btn-ghost" onclick="addTestPlayers('${gameId}')">
+                        + Add Test Players (for development)
+                    </button>
+                </div>`;
             return;
         }
 
@@ -1910,10 +1918,65 @@
         genAssignments = {};
     }
 
+
+    // ── TEST PLAYER GENERATOR ─────────────────────────────────────
+    // Populates a game with fake players covering all characters
+    // so role generation can be tested without real accounts
+    const TEST_CHARACTERS = [
+        { id: 'miranda_longfellow',   name: 'Test Miranda',   score: 9 },
+        { id: 'scott_thoreson',       name: 'Test Scott',     score: 8 },
+        { id: 'walter_lippman',       name: 'Test Walter',    score: 8 },
+        { id: 'david_richardson',     name: 'Test David',     score: 7 },
+        { id: 'charlotte_waverly',    name: 'Test Charlotte', score: 6 },
+        { id: 'patricia_chamberlain', name: 'Test Patricia',  score: 6 },
+        { id: 'dorothy_wells',        name: 'Test Dorothy',   score: 5 },
+        { id: 'vivienne_ashford',     name: 'Test Vivienne',  score: 5 },
+        { id: 'eleanor_thoreson',     name: 'Test Eleanor',   score: 4 },
+        { id: 'raymond_hammond',      name: 'Test Raymond',   score: 7 },
+        { id: 'marcus_brennan',       name: 'Test Marcus',    score: 5 },
+        { id: 'victoria_ashworth',    name: 'Test Victoria',  score: 3 },
+    ];
+
+    async function addTestPlayers(gameId) {
+        const btn = event.target;
+        btn.disabled = true;
+        btn.textContent = 'Adding test players…';
+
+        try {
+            const writes = {};
+            TEST_CHARACTERS.forEach((tc, i) => {
+                const fakeUid = 'test_player_' + i;
+                writes[fakeUid] = {
+                    displayName: tc.name,
+                    characterId: tc.id,
+                    characterName: tc.id.replace(/_/g, ' '),
+                    status: 'ready',
+                    joinedAt: new Date().toISOString(),
+                    questionnaire: {
+                        gender: 'female',
+                        involvementScore: tc.score,
+                        secrets: 'yes',
+                        completedAt: new Date().toISOString()
+                    }
+                };
+            });
+
+            await db.ref('games/' + gameId + '/players').update(writes);
+            showToast('Test players added — reopening…', 'success');
+            closeGenerateModal();
+            setTimeout(() => openGenerateModal(gameId), 600);
+
+        } catch(err) {
+            btn.disabled = false;
+            btn.textContent = '+ Add Test Players (for development)';
+            showToast('Error: ' + err.message, 'error');
+        }
+    }
+
+    // Allow rolesConfig to reload for different stories
     async function loadRolesConfig(storyId) {
         return new Promise((resolve) => {
-            // Already loaded for this story
-            if (rolesConfig) { resolve(); return; }
+            rolesConfig = null; // always reload fresh
             const script = document.createElement('script');
             script.src = 'stories/' + storyId + '/roles.js?v=' + Date.now();
             script.onload = () => { resolve(); };
@@ -1925,6 +1988,7 @@
             document.head.appendChild(script);
         });
     }
+
 
     // ── THE RANDOMIZER ────────────────────────────────────────────
     function runGeneration() {
@@ -2119,6 +2183,19 @@
         const el = document.getElementById('genWarning');
         el.textContent = msg;
         el.classList.add('visible');
+    }
+
+    
+    async function removeTestPlayers(gameId) {
+        const snap = await db.ref('games/' + gameId + '/players').once('value');
+        const removes = {};
+        snap.forEach(child => {
+            if (child.key.startsWith('test_player_')) removes[child.key] = null;
+        });
+        if (Object.keys(removes).length > 0) {
+            await db.ref('games/' + gameId + '/players').update(removes);
+            showToast('Test players removed.', 'success');
+        }
     }
 
     </script>
