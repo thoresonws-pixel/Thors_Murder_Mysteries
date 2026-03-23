@@ -4,8 +4,8 @@
 
 | Item | Value |
 |------|-------|
-| GitHub Repo | `thoresonws-pixel/Thoreson_Estate_Dinner` |
-| Live Site | `https://thoresonws-pixel.github.io/Thoreson_Estate_Dinner/` |
+| GitHub Repo | `thoresonws-pixel/Thors_Murder_Mysteries` |
+| Live Site | `https://thoresonws-pixel.github.io/Thors_Murder_Mysteries/` |
 | Deploy | Push to `main` → GitHub Pages auto-deploys |
 
 ## Firebase Realtime Database

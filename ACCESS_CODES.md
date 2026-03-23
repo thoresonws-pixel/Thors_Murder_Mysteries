@@ -50,7 +50,7 @@ Alternatively, text/email individual codes to each guest with a link to the gues
 ---
 
 ## WEBSITE URL
-https://thoresonws-pixel.github.io/Thoreson_Estate_Dinner/#guests
+https://thoresonws-pixel.github.io/Thors_Murder_Mysteries/#guests
 
 ---
 

@@ -45,7 +45,7 @@ Plan what you'll actually print and place.
 ### Step 4 — QR Codes
 Generate QR codes for each item. Format:
 - Skill-gated: `THORESON:SkillName` (plain text)
-- Standalone: `https://thoresonws-pixel.github.io/Thoreson_Estate_Dinner/scan.html?id=item_id`
+- Standalone: `https://thoresonws-pixel.github.io/Thors_Murder_Mysteries/scan.html?id=item_id`
 
 Use any QR generator. Print and attach to physical props.
 

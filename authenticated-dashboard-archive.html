@@ -2775,7 +2775,7 @@
                     const posterUrl = posterMap[id];
                     if (posterUrl) {
                         const player = userSession.username;
-                        const fullUrl = 'https://thoresonws-pixel.github.io/Thoreson_Estate_Dinner/' + posterUrl;
+                        const fullUrl = 'https://thoresonws-pixel.github.io/Thors_Murder_Mysteries/' + posterUrl;
                         // Count as a clue scan
                         database.ref('scans/' + player).transaction(c => (c || 0) + 1);
                         database.ref('scanLog').push({ player, propId: id, time: Date.now() });

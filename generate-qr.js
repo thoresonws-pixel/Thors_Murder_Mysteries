@@ -3,7 +3,7 @@
 // Output: qr-codes.html (open in browser and print)
 
 const { itemDatabase } = require('./items.js');
-const BASE_URL = 'https://thoresonws-pixel.github.io/Thoreson_Estate_Dinner/clue.html';
+const BASE_URL = 'https://thoresonws-pixel.github.io/Thors_Murder_Mysteries/clue.html';
 
 const categoryConfig = {
   clue:       { label: 'Evidence',    color: '#2a4a2a', textColor: '#6ab86a', border: '#3a6a3a' },
@@ -63,8 +63,8 @@ const skillCards = skillQRs.map((s, i) => `
   <\/script>`).join('\n');
 
 // Easter eggs, posters, bathroom, netsuke
-const PHOTO_URL = 'https://thoresonws-pixel.github.io/Thoreson_Estate_Dinner/photo.html';
-const NETSUKE_URL = 'https://thoresonws-pixel.github.io/Thoreson_Estate_Dinner/netsuke.html';
+const PHOTO_URL = 'https://thoresonws-pixel.github.io/Thors_Murder_Mysteries/photo.html';
+const NETSUKE_URL = 'https://thoresonws-pixel.github.io/Thors_Murder_Mysteries/netsuke.html';
 const extraQRs = [
   { id: 'extra-e1', label: 'Easter Egg 1', url: `${PHOTO_URL}?id=e1` },
   { id: 'extra-e2', label: 'Easter Egg 2', url: `${PHOTO_URL}?id=e2` },

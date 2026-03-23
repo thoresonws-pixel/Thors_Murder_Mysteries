@@ -2581,7 +2581,7 @@
                     const posterUrl = posterMap[id];
                     if (posterUrl) {
                         const player = userSession.username;
-                        const fullUrl = 'https://thoresonws-pixel.github.io/Thoreson_Estate_Dinner/' + posterUrl;
+                        const fullUrl = 'https://thoresonws-pixel.github.io/Thors_Murder_Mysteries/' + posterUrl;
                         // Count as a clue scan
                         gameRef('scans/' + player).transaction(c => (c || 0) + 1);
                         gameRef('scanLog').push({ player, propId: id, time: Date.now() });
@@ -2966,7 +2966,7 @@
 
         function registerServiceWorker() {
             if (!('serviceWorker' in navigator)) return;
-            navigator.serviceWorker.register('/Thoreson_Estate_Dinner/sw.js')
+            navigator.serviceWorker.register('/Thors_Murder_Mysteries/sw.js')
                 .then(function(reg) {
                     swRegistration = reg;
                     console.log('SW registered');
