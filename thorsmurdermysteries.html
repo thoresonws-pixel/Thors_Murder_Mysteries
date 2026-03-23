@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thor's Murder Mysteries — Immersive murder mystery dinner experiences for groups. An evening of secrets, suspects, and intrigue.">
+    <title>Thor's Murder Mysteries</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&family=Special+Elite&display=swap" rel="stylesheet">
+
+    <style>
+        /* ═══════════════════════════════════════════════
+           CSS VARIABLES
+        ═══════════════════════════════════════════════ */
+        :root {
+            --black:      #06040a;
+            --deep:       #0f0b14;
+            --surface:    #160f1e;
+            --panel:      #1e1528;
+            --crimson:    #8b1a1a;
+            --crimson-lt: #b52020;
+            --blood:      #5c0f0f;
+            --gold:       #c9a227;
+            --gold-lt:    #e8c55a;
+            --gold-dk:    #8a6d14;
+            --parchment:  #e8dcc8;
+            --fog:        #9a9080;
+            --mist:       #c4b8a4;
+            --white:      #f5f0e6;
+        }
+
+        /* ═══════════════════════════════════════════════
+           RESET & BASE
+        ═══════════════════════════════════════════════ */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Crimson Text', Georgia, serif;
+            background: var(--black);
+            color: var(--parchment);
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        /* Film grain overlay — fixed, full screen */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.028;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-size: 200px 200px;
+        }
+
+        /* ═══════════════════════════════════════════════
+           TYPOGRAPHY
+        ═══════════════════════════════════════════════ */
+        h1, h2, h3 { font-family: 'Cinzel', Georgia, serif; font-weight: 700; }
+
+        .display {
+            font-family: 'Cinzel Decorative', Georgia, serif;
+            font-weight: 900;
+        }
+
+        .eyebrow {
+            font-family: 'Special Elite', monospace;
+            font-size: 11px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--gold);
+        }
+
+        /* ═══════════════════════════════════════════════
+           NAV
+        ═══════════════════════════════════════════════ */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 20px 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.4s;
+        }
+
+        nav.scrolled {
+            background: rgba(6, 4, 10, 0.96);
+            border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+            padding: 14px 60px;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-logo {
+            font-family: 'Cinzel Decorative', Georgia, serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gold);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .nav-logo span { color: var(--crimson-lt); }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--mist);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--gold); }
+
+        .nav-cta {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--black) !important;
+            background: var(--gold);
+            padding: 10px 22px;
+            text-decoration: none;
+            transition: all 0.3s !important;
+        }
+
+        .nav-cta:hover {
+            background: var(--gold-lt) !important;
+            color: var(--black) !important;
+        }
+
+        /* Mobile nav toggle */
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .nav-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--gold);
+            transition: all 0.3s;
+        }
+
+        /* ═══════════════════════════════════════════════
+           HERO
+        ═══════════════════════════════════════════════ */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 40px 80px;
+            overflow: hidden;
+        }
+
+        /* Radial spotlight effect */
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 50% 40%, rgba(139,26,26,0.18) 0%, transparent 70%),
+                radial-gradient(ellipse 80% 80% at 50% 0%, rgba(201,162,39,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse 100% 100% at 50% 100%, rgba(6,4,10,0.9) 0%, transparent 50%);
+            z-index: 1;
+        }
+
+        /* Decorative horizontal lines */
+        .hero::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0;
+            bottom: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        /* Background texture */
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 80px,
+                    rgba(201,162,39,0.015) 80px,
+                    rgba(201,162,39,0.015) 81px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 80px,
+                    rgba(201,162,39,0.015) 80px,
+                    rgba(201,162,39,0.015) 81px
+                ),
+                radial-gradient(ellipse at 50% 50%, var(--surface) 0%, var(--black) 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 860px;
+        }
+
+        .hero-eyebrow {
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.2s forwards;
+        }
+
+        .hero-ornament {
+            color: var(--gold);
+            font-size: 22px;
+            letter-spacing: 16px;
+            display: block;
+            margin-bottom: 6px;
+            opacity: 0.5;
+        }
+
+        .hero-title {
+            font-family: 'Cinzel Decorative', Georgia, serif;
+            font-size: clamp(38px, 7vw, 86px);
+            font-weight: 900;
+            line-height: 1.05;
+            color: var(--gold);
+            text-shadow:
+                0 0 80px rgba(201,162,39,0.3),
+                0 0 160px rgba(201,162,39,0.1);
+            margin-bottom: 0;
+            opacity: 0;
+            animation: fadeUp 0.9s ease 0.4s forwards;
+        }
+
+        .hero-title .accent {
+            display: block;
+            color: var(--white);
+            font-size: 0.45em;
+            letter-spacing: 0.35em;
+            font-weight: 400;
+            margin-top: 8px;
+            text-shadow: none;
+        }
+
+        .hero-tagline {
+            font-family: 'Crimson Text', Georgia, serif;
+            font-size: clamp(17px, 2.2vw, 22px);
+            font-style: italic;
+            color: var(--mist);
+            margin: 28px auto 0;
+            max-width: 560px;
+            line-height: 1.7;
+            opacity: 0;
+            animation: fadeUp 0.9s ease 0.7s forwards;
+        }
+
+        .hero-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin: 36px auto;
+            width: 300px;
+            opacity: 0;
+            animation: fadeUp 0.9s ease 0.9s forwards;
+        }
+
+        .hero-divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-dk));
+        }
+
+        .hero-divider-line.r {
+            background: linear-gradient(90deg, var(--gold-dk), transparent);
+        }
+
+        .hero-divider-gem {
+            width: 10px; height: 10px;
+            background: var(--crimson);
+            transform: rotate(45deg);
+            box-shadow: 0 0 12px rgba(139,26,26,0.6);
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeUp 0.9s ease 1.1s forwards;
+        }
+
+        .btn-gold {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--black);
+            background: var(--gold);
+            padding: 16px 40px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-gold::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-gold:hover { background: var(--gold-lt); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(201,162,39,0.3); }
+        .btn-gold:hover::before { opacity: 1; }
+
+        .btn-outline {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold);
+            background: transparent;
+            padding: 15px 38px;
+            text-decoration: none;
+            border: 1px solid var(--gold-dk);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--gold);
+            background: rgba(201,162,39,0.08);
+            transform: translateY(-2px);
+        }
+
+        /* Floating scroll indicator */
+        .scroll-hint {
+            position: absolute;
+            bottom: 36px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            animation: fadeIn 1s ease 2s forwards;
+            color: var(--fog);
+            font-family: 'Special Elite', monospace;
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .scroll-hint-arrow {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--gold-dk), transparent);
+            animation: scrollPulse 2s ease infinite;
+        }
+
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 0.3; transform: scaleY(1); }
+            50% { opacity: 1; transform: scaleY(1.1); }
+        }
+
+        /* ═══════════════════════════════════════════════
+           SECTION SCAFFOLD
+        ═══════════════════════════════════════════════ */
+        section {
+            position: relative;
+            padding: 100px 60px;
+        }
+
+        .section-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .section-title {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: clamp(26px, 3.5vw, 42px);
+            font-weight: 700;
+            color: var(--gold);
+            margin: 14px 0 18px;
+            letter-spacing: 2px;
+        }
+
+        .section-sub {
+            font-size: 18px;
+            font-style: italic;
+            color: var(--fog);
+            max-width: 540px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .gold-rule {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin: 24px auto;
+            width: 260px;
+        }
+        .gold-rule-line { flex: 1; height: 1px; background: var(--gold-dk); }
+        .gold-rule-diamond {
+            width: 7px; height: 7px;
+            background: var(--gold);
+            transform: rotate(45deg);
+            flex-shrink: 0;
+        }
+
+        /* ═══════════════════════════════════════════════
+           HOW IT WORKS
+        ═══════════════════════════════════════════════ */
+        .how-section {
+            background: var(--deep);
+            border-top: 1px solid rgba(201,162,39,0.1);
+            border-bottom: 1px solid rgba(201,162,39,0.1);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0;
+        }
+
+        .step {
+            padding: 40px 36px;
+            border-right: 1px solid rgba(201,162,39,0.1);
+            text-align: center;
+            position: relative;
+            transition: background 0.3s;
+        }
+
+        .step:last-child { border-right: none; }
+        .step:hover { background: rgba(201,162,39,0.04); }
+
+        .step-number {
+            font-family: 'Cinzel Decorative', Georgia, serif;
+            font-size: 48px;
+            font-weight: 900;
+            color: rgba(201,162,39,0.12);
+            line-height: 1;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .step-icon {
+            font-size: 28px;
+            margin-bottom: 14px;
+            display: block;
+        }
+
+        .step-title {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .step-desc {
+            font-size: 16px;
+            color: var(--fog);
+            line-height: 1.7;
+        }
+
+        /* ═══════════════════════════════════════════════
+           MYSTERIES (STORIES)
+        ═══════════════════════════════════════════════ */
+        .mysteries-section {
+            background: var(--black);
+        }
+
+        .mystery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        /* Case file card */
+        .mystery-card {
+            position: relative;
+            background: var(--panel);
+            border: 1px solid rgba(201,162,39,0.15);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .mystery-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(201,162,39,0.05) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .mystery-card:hover {
+            border-color: rgba(201,162,39,0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(201,162,39,0.08);
+        }
+
+        .mystery-card:hover::before { opacity: 1; }
+
+        /* Red tab at top like a case file */
+        .card-tab {
+            height: 6px;
+            background: var(--crimson);
+            position: relative;
+        }
+
+        .card-tab::after {
+            content: 'CASE FILE';
+            position: absolute;
+            top: 8px;
+            right: 20px;
+            font-family: 'Special Elite', monospace;
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: var(--crimson-lt);
+        }
+
+        .card-body { padding: 32px 30px 28px; }
+
+        .card-era {
+            font-family: 'Special Elite', monospace;
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: var(--gold-dk);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: var(--fog);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: 'Special Elite', monospace;
+            margin-bottom: 18px;
+        }
+
+        .card-desc {
+            font-size: 17px;
+            color: var(--mist);
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(201,162,39,0.1);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-family: 'Special Elite', monospace;
+            font-size: 12px;
+            color: var(--fog);
+        }
+
+        .meta-dot {
+            width: 6px; height: 6px;
+            background: var(--gold-dk);
+            transform: rotate(45deg);
+            flex-shrink: 0;
+        }
+
+        /* Coming soon card variant */
+        .mystery-card.coming-soon {
+            opacity: 0.45;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .mystery-card.coming-soon .card-tab {
+            background: #3a3040;
+        }
+
+        .coming-soon-badge {
+            position: absolute;
+            top: 22px;
+            right: 22px;
+            background: rgba(201,162,39,0.1);
+            border: 1px solid rgba(201,162,39,0.2);
+            color: var(--gold-dk);
+            font-family: 'Special Elite', monospace;
+            font-size: 10px;
+            letter-spacing: 2px;
+            padding: 4px 10px;
+            text-transform: uppercase;
+        }
+
+        /* ═══════════════════════════════════════════════
+           VENUES
+        ═══════════════════════════════════════════════ */
+        .venues-section {
+            background: var(--surface);
+            border-top: 1px solid rgba(201,162,39,0.1);
+        }
+
+        .venues-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .venue-card {
+            background: var(--panel);
+            border: 1px solid rgba(201,162,39,0.12);
+            padding: 30px 28px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .venue-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--crimson), var(--gold));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s;
+        }
+
+        .venue-card:hover {
+            border-color: rgba(201,162,39,0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+        }
+
+        .venue-card:hover::after { transform: scaleX(1); }
+
+        .venue-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .venue-name {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .venue-location {
+            font-family: 'Special Elite', monospace;
+            font-size: 11px;
+            color: var(--gold-dk);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .venue-desc {
+            font-size: 16px;
+            color: var(--fog);
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .venue-capacity {
+            font-family: 'Special Elite', monospace;
+            font-size: 11px;
+            color: var(--fog);
+            letter-spacing: 1.5px;
+        }
+
+        .venue-capacity span { color: var(--gold); }
+
+        /* ═══════════════════════════════════════════════
+           TESTIMONIALS
+        ═══════════════════════════════════════════════ */
+        .testimonials-section {
+            background: var(--deep);
+            border-top: 1px solid rgba(201,162,39,0.1);
+            border-bottom: 1px solid rgba(201,162,39,0.1);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .testimonial-card {
+            padding: 32px 28px;
+            background: rgba(201,162,39,0.04);
+            border: 1px solid rgba(201,162,39,0.1);
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '\201C';
+            font-family: 'Cinzel Decorative', Georgia, serif;
+            font-size: 80px;
+            color: rgba(201,162,39,0.1);
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            line-height: 1;
+        }
+
+        .testimonial-text {
+            font-size: 18px;
+            font-style: italic;
+            color: var(--mist);
+            line-height: 1.7;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimonial-author {
+            font-family: 'Special Elite', monospace;
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: var(--gold-dk);
+            text-transform: uppercase;
+        }
+
+        .star-row {
+            color: var(--gold);
+            font-size: 14px;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+        }
+
+        /* ═══════════════════════════════════════════════
+           CTA BAND
+        ═══════════════════════════════════════════════ */
+        .cta-section {
+            background: var(--crimson);
+            padding: 80px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                repeating-linear-gradient(
+                    45deg,
+                    rgba(0,0,0,0.1) 0px,
+                    rgba(0,0,0,0.1) 1px,
+                    transparent 1px,
+                    transparent 40px
+                );
+        }
+
+        .cta-section::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(139,26,26,0.4) 0%, transparent 70%);
+        }
+
+        .cta-content { position: relative; z-index: 1; }
+
+        .cta-title {
+            font-family: 'Cinzel Decorative', Georgia, serif;
+            font-size: clamp(24px, 4vw, 48px);
+            font-weight: 900;
+            color: var(--gold);
+            margin-bottom: 16px;
+            text-shadow: 0 0 40px rgba(201,162,39,0.4);
+        }
+
+        .cta-sub {
+            font-size: 20px;
+            font-style: italic;
+            color: rgba(232, 220, 200, 0.85);
+            margin-bottom: 36px;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        /* ═══════════════════════════════════════════════
+           FOOTER
+        ═══════════════════════════════════════════════ */
+        footer {
+            background: var(--black);
+            border-top: 1px solid rgba(201,162,39,0.15);
+            padding: 60px 60px 40px;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 40px;
+            flex-wrap: wrap;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(201,162,39,0.1);
+            margin-bottom: 30px;
+        }
+
+        .footer-brand {
+            font-family: 'Cinzel Decorative', Georgia, serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gold);
+        }
+        .footer-brand span { color: var(--crimson-lt); }
+
+        .footer-tagline {
+            font-size: 15px;
+            font-style: italic;
+            color: var(--fog);
+            margin-top: 8px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 60px;
+            flex-wrap: wrap;
+        }
+
+        .footer-col h4 {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold-dk);
+            margin-bottom: 14px;
+        }
+
+        .footer-col ul { list-style: none; }
+        .footer-col li { margin-bottom: 9px; }
+        .footer-col a {
+            font-size: 15px;
+            color: var(--fog);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .footer-col a:hover { color: var(--mist); }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-copy {
+            font-family: 'Special Elite', monospace;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            color: var(--fog);
+        }
+
+        .footer-legal {
+            display: flex;
+            gap: 24px;
+        }
+        .footer-legal a {
+            font-family: 'Special Elite', monospace;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            color: var(--fog);
+            text-decoration: none;
+        }
+        .footer-legal a:hover { color: var(--gold-dk); }
+
+        /* ═══════════════════════════════════════════════
+           SCROLL REVEAL
+        ═══════════════════════════════════════════════ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* ═══════════════════════════════════════════════
+           ANIMATIONS
+        ═══════════════════════════════════════════════ */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        /* ═══════════════════════════════════════════════
+           RESPONSIVE
+        ═══════════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            nav { padding: 18px 24px; }
+            nav.scrolled { padding: 14px 24px; }
+            .nav-links { display: none; flex-direction: column; gap: 0; }
+            .nav-links.open {
+                display: flex;
+                position: fixed;
+                top: 0; left: 0; right: 0;
+                background: rgba(6,4,10,0.98);
+                padding: 80px 40px 40px;
+                border-bottom: 1px solid rgba(201,162,39,0.2);
+                z-index: 999;
+            }
+            .nav-links.open li { padding: 14px 0; border-bottom: 1px solid rgba(201,162,39,0.08); }
+            .nav-links.open a { font-size: 16px; }
+            .nav-cta { display: none; }
+            .nav-toggle { display: flex; z-index: 1001; }
+
+            section { padding: 70px 24px; }
+            .hero { padding: 100px 24px 70px; }
+            .steps-grid { grid-template-columns: 1fr; }
+            .step { border-right: none; border-bottom: 1px solid rgba(201,162,39,0.1); }
+            .step:last-child { border-bottom: none; }
+            .cta-section { padding: 60px 24px; }
+            footer { padding: 50px 24px 32px; }
+            .footer-top { flex-direction: column; }
+            .footer-bottom { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══ NAV ════════════════════════════════════════════ -->
+<nav id="mainNav">
+    <a href="#" class="nav-logo">Thor<span>'s</span> Murder Mysteries</a>
+    <ul class="nav-links" id="navLinks">
+        <li><a href="#mysteries">Mysteries</a></li>
+        <li><a href="#venues">Venues</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="register.html" class="nav-cta">Join a Party</a></li>
+    </ul>
+    <div class="nav-toggle" id="navToggle" onclick="toggleNav()">
+        <span></span><span></span><span></span>
+    </div>
+</nav>
+
+<!-- ═══ HERO ════════════════════════════════════════════ -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+        <div class="hero-eyebrow">
+            <span class="hero-ornament">✦ ✦ ✦</span>
+            <span class="eyebrow">Immersive Murder Mystery Dinners</span>
+        </div>
+
+        <h1 class="hero-title">
+            Thor's Murder
+            <span class="accent">Mysteries</span>
+        </h1>
+
+        <p class="hero-tagline">
+            A night of secrets, suspicion, and perfectly poured cocktails.
+            You'll be given a character, a motive, and a reason to lie.
+            The rest is up to you.
+        </p>
+
+        <div class="hero-divider">
+            <div class="hero-divider-line"></div>
+            <div class="hero-divider-gem"></div>
+            <div class="hero-divider-line r"></div>
+        </div>
+
+        <div class="hero-actions">
+            <a href="#mysteries" class="btn-gold">Browse Mysteries</a>
+            <a href="#how-it-works" class="btn-outline">How It Works</a>
+        </div>
+    </div>
+
+    <div class="scroll-hint">
+        <div class="scroll-hint-arrow"></div>
+        Scroll
+    </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ════════════════════════════════════ -->
+<section class="how-section" id="how-it-works">
+    <div class="section-inner">
+        <div class="section-header reveal">
+            <span class="eyebrow">The Evening Unfolds</span>
+            <h2 class="section-title">How It Works</h2>
+            <div class="gold-rule"><div class="gold-rule-line"></div><div class="gold-rule-diamond"></div><div class="gold-rule-line"></div></div>
+            <p class="section-sub">No acting experience required. Just a willingness to play along.</p>
+        </div>
+
+        <div class="steps-grid reveal">
+            <div class="step">
+                <span class="step-number">01</span>
+                <span class="step-icon">✉️</span>
+                <div class="step-title">Receive Your Invitation</div>
+                <p class="step-desc">Your host sends you a link with a party code. Create your account, answer a few quick questions about how you'd like to play, and choose your character.</p>
+            </div>
+            <div class="step">
+                <span class="step-number">02</span>
+                <span class="step-icon">🎭</span>
+                <div class="step-title">Become Someone Else</div>
+                <p class="step-desc">You'll receive a full character dossier — your background, your secrets, and your relationship to every other guest. Study it well.</p>
+            </div>
+            <div class="step">
+                <span class="step-number">03</span>
+                <span class="step-icon">🍷</span>
+                <div class="step-title">Arrive & Mingle</div>
+                <p class="step-desc">Cocktail hour begins the intrigue. Gather clues, forge alliances, trade secrets, and decide who you trust — and who you don't.</p>
+            </div>
+            <div class="step">
+                <span class="step-number">04</span>
+                <span class="step-icon">🔍</span>
+                <div class="step-title">Solve the Mystery</div>
+                <p class="step-desc">Over dinner, evidence surfaces, revelations are made, and the evening builds to a final accusation. Only one person knows the truth. Will you uncover them?</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ MYSTERIES ════════════════════════════════════════ -->
+<section class="mysteries-section" id="mysteries">
+    <div class="section-inner">
+        <div class="section-header reveal">
+            <span class="eyebrow">The Case Files</span>
+            <h2 class="section-title">Our Mysteries</h2>
+            <div class="gold-rule"><div class="gold-rule-line"></div><div class="gold-rule-diamond"></div><div class="gold-rule-line"></div></div>
+            <p class="section-sub">Each experience is a fully original story, purpose-built for dinner table drama.</p>
+        </div>
+
+        <div class="mystery-grid">
+
+            <!-- Active story: Thoreson Estate -->
+            <a href="#" class="mystery-card reveal" onclick="return false;">
+                <div class="card-tab"></div>
+                <div class="card-body">
+                    <div class="card-era">Dallas, Texas · 1935</div>
+                    <div class="card-title">The Thoreson Estate Dinner</div>
+                    <div class="card-subtitle">A death among old money</div>
+                    <p class="card-desc">
+                        The Thoreson family has gathered for a dinner in memory of their patriarch — but not everyone is grieving. 
+                        William Thoreson Sr. built his empire on secrets, and those secrets didn't die with him.
+                        Someone in this room knows exactly why he did.
+                    </p>
+                    <div class="card-meta">
+                        <div class="meta-item">
+                            <div class="meta-dot"></div>
+                            10 – 21 Players
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-dot"></div>
+                            3–4 Hours
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-dot"></div>
+                            Ages 21+
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Coming soon: Placeholder 2 -->
+            <div class="mystery-card coming-soon reveal">
+                <div class="card-tab"></div>
+                <div class="coming-soon-badge">Coming Soon</div>
+                <div class="card-body">
+                    <div class="card-era">New Orleans · 1924</div>
+                    <div class="card-title">The Devereaux Masquerade</div>
+                    <div class="card-subtitle">A masked ball with no survivors</div>
+                    <p class="card-desc">
+                        Prohibition-era New Orleans. A lavish masquerade on the Devereaux estate ends with a body in the garden and a hundred masked faces — any one of whom could be a killer.
+                    </p>
+                    <div class="card-meta">
+                        <div class="meta-item"><div class="meta-dot"></div>12 – 24 Players</div>
+                        <div class="meta-item"><div class="meta-dot"></div>3–4 Hours</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coming soon: Placeholder 3 -->
+            <div class="mystery-card coming-soon reveal">
+                <div class="card-tab"></div>
+                <div class="coming-soon-badge">Coming Soon</div>
+                <div class="card-body">
+                    <div class="card-era">Chicago · 1947</div>
+                    <div class="card-title">Last Train to Wicker Park</div>
+                    <div class="card-subtitle">The detective who became the suspect</div>
+                    <p class="card-desc">
+                        A hard-boiled post-war Chicago mystery. A private eye is found dead in his own office, his case files ransacked. His clients have more to hide than they let on.
+                    </p>
+                    <div class="card-meta">
+                        <div class="meta-item"><div class="meta-dot"></div>8 – 16 Players</div>
+                        <div class="meta-item"><div class="meta-dot"></div>2–3 Hours</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══ VENUES ═══════════════════════════════════════════ -->
+<section class="venues-section" id="venues">
+    <div class="section-inner">
+        <div class="section-header reveal">
+            <span class="eyebrow">Where the Evening Takes Place</span>
+            <h2 class="section-title">Venues</h2>
+            <div class="gold-rule"><div class="gold-rule-line"></div><div class="gold-rule-diamond"></div><div class="gold-rule-line"></div></div>
+            <p class="section-sub">Our experiences are hosted at carefully selected venues that match the era and atmosphere of each mystery.</p>
+        </div>
+
+        <div class="venues-grid">
+
+            <div class="venue-card reveal">
+                <span class="venue-icon">🏛️</span>
+                <div class="venue-name">Private Residence</div>
+                <div class="venue-location">Your City</div>
+                <p class="venue-desc">
+                    The most intimate setting — and the most dramatic. When the crime scene is the dining room, every guest feels the tension. Available for groups who want the full immersive experience at home.
+                </p>
+                <div class="venue-capacity">Capacity: <span>10 – 25 Guests</span></div>
+            </div>
+
+            <div class="venue-card reveal">
+                <span class="venue-icon">🥂</span>
+                <div class="venue-name">Private Dining Rooms</div>
+                <div class="venue-location">Select Restaurant Partners</div>
+                <p class="venue-desc">
+                    A curated list of restaurant partners with private dining rooms that fit the period aesthetic. Full food and beverage service paired with full murder mystery programming.
+                </p>
+                <div class="venue-capacity">Capacity: <span>12 – 30 Guests</span></div>
+            </div>
+
+            <div class="venue-card reveal">
+                <span class="venue-icon">🏚️</span>
+                <div class="venue-name">Historic Properties</div>
+                <div class="venue-location">DFW Metroplex</div>
+                <p class="venue-desc">
+                    Period-appropriate settings that do half the work for us. Grand old homes and event spaces that feel like the mystery was always meant to happen there.
+                </p>
+                <div class="venue-capacity">Capacity: <span>20 – 50 Guests</span></div>
+            </div>
+
+            <div class="venue-card reveal">
+                <span class="venue-icon">🎪</span>
+                <div class="venue-name">Corporate & Events</div>
+                <div class="venue-location">Custom Arrangements</div>
+                <p class="venue-desc">
+                    Murder mystery as a team-building event or private party. We bring the full experience — app, props, characters, and facilitation — to your venue of choice.
+                </p>
+                <div class="venue-capacity">Capacity: <span>Up to 60 Guests</span></div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ═════════════════════════════════════ -->
+<section class="testimonials-section">
+    <div class="section-inner">
+        <div class="section-header reveal">
+            <span class="eyebrow">From the Guest Book</span>
+            <h2 class="section-title">What People Are Saying</h2>
+            <div class="gold-rule"><div class="gold-rule-line"></div><div class="gold-rule-diamond"></div><div class="gold-rule-line"></div></div>
+        </div>
+
+        <div class="testimonials-grid">
+            <div class="testimonial-card reveal">
+                <div class="star-row">★★★★★</div>
+                <p class="testimonial-text">I went in thinking I'd just eat dinner and watch other people act. Instead I was completely absorbed in my character by the second course. Genuinely did not want the night to end.</p>
+                <div class="testimonial-author">— Playtest Guest, March 2025</div>
+            </div>
+            <div class="testimonial-card reveal">
+                <div class="star-row">★★★★★</div>
+                <p class="testimonial-text">The app is what makes this different from every other murder mystery I've done. The way information unlocks as the evening progresses felt like actual detective work. Remarkable experience.</p>
+                <div class="testimonial-author">— Private Residence, Dallas</div>
+            </div>
+            <div class="testimonial-card reveal">
+                <div class="star-row">★★★★★</div>
+                <p class="testimonial-text">My husband hates role-playing games. He talked about his character for three days. I rest my case.</p>
+                <div class="testimonial-author">— Thoreson Estate Guest</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ CTA BAND ══════════════════════════════════════════ -->
+<section class="cta-section">
+    <div class="cta-content">
+        <h2 class="cta-title">The Evening Awaits</h2>
+        <p class="cta-sub">Received an invitation? Create your account to join the party and choose your character.</p>
+        <a href="register.html" class="btn-gold">Create Your Account</a>
+    </div>
+</section>
+
+<!-- ═══ FOOTER ════════════════════════════════════════════ -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-top">
+            <div>
+                <div class="footer-brand">Thor<span>'s</span> Murder Mysteries</div>
+                <p class="footer-tagline">An evening of secrets, suspects, and perfectly poured cocktails.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h4>Experiences</h4>
+                    <ul>
+                        <li><a href="#mysteries">The Thoreson Estate Dinner</a></li>
+                        <li><a href="#mysteries">Coming Soon</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Information</h4>
+                    <ul>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#venues">Venues</a></li>
+                        <li><a href="register.html">Join a Party</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-copy">© 2025 Thor's Murder Mysteries. All rights reserved.</div>
+            <div class="footer-legal">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // ── Sticky nav on scroll ──────────────────────────
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+        nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // ── Mobile nav toggle ────────────────────────────
+    function toggleNav() {
+        document.getElementById('navLinks').classList.toggle('open');
+    }
+
+    // Close nav on link click (mobile)
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            document.getElementById('navLinks').classList.remove('open');
+        });
+    });
+
+    // ── Scroll reveal ─────────────────────────────────
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+                // Stagger children slightly
+                const delay = (Array.from(entry.target.parentElement?.children || []).indexOf(entry.target)) * 80;
+                setTimeout(() => entry.target.classList.add('visible'), delay);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
