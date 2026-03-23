@@ -1167,6 +1167,77 @@
             border-radius: 4px;
         }
 
+
+        /* ── ADMIN INVITE MODAL ───────────────────────────────────── */
+        .invite-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(6,4,10,0.88);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            backdrop-filter: blur(6px);
+        }
+        .invite-overlay.open { display: flex; }
+        .invite-modal {
+            background: var(--panel);
+            border: 1px solid var(--border-hl);
+            width: 100%;
+            max-width: 480px;
+        }
+        .invite-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .invite-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--white);
+        }
+        .invite-body { padding: 24px; }
+        .invite-link-box {
+            background: rgba(56,139,253,0.08);
+            border: 1px solid rgba(56,139,253,0.25);
+            border-radius: 4px;
+            padding: 14px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--accent-lt);
+            word-break: break-all;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .invite-link-box.visible { display: block; }
+        .invite-code-display {
+            font-size: 28px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-lt);
+            letter-spacing: 6px;
+            text-align: center;
+            padding: 16px;
+            background: rgba(56,139,253,0.06);
+            border-radius: 4px;
+            margin-bottom: 12px;
+            display: none;
+        }
+        .invite-code-display.visible { display: block; }
+        .invite-expiry {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--fog);
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .invite-expiry.visible { display: block; }
+
     </style>
 </head>
 <body>
@@ -1179,6 +1250,7 @@
     </div>
     <div class="topbar-right">
         <div class="admin-badge">Admin</div>
+        <button class="btn-ghost" style="font-size:11px;padding:6px 14px;" onclick="openAdminInviteModal()">+ Invite Admin</button>
         <div class="topbar-user" id="topbarUser"></div>
         <button class="btn-signout" onclick="handleSignOut()">Sign Out</button>
     </div>
@@ -2443,6 +2515,112 @@
         }
     }
 
+    
+    // ── ADMIN INVITE SYSTEM ───────────────────────────────────────
+    let currentInviteCode = null;
+
+    function openAdminInviteModal() {
+        document.getElementById('inviteRecipientName').value = '';
+        document.getElementById('inviteCodeDisplay').classList.remove('visible');
+        document.getElementById('inviteExpiry').classList.remove('visible');
+        document.getElementById('inviteLinkBox').classList.remove('visible');
+        document.getElementById('copyInviteLinkBtn').style.display = 'none';
+        document.getElementById('generateInviteBtn').textContent = 'Generate Invite Link';
+        document.getElementById('generateInviteBtn').disabled = false;
+        currentInviteCode = null;
+        loadExistingInvites();
+        document.getElementById('inviteOverlay').classList.add('open');
+    }
+
+    function closeInviteModal() {
+        document.getElementById('inviteOverlay').classList.remove('open');
+    }
+
+    function generateCode() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let code = '';
+        for (let i = 0; i < 8; i++) {
+            if (i === 4) code += '-';
+            code += chars[Math.floor(Math.random() * chars.length)];
+        }
+        return code;
+    }
+
+    async function generateAdminInvite() {
+        const btn       = document.getElementById('generateInviteBtn');
+        const recipient = document.getElementById('inviteRecipientName').value.trim() || 'Admin';
+        btn.disabled    = true;
+        btn.textContent = 'Generating…';
+
+        try {
+            const code    = generateCode();
+            const expires = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString();
+            const user    = auth.currentUser;
+
+            await db.ref('adminInvites/' + code).set({
+                code,
+                recipient,
+                used:       false,
+                createdAt:  new Date().toISOString(),
+                expiresAt:  expires,
+                createdBy:  user ? user.email : 'admin'
+            });
+
+            currentInviteCode = code;
+            const link = window.location.origin + window.location.pathname.replace('admin.html', '') + 'admin-register.html?invite=' + code;
+
+            document.getElementById('inviteCodeDisplay').textContent = code;
+            document.getElementById('inviteCodeDisplay').classList.add('visible');
+            document.getElementById('inviteExpiry').textContent = 'Expires: ' + new Date(expires).toLocaleString() + ' — single use only';
+            document.getElementById('inviteExpiry').classList.add('visible');
+            document.getElementById('inviteLinkBox').textContent = link;
+            document.getElementById('inviteLinkBox').classList.add('visible');
+            document.getElementById('copyInviteLinkBtn').style.display = 'inline-block';
+
+            btn.textContent = '↻ Generate New Code';
+            btn.disabled    = false;
+
+            loadExistingInvites();
+            showToast('Invite code generated.', 'success');
+
+        } catch(err) {
+            btn.disabled    = false;
+            btn.textContent = 'Generate Invite Link';
+            showToast('Error: ' + err.message, 'error');
+        }
+    }
+
+    function copyInviteCode() {
+        const link = document.getElementById('inviteLinkBox').textContent;
+        navigator.clipboard.writeText(link).then(() => showToast('Link copied!', 'success'));
+    }
+
+    async function loadExistingInvites() {
+        const el = document.getElementById('existingInvites');
+        try {
+            const snap = await db.ref('adminInvites').orderByChild('createdAt').limitToLast(5).once('value');
+            const data = snap.val();
+            if (!data) { el.innerHTML = ''; return; }
+
+            const invites = Object.values(data).reverse();
+            el.innerHTML = '<div style="font-family:JetBrains Mono,monospace;font-size:10px;letter-spacing:2px;color:var(--fog);text-transform:uppercase;margin-bottom:10px;">Recent Invites</div>' +
+                invites.map(inv => {
+                    const expired = new Date(inv.expiresAt) < new Date();
+                    const status  = inv.used ? '✓ Used' : expired ? '✗ Expired' : '⏳ Pending';
+                    const color   = inv.used ? 'var(--green)' : expired ? 'var(--crimson-lt)' : 'var(--amber)';
+                    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:3px;margin-bottom:6px;">
+                        <div>
+                            <span style="font-family:JetBrains Mono,monospace;font-size:13px;color:var(--accent-lt);letter-spacing:3px;">${inv.code}</span>
+                            <span style="font-size:12px;color:var(--fog);margin-left:10px;">${inv.recipient || ''}</span>
+                        </div>
+                        <span style="font-family:JetBrains Mono,monospace;font-size:10px;color:${color};">${status}</span>
+                    </div>`;
+                }).join('');
+        } catch(e) {
+            el.innerHTML = '';
+        }
+    }
+
     </script>
 
 <!-- ── GM CONTROL PANEL OVERLAY ───────────────────────────── -->
@@ -2592,6 +2770,40 @@
                 </button>
                 <button class="btn-ghost" onclick="closeCancelModal()">Keep Game</button>
             </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ── ADMIN INVITE MODAL ──────────────────────────────────── -->
+<div class="invite-overlay" id="inviteOverlay" onclick="if(event.target===this)closeInviteModal()">
+    <div class="invite-modal">
+        <div class="invite-header">
+            <div class="invite-title">Generate Admin Invite</div>
+            <button class="btn-signout" onclick="closeInviteModal()">✕</button>
+        </div>
+        <div class="invite-body">
+            <p style="font-size:14px;color:var(--fog);margin-bottom:20px;line-height:1.6;">
+                Generates a one-time invite link. The recipient uses it to create an admin account.
+                The code expires in 48 hours and can only be used once.
+            </p>
+
+            <div class="form-group" style="margin-bottom:20px;">
+                <label for="inviteRecipientName">Recipient Name <span style="color:var(--fog);font-weight:400;">(for your reference)</span></label>
+                <input type="text" id="inviteRecipientName" placeholder="e.g. Dad, Marc" style="margin-top:6px;">
+            </div>
+
+            <div class="invite-code-display" id="inviteCodeDisplay">——</div>
+            <div class="invite-expiry" id="inviteExpiry"></div>
+            <div class="invite-link-box" id="inviteLinkBox"></div>
+
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="btn-gold" id="generateInviteBtn" onclick="generateAdminInvite()">Generate Invite Link</button>
+                <button class="btn-ghost" id="copyInviteLinkBtn" onclick="copyInviteCode()" style="display:none;">Copy Link</button>
+                <button class="btn-ghost" onclick="closeInviteModal()">Close</button>
+            </div>
+
+            <div id="existingInvites" style="margin-top:24px;"></div>
         </div>
     </div>
 </div>
