@@ -106,12 +106,11 @@
     const auth = firebase.auth();
     const db   = firebase.database();
 
-    auth.onAuthStateChanged(async user => {
-        if (!user || user.isAnonymous || !user.email) return;
-        routeUser(user);
-    });
+    let routing = false; // prevent double-routing
 
     async function routeUser(user) {
+        if (routing) return;
+        routing = true;
         try {
             const snap = await db.ref('users/' + user.uid).once('value');
             const data = snap.val() || {};
@@ -123,14 +122,38 @@
                 window.location.href = 'join.html';
             }
         } catch(e) {
-            // If DB read fails, check if admin by email fallback
-            if (user.email === 'thoresonws@gmail.com') {
-                window.location.href = 'admin.html';
-            } else {
-                window.location.href = 'join.html';
-            }
+            routing = false;
+            showError('Could not load your account: ' + e.message);
         }
     }
+
+    // Check redirect result FIRST before onAuthStateChanged routes
+    auth.getRedirectResult().then(async result => {
+        if (result && result.user) {
+            routing = true; // block onAuthStateChanged from double-routing
+            try {
+                await ensureUserRecord(result.user);
+                await routeUser(result.user);
+            } catch(e) {
+                routing = false;
+                showError('Sign-in error: ' + e.message);
+            }
+        }
+    }).catch(err => {
+        if (err.code && err.code !== 'auth/no-auth-event') {
+            showError('Google sign-in failed: ' + err.message);
+        }
+    });
+
+    // Only route via onAuthStateChanged if redirect didn't handle it
+    auth.onAuthStateChanged(async user => {
+        if (!user || user.isAnonymous || !user.email) return;
+        if (routing) return; // redirect result is already handling this
+        // Small delay to let getRedirectResult finish first
+        setTimeout(() => {
+            if (!routing) routeUser(user);
+        }, 500);
+    });
 
     function togglePw() {
         const input = document.getElementById('password');
@@ -154,20 +177,7 @@
 
     // ── GOOGLE SIGN IN ────────────────────────────────────────────
     // Handle redirect result on page load (mobile returns here after Google)
-    auth.getRedirectResult().then(async result => {
-        if (result && result.user) {
-            try {
-                await ensureUserRecord(result.user);
-                await routeUser(result.user);
-            } catch(e) {
-                showError('Sign-in error: ' + e.message);
-            }
-        }
-    }).catch(err => {
-        if (err.code && err.code !== 'auth/no-auth-event') {
-            showError('Google sign-in failed: ' + err.message);
-        }
-    });
+
 
     async function handleGoogleSignIn() {
         const btn = document.getElementById('googleBtn');
