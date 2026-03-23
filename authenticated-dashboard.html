@@ -1421,6 +1421,50 @@
             if (gid) return database.ref('games/' + gid + '/state/' + subpath);
             return database.ref(subpath);
         }
+        // ── GENDER-FLUID NAME RESOLVER ────────────────────────────────
+        // resolvedGenders: { "raymond_hammond": "male", ... }
+        // Loaded from Firebase once on startup, then kept in memory
+        let resolvedGenders = {};
+
+        async function loadResolvedGenders() {
+            try {
+                const gid = userSession && userSession.currentGameId;
+                if (!gid) return;
+                const snap = await database.ref('games/' + gid + '/state/resolvedGenders').once('value');
+                resolvedGenders = snap.val() || {};
+            } catch(e) {
+                resolvedGenders = {};
+            }
+        }
+
+        // Returns the resolved display name for a character slug
+        // Uses the gender that player chose during questionnaire
+        // Falls back to 'female' (canonical default)
+        function getCharacterName(slug) {
+            const char = characterDatabase[slug];
+            if (!char || !char.nameVariants) return slug;
+            const gender = resolvedGenders[slug] || 'female';
+            return char.nameVariants[gender] || char.nameVariants['female'] || char.name;
+        }
+
+        // Replaces all {{slug}} tokens in a string with resolved character names
+        function renderText(str) {
+            if (!str) return str;
+            return str.replace(/\{\{([a-z_]+)\}\}/g, function(match, slug) {
+                return getCharacterName(slug);
+            });
+        }
+
+        // Render an array of strings (e.g. canShare, knowledge items)
+        function renderTextItem(item) {
+            if (!item) return item;
+            const out = Object.assign({}, item);
+            if (out.text)     out.text     = renderText(out.text);
+            if (out.relation) out.relation = renderText(out.relation);
+            if (out.name)     out.name     = renderText(out.name);
+            return out;
+        }
+
 
             
             // Test connection
@@ -1679,8 +1723,10 @@
                 // Start listening for Firebase updates
                 listenForFirebaseUpdates();
                 
-                loadCharacterData();
-                loadDiscoveriesData();
+                loadResolvedGenders().then(() => {
+                    loadCharacterData();
+                    loadDiscoveriesData();
+                });
                 if (userSession.role === 'master') {
                     loadMasterClues();
                 }
@@ -1717,11 +1763,11 @@
                 let html = '<div style="background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #c9a227; border-radius: 5px; padding: 30px; margin-bottom: 30px;">';
                 
                 // PUBLIC DESCRIPTION
-                html += '<div style="font-size: 16px; color: #8b8b8b; font-style: italic; margin-bottom: 15px;">' + charData.publicDesc + '</div>';
+                html += '<div style="font-size: 16px; color: #8b8b8b; font-style: italic; margin-bottom: 15px;">' + renderText(charData.publicDesc) + '</div>';
                 
                 // BACKSTORY
                 html += '<div style="' + sectionStyle + '">Your Story</div>';
-                html += '<div style="' + textStyle + ' margin-bottom: 20px;">' + charData.backstory + '</div>';
+                html += '<div style="' + textStyle + ' margin-bottom: 20px;">' + renderText(charData.backstory) + '</div>';
                 
                 // HOW TO PLAY
                 if (charData.howToPlay) {
@@ -1748,7 +1794,7 @@
                                 html += '<li style="margin-bottom: 12px; font-size: 15px; line-height: 1.6; color: #e8e8e8; padding-left: 20px; position: relative;">';
                                 html += '<span style="color: #c9a227; position: absolute; left: 0;">\u2726</span> ';
                             }
-                            html += k.text + '</li>';
+                            html += renderText(k.text) + '</li>';
                         });
                         html += '</ul>';
                     }
@@ -1768,7 +1814,7 @@
                             } else {
                                 html += '<div style="background: rgba(201,162,39,0.08); border-left: 3px solid #c9a227; padding: 15px; margin-bottom: 12px; border-radius: 0 3px 3px 0;">';
                             }
-                            html += '<div style="font-size: 15px; line-height: 1.6; color: #e8e8e8;">\u201C' + s.text + '\u201D</div>';
+                            html += '<div style="font-size: 15px; line-height: 1.6; color: #e8e8e8;">\u201C' + renderText(s.text) + '\u201D</div>';
                             html += '</div>';
                         });
                     }
@@ -1789,7 +1835,7 @@
                     html += '<div style="' + sectionStyle + '">Key Relationships</div>';
                     html += '<ul style="list-style: none; padding-left: 10px;">';
                     charData.relationships.forEach(function(r) {
-                        html += '<li style="margin-bottom: 10px; font-size: 15px; color: #e8e8e8;"><strong style="color: #c9a227;">' + r.name + '</strong> \u2014 ' + r.relation + '</li>';
+                        html += '<li style="margin-bottom: 10px; font-size: 15px; color: #e8e8e8;"><strong style="color: #c9a227;">' + renderText(r.name) + '</strong> \u2014 ' + renderText(r.relation) + '</li>';
                     });
                     html += '</ul>';
                 }
@@ -1833,7 +1879,7 @@
                         html += '<div style="' + sectionStyle.replace(/#c9a227/g, '#8b4a4a') + '">Your Final Journal Entry</div>';
                         var entryContext = charData.finalEntry.context || charData.finalEntry.instructions || '';
                         html += '<div style="font-size: 13px; color: #8b4a4a; font-style: italic; margin-bottom: 15px;">' + entryContext + '</div>';
-                        html += '<div style="' + textStyle + ' white-space: pre-line;">' + charData.finalEntry.text.replace(/\\n/g, '\n') + '</div>';
+                        html += '<div style="' + textStyle + ' white-space: pre-line;">' + renderText(charData.finalEntry.text.replace(/\\n/g, '\n')) + '</div>';
                     }
                     
                     html += '</div>';
@@ -2620,7 +2666,7 @@
                     '<div class="memory-popup-box" style="' + (isTier1 ? 'border-color:#e74c3c; box-shadow:0 0 0 2px #e74c3c, 0 15px 40px rgba(0,0,0,0.5);' : '') + '">' +
                         (isTier1 ? '<div style="background:#e74c3c; color:white; font-size:12px; letter-spacing:3px; text-transform:uppercase; padding:8px 16px; margin:-20px -20px 16px -20px; text-align:center;">⚠ Important — Share With The Group</div>' : '') +
                         '<div class="memory-popup-header">' + (isTier1 ? 'A Critical Memory\u2026' : 'A Memory Surfaces\u2026') + '</div>' +
-                        '<div class="memory-popup-text">\u201C' + memory.text + '\u201D</div>' +
+                        '<div class="memory-popup-text">\u201C' + renderText(memory.text) + '\u201D</div>' +
                         '<div class="memory-popup-type" style="' + (isTier1 ? 'color:#e74c3c;' : '') + '">' + typeLabel + '</div>' +
                         '<button class="memory-popup-dismiss" onclick="dismissMemory()">' +
                             (remaining > 0 ? 'Next' : 'Dismiss') +

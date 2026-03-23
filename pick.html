@@ -884,6 +884,9 @@ async function confirmSelection() {
         selectedAt:    new Date().toISOString()
     });
 
+    // Write resolved gender so all devices can display correct name variant
+    await db.ref(`games/${currentGameId}/state/resolvedGenders/${charId}`).set(genderPref);
+
     closeModal();
 
     // Killer reveal if applicable
