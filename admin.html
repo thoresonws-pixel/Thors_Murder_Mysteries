@@ -2291,100 +2291,111 @@
     }
 
 
-    // ── THE RANDOMIZER ────────────────────────────────────────────
+
+    // ── ROLE & SKILL GENERATION (platform-agnostic) ───────────────
+    // Reads priorities and skills from rolesConfig (defined in roles.js)
+    // Does not know story-specific names — just Priority 1, 2, 3 etc.
+
     function runGeneration() {
         if (!rolesConfig) return;
         genAssignments = {};
 
-        const players     = Object.values(genPlayers);
-        const config      = rolesConfig;
-        const skillWeights = config.scoreWeights.skill;
-        const hiWeights    = config.scoreWeights.highImpact;
+        const players      = Object.values(genPlayers);
+        const hiWeights    = rolesConfig.scoreWeights.priority;
+        const skillWeights = rolesConfig.scoreWeights.skill;
 
-        // ── STEP 1: Fixed role assignments (pipeline etc) ─────────
-        Object.entries(config.roles).forEach(([roleName, roleCfg]) => {
-            if (!roleCfg.assignTo) return;
-            const player = players.find(p => p.characterId === roleCfg.assignTo);
-            if (player) {
-                genAssignments[player.uid] = { role: roleName, skill: null };
+        // ── STEP 1: Assign priority roles in order ────────────────
+        const assignedUids = new Set();
+
+        Object.values(rolesConfig.priorities).forEach(roleCfg => {
+
+            // Fixed assignment (e.g. pipeline always goes to david_richardson)
+            if (roleCfg.assignTo) {
+                const player = players.find(p => p.characterId === roleCfg.assignTo);
+                if (player) {
+                    genAssignments[player.uid] = {
+                        priority: roleCfg.label,
+                        skill: null,
+                        ineligibleSkills: roleCfg.ineligibleSkills || []
+                    };
+                    if (roleCfg.excludeFrom) assignedUids.add(player.uid);
+                }
+                return;
+            }
+
+            // Random weighted assignment from eligible pool
+            const eligible = players.filter(p => {
+                if (assignedUids.has(p.uid)) return false;
+                if (!roleCfg.eligibleChars.includes(p.characterId)) return false;
+                const score = Math.min(10, Math.max(1, p.score));
+                return Math.random() < (hiWeights[score] || 0);
+            });
+
+            if (eligible.length > 0) {
+                const chosen = weightedPickByScore(eligible, hiWeights);
+                genAssignments[chosen.uid] = {
+                    priority: roleCfg.label,
+                    skill: null,
+                    ineligibleSkills: roleCfg.ineligibleSkills || []
+                };
+                if (roleCfg.excludeFrom) assignedUids.add(chosen.uid);
             }
         });
 
-        // ── STEP 2: Assign killer ─────────────────────────────────
-        const killerCfg = config.roles.killer;
-        if (killerCfg && !killerCfg.assignTo) {
-            const eligibleForKiller = players.filter(p => {
-                if (genAssignments[p.uid]) return false; // already assigned
-                if (killerCfg.ineligibleChars.includes(p.characterId)) return false;
-                const hiProb = hiWeights[Math.min(10, Math.max(1, p.score))] || 0;
-                return Math.random() < hiProb;
-            });
+        // ── STEP 2: Assign skills ─────────────────────────────────
+        // Build map of characterId → uid for quick lookup
+        const charToUid = {};
+        players.forEach(p => { charToUid[p.characterId] = p.uid; });
 
-            if (eligibleForKiller.length > 0) {
-                const killer = weightedPick(eligibleForKiller, hiWeights);
-                genAssignments[killer.uid] = { role: 'killer', skill: null };
-            } else {
-                showGenWarning('No eligible killer found — try regenerating, or check player scores.');
+        // Track which skills have been assigned and which players have skills
+        const assignedSkills = new Set();
+        const playersWithSkills = new Set();
+
+        Object.entries(rolesConfig.skills).forEach(([skillName, skillCfg]) => {
+
+            // Check primary first
+            const primaryUid = charToUid[skillCfg.primary];
+            if (primaryUid && !playersWithSkills.has(primaryUid)) {
+                // Check not blocked by ineligible skills on their priority role
+                const assignment = genAssignments[primaryUid];
+                const ineligible = assignment ? assignment.ineligibleSkills : [];
+                if (!ineligible.includes(skillName)) {
+                    if (!genAssignments[primaryUid]) genAssignments[primaryUid] = { priority: null, skill: null, ineligibleSkills: [] };
+                    genAssignments[primaryUid].skill = skillName;
+                    assignedSkills.add(skillName);
+                    playersWithSkills.add(primaryUid);
+                    return;
+                }
             }
-        }
 
-        // ── STEP 3: Assign heir ───────────────────────────────────
-        const heirCfg = config.roles.heir;
-        if (heirCfg && !heirCfg.assignTo) {
-            const eligibleForHeir = players.filter(p => {
-                if (genAssignments[p.uid]) return false;
-                if (heirCfg.ineligibleChars.includes(p.characterId)) return false;
-                const hiProb = hiWeights[Math.min(10, Math.max(1, p.score))] || 0;
-                return Math.random() < hiProb;
-            });
+            // Walk backup list
+            for (const backupChar of (skillCfg.backups || [])) {
+                const backupUid = charToUid[backupChar];
+                if (!backupUid) continue;
+                if (playersWithSkills.has(backupUid)) continue;
 
-            if (eligibleForHeir.length > 0) {
-                const heir = weightedPick(eligibleForHeir, hiWeights);
-                genAssignments[heir.uid] = { role: 'heir', skill: null };
-            }
-        }
+                const assignment = genAssignments[backupUid];
+                const ineligible = assignment ? assignment.ineligibleSkills : [];
+                if (ineligible.includes(skillName)) continue;
 
-        // ── STEP 4: Distribute skills ─────────────────────────────
-        // Build available skill pool — remove killer-ineligible skills
-        const killerUid = Object.entries(genAssignments).find(([,v]) => v.role === 'killer')?.[0];
-        const killerCharId = killerUid ? genPlayers[killerUid]?.characterId : null;
-        const killerIneligible = killerCfg?.ineligibleSkills || [];
+                // Check involvement score for skill probability
+                const player = genPlayers[backupUid];
+                const score  = player ? Math.min(10, Math.max(1, player.score)) : 5;
+                if (Math.random() > (skillWeights[score] || 0)) continue;
 
-        let availableSkills = [...config.skillPool];
-        const shuffled = players.slice().sort(() => Math.random() - 0.5);
-
-        shuffled.forEach(player => {
-            if (availableSkills.length === 0) return;
-            const score   = Math.min(10, Math.max(1, player.score));
-            const prob    = skillWeights[score] || 0;
-            if (Math.random() > prob) return; // this player doesn't get a skill
-
-            // Build this player's eligible skill pool
-            let pool = [...availableSkills];
-            if (genAssignments[player.uid]?.role === 'killer') {
-                pool = pool.filter(s => !killerIneligible.includes(s));
-            }
-            if (pool.length === 0) return;
-
-            // Pick a random skill
-            const skill = pool[Math.floor(Math.random() * pool.length)];
-            availableSkills = availableSkills.filter(s => s !== skill);
-
-            if (!genAssignments[player.uid]) {
-                genAssignments[player.uid] = { role: null, skill };
-            } else {
-                genAssignments[player.uid].skill = skill;
+                if (!genAssignments[backupUid]) genAssignments[backupUid] = { priority: null, skill: null, ineligibleSkills: [] };
+                genAssignments[backupUid].skill = skillName;
+                assignedSkills.add(skillName);
+                playersWithSkills.add(backupUid);
+                break;
             }
         });
 
         renderGenGrid();
     }
 
-    // ── Weighted random pick from array using score ───────────────
-    function weightedPick(arr, weights) {
-        const total = arr.reduce((sum, p) => {
-            return sum + (weights[Math.min(10, Math.max(1, p.score))] || 0.1);
-        }, 0);
+    function weightedPickByScore(arr, weights) {
+        const total = arr.reduce((s, p) => s + (weights[Math.min(10, Math.max(1, p.score))] || 0.1), 0);
         let rand = Math.random() * total;
         for (const p of arr) {
             rand -= (weights[Math.min(10, Math.max(1, p.score))] || 0.1);
@@ -2392,6 +2403,7 @@
         }
         return arr[arr.length - 1];
     }
+
 
     // ── Render the assignment grid ────────────────────────────────
     function renderGenGrid() {
@@ -2455,19 +2467,14 @@
             await db.ref('games/' + genGameId + '/state/roleAssignments').set(genAssignments);
 
             // Write skill assignments separately for easy dashboard lookup
-            const skillMap = {};
+            const skillMap = {}, roleMap = {};
             Object.entries(genAssignments).forEach(([uid, a]) => {
                 const p = genPlayers[uid];
-                if (p && a.skill) skillMap[p.characterId] = a.skill;
+                if (!p) return;
+                if (a.skill)     skillMap[p.characterId] = a.skill;
+                if (a.priority)  roleMap[p.characterId]  = a.priority;
             });
             await db.ref('games/' + genGameId + '/state/skillAssignments').set(skillMap);
-
-            // Write role map by characterId for dashboard lookup
-            const roleMap = {};
-            Object.entries(genAssignments).forEach(([uid, a]) => {
-                const p = genPlayers[uid];
-                if (p && a.role) roleMap[p.characterId] = a.role;
-            });
             await db.ref('games/' + genGameId + '/state/characterRoles').set(roleMap);
 
             showToast('Roles locked and applied.', 'success');
