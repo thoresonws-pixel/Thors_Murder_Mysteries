@@ -1168,10 +1168,6 @@
                 <div class="stat-value" id="statActive">—</div>
                 <div class="stat-label">Active Tonight</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-value" id="statPlayers">—</div>
-                <div class="stat-label">Total Players</div>
-            </div>
         </div>
 
         <!-- ── NEW GAME PANEL ──────────────────────────────── -->
@@ -1338,12 +1334,10 @@
     // ── Stats ─────────────────────────────────────────────
     function renderStats() {
         const games = Object.values(allGames);
-        const totalPlayers = games.reduce((sum, g) => sum + Object.keys(g.players || {}).length, 0);
 
         document.getElementById('statTotal').textContent  = games.length;
         document.getElementById('statLobby').textContent  = games.filter(g => g.status === 'lobby').length;
         document.getElementById('statActive').textContent = games.filter(g => g.status === 'active').length;
-        document.getElementById('statPlayers').textContent = totalPlayers;
     }
 
     // ── Render games list ─────────────────────────────────
