@@ -1413,6 +1413,15 @@
             };
             firebase.initializeApp(firebaseConfig);
             database = firebase.database();
+        // ── GAME-SCOPED REF HELPER ────────────────────────────────────
+        // All live game state lives under /games/{gameId}/state/
+        // Falls back to root path for legacy localStorage sessions (GM shortcut)
+        function gameRef(subpath) {
+            const gid = userSession && userSession.currentGameId;
+            if (gid) return database.ref('games/' + gid + '/state/' + subpath);
+            return database.ref(subpath);
+        }
+
             
             // Test connection
             database.ref('.info/connected').on('value', (snapshot) => {
@@ -1436,7 +1445,7 @@
             // Master and test accounts always listen
             const isMaster = userSession && userSession.role === 'master';
             if (!isMaster) {
-                database.ref('testMode').once('value').then(snap => {
+                gameRef('testMode').once('value').then(snap => {
                     if (snap.val() === true) {
                         console.log('⏸ Test mode active — live updates paused for guests');
                         return;
@@ -1451,7 +1460,7 @@
         function attachFirebaseListeners() {
             if (!database) return;
 
-            database.ref('activeItems').on('value', (snapshot) => {
+            gameRef('activeItems').on('value', (snapshot) => {
                 const items = snapshot.val() || [];
                 if (userSession && Array.isArray(items)) {
                     var oldItems = userSession.activeItems || [];
@@ -1471,7 +1480,7 @@
                 }
             });
 
-            database.ref('memoryReset').on('value', (snapshot) => {
+            gameRef('memoryReset').on('value', (snapshot) => {
                 const val = snapshot.val();
                 if (val) {
                     localStorage.setItem('shownMemories', '[]');
@@ -1480,7 +1489,7 @@
                 }
             });
 
-            database.ref('discoveredSkills').on('value', (snapshot) => {
+            gameRef('discoveredSkills').on('value', (snapshot) => {
                 const skills = snapshot.val() || [];
                 if (userSession && Array.isArray(skills)) {
                     var oldSkills = userSession.discoveredSkills || [];
@@ -1498,7 +1507,7 @@
 
             // Leaderboard — master only, live updates
             if (userSession.role === 'master') {
-                database.ref('scans').on('value', snapshot => {
+                gameRef('scans').on('value', snapshot => {
                     const data = snapshot.val() || {};
                     const el = document.getElementById('leaderboardContent');
                     if (!el) return;
@@ -1517,14 +1526,14 @@
                 });
             }
 
-            database.ref('activeItems').once('value').then(snapshot => {
+            gameRef('activeItems').once('value').then(snapshot => {
                 userSession.activeItems = snapshot.val() || [];
                 localStorage.setItem('userSession', JSON.stringify(userSession));
                 if (document.getElementById('discoveriesContent')) loadDiscoveriesData();
                 if (document.getElementById('masterCluesContent') && userSession.role === 'master') loadMasterClues();
             });
 
-            database.ref('discoveredSkills').once('value').then(snapshot => {
+            gameRef('discoveredSkills').once('value').then(snapshot => {
                 userSession.discoveredSkills = snapshot.val() || [];
                 localStorage.setItem('userSession', JSON.stringify(userSession));
                 if (document.getElementById('discoveriesContent')) loadDiscoveriesData();
@@ -1535,11 +1544,11 @@
         function syncToFirebase() {
             if (!database || !userSession) return;
             
-            database.ref('activeItems').set(userSession.activeItems || [])
+            gameRef('activeItems').set(userSession.activeItems || [])
                 .then(() => console.log('\u2713 Active items synced'))
                 .catch(e => console.error('Firebase sync error:', e));
 
-            database.ref('discoveredSkills').set(userSession.discoveredSkills || [])
+            gameRef('discoveredSkills').set(userSession.discoveredSkills || [])
                 .then(() => console.log('\u2713 Active skills synced'))
                 .catch(e => console.error('Firebase sync error:', e));
         }
@@ -2273,7 +2282,7 @@
                 shown = shown.filter(function(id) { return id !== itemId; });
                 localStorage.setItem('shownMemories', JSON.stringify(shown));
                 // Also clear it from Firebase shownMemories signal
-                if (database) database.ref('memoryReset').set(Date.now());
+                if (database) gameRef('memoryReset').set(Date.now());
             }
             var oldItems = userSession.activeItems.slice();
             userSession.activeItems.push(itemId);
@@ -2312,7 +2321,7 @@
         function updateTestModeBtn() {
             const btn = document.getElementById('testModeBtn');
             if (!btn || !database) return;
-            database.ref('testMode').once('value').then(snap => {
+            gameRef('testMode').once('value').then(snap => {
                 const on = snap.val() === true;
                 btn.textContent = on ? '✓ Test Mode ON — Turn Off' : 'Test Mode OFF — Turn On';
                 btn.style.background = on ? '#c9a227' : 'transparent';
@@ -2335,9 +2344,9 @@
 
         function toggleTestMode() {
             if (!database) return;
-            database.ref('testMode').once('value').then(snap => {
+            gameRef('testMode').once('value').then(snap => {
                 const current = snap.val() === true;
-                database.ref('testMode').set(!current).then(() => {
+                gameRef('testMode').set(!current).then(() => {
                     updateTestModeBtn();
                     console.log('testMode set to', !current);
                 });
@@ -2347,7 +2356,7 @@
         function forceReloadAll() {
             if (!confirm('This will reload all connected devices to the latest version. Continue?')) return;
             var newVersion = Date.now();
-            database.ref('appVersion').set(newVersion).then(function() {
+            gameRef('appVersion').set(newVersion).then(function() {
                 console.log('Force reload triggered:', newVersion);
             });
         }
@@ -2355,7 +2364,7 @@
         function watchAppVersion() {
             if (!database || !userSession) return;
             var myLoadTime = Date.now();
-            database.ref('appVersion').on('value', function(snap) {
+            gameRef('appVersion').on('value', function(snap) {
                 var v = snap.val();
                 // Only reload if version was set AFTER this session loaded
                 // and we're not the master (master just set it, no need to reload)
@@ -2378,12 +2387,12 @@
             
             // Clear Firebase (triggers listeners on all devices)
             if (database) {
-                database.ref('activeItems').set([]);
-                database.ref('discoveredSkills').set([]);
-                database.ref('memoryReset').set(Date.now());
-                database.ref('scans').remove();
-                database.ref('scanLog').remove();
-                database.ref('photos').remove();
+                gameRef('activeItems').set([]);
+                gameRef('discoveredSkills').set([]);
+                gameRef('memoryReset').set(Date.now());
+                gameRef('scans').remove();
+                gameRef('scanLog').remove();
+                gameRef('photos').remove();
                 // Also clear Storage photos
                 try {
                     const storage = firebase.storage();
@@ -2494,11 +2503,11 @@
                         if ((charData.skills || []).concat(charData.hiddenSkills || []).indexOf(skillName) !== -1) {
                             var discoveryKey = skillName.toLowerCase() + 'Discovered';
                             if (!userSession.discoveredSkills.includes(discoveryKey)) {
-                                database.ref('discoveredSkills').once('value', function(snap) {
+                                gameRef('discoveredSkills').once('value', function(snap) {
                                     var current = snap.val() || [];
                                     if (!current.includes(discoveryKey)) {
                                         current.push(discoveryKey);
-                                        database.ref('discoveredSkills').set(current);
+                                        gameRef('discoveredSkills').set(current);
                                     }
                                 });
                             }
@@ -2697,8 +2706,8 @@
                     const params = new URL(decodedText).searchParams;
                     const propId = params.get('id') || params.get('item') || 'unknown';
                     const player = userSession.username;
-                    database.ref('scans/' + player).transaction(c => (c || 0) + 1);
-                    database.ref('scanLog').push({ player, propId, time: Date.now() });
+                    gameRef('scans/' + player).transaction(c => (c || 0) + 1);
+                    gameRef('scanLog').push({ player, propId, time: Date.now() });
                 } catch(e) {}
                 var modal = document.getElementById('skillModalContent');
                 var itemLabel = '';
@@ -2736,8 +2745,8 @@
             // Netsuke side quest
             if (decodedText.includes('netsuke.html')) {
                 const player = userSession.username;
-                database.ref('scans/' + player).transaction(c => (c || 0) + 1);
-                database.ref('scanLog').push({ player, propId: 'netsuke', time: Date.now() });
+                gameRef('scans/' + player).transaction(c => (c || 0) + 1);
+                gameRef('scanLog').push({ player, propId: 'netsuke', time: Date.now() });
                 var modal = document.getElementById('skillModalContent');
                 modal.style.background = '#0d0b08';
                 modal.style.borderColor = '#c9a227';
@@ -2788,28 +2797,28 @@
                         const player = userSession.username;
                         const fullUrl = 'https://thoresonws-pixel.github.io/Thoreson_Estate_Dinner/' + posterUrl;
                         // Count as a clue scan
-                        database.ref('scans/' + player).transaction(c => (c || 0) + 1);
-                        database.ref('scanLog').push({ player, propId: id, time: Date.now() });
+                        gameRef('scans/' + player).transaction(c => (c || 0) + 1);
+                        gameRef('scanLog').push({ player, propId: id, time: Date.now() });
 
                         // Special bathroom counter
                         if (id === 'bathroom') {
-                            database.ref('bathroomScans').transaction(c => (c || 0) + 1);
+                            gameRef('bathroomScans').transaction(c => (c || 0) + 1);
                         }
 
-                        firebase.database().ref('photos').orderByChild('wallUrl').equalTo(fullUrl).once('value', snap => {
+                        gameRef('photos').orderByChild('wallUrl').equalTo(fullUrl).once('value', snap => {
                             if (!snap.exists()) {
                                 var photoData = { player, wallUrl: fullUrl, fullUrl, time: Date.now(), isPoster: true };
                                 if (id === 'bathroom') {
                                     photoData.caption = "Why are you looking for clues in the bathroom?!";
                                     photoData.showCounter = true;
                                 }
-                                firebase.database().ref('photos').push(photoData);
+                                gameRef('photos').push(photoData);
                             }
                         });
                         // Show popup
                         var modal = document.getElementById('skillModalContent');
                         if (id === 'bathroom') {
-                            database.ref('bathroomScans').once('value', function(snap) {
+                            gameRef('bathroomScans').once('value', function(snap) {
                                 var count = snap.val() || 1;
                                 modal.innerHTML = `
                                     <div style="text-align:center; padding:10px 0;">
@@ -2996,7 +3005,7 @@
                             err => {
                                 status.textContent = 'Full res failed: ' + err.code + ' — wall version saved.';
                                 // Still add to wall with compressed only
-                                firebase.database().ref('photos').push({
+                                gameRef('photos').push({
                                     player, wallUrl, fullUrl: null, time: ts
                                 });
                                 btn.disabled = false;
@@ -3008,7 +3017,7 @@
                                 fullTask.snapshot.ref.getDownloadURL().then(fullUrl => {
                                     barFill.style.width = '100%';
                                     // Only now add to wall — both versions saved
-                                    firebase.database().ref('photos').push({
+                                    gameRef('photos').push({
                                         player, wallUrl, fullUrl, time: ts
                                     });
                                     status.textContent = '✓ Photo saved!';
@@ -3055,7 +3064,7 @@
             const grid = document.getElementById('photoGrid');
             if (!grid || !firebase.database) return;
 
-            firebase.database().ref('photos').orderByChild('time').on('value', snap => {
+            gameRef('photos').orderByChild('time').on('value', snap => {
                 const data = snap.val();
                 if (!data) {
                     grid.innerHTML = '<div style="text-align:center; color:#555; font-style:italic; grid-column:1/-1; padding:40px;">No photos yet. Be the first to capture the evening.</div>';
@@ -3086,7 +3095,7 @@
                 // Update bathroom counter if present
                 var bcEl = document.getElementById('bathroomCount');
                 if (bcEl) {
-                    database.ref('bathroomScans').on('value', function(snap) {
+                    gameRef('bathroomScans').on('value', function(snap) {
                         var count = snap.val() || 0;
                         bcEl.textContent = count + ' detective' + (count !== 1 ? 's have' : ' has') + ' checked the bathroom for clues';
                     });
@@ -3212,7 +3221,7 @@
                     // Save token under fcmTokens/{username} in Firebase
                     var charKey = userSession.username;
                     if (database) {
-                        database.ref('fcmTokens/' + charKey + '/' + token.substring(0, 20)).set(token);
+                        gameRef('fcmTokens/' + charKey + '/' + token.substring(0, 20)).set(token);
                     }
                 }).catch(function(err) {
                     console.log('FCM getToken error:', err);
@@ -3230,7 +3239,7 @@
             // Real guest accounts get nothing until test mode is OFF.
             var isTestOrMaster = userSession && userSession.role === 'master';
             if (!isTestOrMaster && database) {
-                database.ref('testMode').once('value').then(function(snap) {
+                gameRef('testMode').once('value').then(function(snap) {
                     if (snap.val() === true) return; // test mode on — silence real accounts
                     _fireNotification(title, body, tag);
                 });

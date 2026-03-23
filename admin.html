@@ -972,6 +972,48 @@
             .gm-grid { grid-template-columns: 1fr; }
         }
 
+
+        /* ── EDIT GAME MODAL ──────────────────────────────────────── */
+        .edit-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(6,4,10,0.88);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            backdrop-filter: blur(6px);
+        }
+        .edit-overlay.open { display: flex; }
+
+        .edit-modal {
+            background: var(--panel);
+            border: 1px solid var(--border-hl);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+            width: 100%;
+            max-width: 540px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .edit-modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .edit-modal-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 20px;
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .edit-modal-body { padding: 24px; }
+
     </style>
 </head>
 <body>
@@ -1313,6 +1355,7 @@
                     ${canComplete ? `<button class="btn-status btn-complete" onclick="setStatus('${id}','complete')">■ Complete</button>` : ''}
                     <button class="btn-copy" onclick="copyText('${inviteUrl}', 'invite-${id}')">Copy Invite</button>
                     <span class="copy-confirm" id="invite-${id}">Copied!</span>
+                    <button class="btn-ghost" onclick="openEditModal('${id}')">Edit</button>
                     <button class="btn-danger" onclick="deleteGame('${id}', '${g.storyName}')">Delete</button>
                 </div>
             </div>
@@ -1459,6 +1502,11 @@
 
     // ── GM CONTROL PANEL ──────────────────────────────────────────
     let gmGameId   = null;
+    // ── GAME-SCOPED REF HELPER (GM panel) ────────────────────────
+    function gmRef(subpath) {
+        return db.ref('games/' + gmGameId + '/state/' + subpath);
+    }
+
     let gmActive   = {};   // activeItems for this game
     let gmUnsubscribe = null;
 
@@ -1491,13 +1539,10 @@
 
         // Live listener for activeItems
         if (gmUnsubscribe) gmUnsubscribe();
-        const ref = db.ref('players'); // shared game state — same path as dashboard
-        ref.on('value', snap => {
-            // activeItems lives at /activeItems (shared across all games for now)
-        });
+        // game state now scoped under games/{gameId}/state/ via gmRef()
 
         // Load activeItems
-        db.ref('activeItems').on('value', snap => {
+        gmRef('activeItems').on('value', snap => {
             gmActive = {};
             const items = snap.val() || [];
             items.forEach(id => gmActive[id] = true);
@@ -1505,7 +1550,7 @@
         });
 
         // Live leaderboard
-        db.ref('scans').on('value', snap => {
+        gmRef('scans').on('value', snap => {
             const data = snap.val() || {};
             const el = document.getElementById('gmLeaderboard');
             if (!el) return;
@@ -1526,8 +1571,8 @@
     function closeGMPanel() {
         document.getElementById('gmOverlay').classList.remove('open');
         document.body.style.overflow = '';
-        db.ref('activeItems').off();
-        db.ref('scans').off();
+        gmRef('activeItems').off();
+        gmRef('scans').off();
         gmGameId = null;
         gmActive = {};
     }
@@ -1656,21 +1701,21 @@
     // ── GM action functions ────────────────────────────────────────
 
     function gmToggleItem(itemId) {
-        db.ref('activeItems').once('value').then(snap => {
+        gmRef('activeItems').once('value').then(snap => {
             let items = snap.val() || [];
             const idx = items.indexOf(itemId);
             if (idx === -1) items.push(itemId);
             else items.splice(idx, 1);
-            db.ref('activeItems').set(items);
+            gmRef('activeItems').set(items);
         });
     }
 
     function gmFireDRText(itemId) {
-        db.ref('activeItems').once('value').then(snap => {
+        gmRef('activeItems').once('value').then(snap => {
             let items = snap.val() || [];
             if (!items.includes(itemId)) {
                 items.push(itemId);
-                db.ref('activeItems').set(items);
+                gmRef('activeItems').set(items);
             }
         });
     }
@@ -1689,7 +1734,7 @@
     function gmUpdateTestModeBtn() {
         const btn = document.getElementById('gmTestModeBtn');
         if (!btn) return;
-        db.ref('testMode').once('value').then(snap => {
+        gmRef('testMode').once('value').then(snap => {
             const on = snap.val() === true;
             btn.textContent = on ? '✓ Test Mode ON — Turn Off' : 'Test Mode OFF — Turn On';
             btn.style.background = on ? 'rgba(201,162,39,0.2)' : '';
@@ -1698,25 +1743,25 @@
     }
 
     function gmToggleTestMode() {
-        db.ref('testMode').once('value').then(snap => {
-            db.ref('testMode').set(!(snap.val() === true)).then(gmUpdateTestModeBtn);
+        gmRef('testMode').once('value').then(snap => {
+            gmRef('testMode').set(!(snap.val() === true)).then(gmUpdateTestModeBtn);
         });
     }
 
     function gmForceReload() {
         if (!confirm('Reload all connected devices?')) return;
-        db.ref('appVersion').set(Date.now());
+        gmRef('appVersion').set(Date.now());
         showToast('Reload signal sent to all devices.', 'success');
     }
 
     function gmResetGame() {
         if (!confirm('Reset ALL game data across every device? This cannot be undone.')) return;
-        db.ref('activeItems').set([]);
-        db.ref('discoveredSkills').set([]);
-        db.ref('memoryReset').set(Date.now());
-        db.ref('scans').remove();
-        db.ref('scanLog').remove();
-        db.ref('photos').remove();
+        gmRef('activeItems').set([]);
+        gmRef('discoveredSkills').set([]);
+        gmRef('memoryReset').set(Date.now());
+        gmRef('scans').remove();
+        gmRef('scanLog').remove();
+        gmRef('photos').remove();
         try {
             const storage = firebase.storage();
             storage.ref('photos/wall').listAll().then(res => res.items.forEach(i => i.delete()));
@@ -1724,6 +1769,69 @@
         } catch(e) {}
         showToast('Game reset complete.', 'success');
         renderGMPanel();
+    }
+
+    
+    // ── EDIT GAME ─────────────────────────────────────────────────
+    function openEditModal(gameId) {
+        const g = allGames[gameId];
+        if (!g) return;
+        document.getElementById('editGameId').value   = gameId;
+        document.getElementById('editStory').value    = g.storyId    || 'thoreson';
+        document.getElementById('editDate').value     = g.eventDate  || '';
+        document.getElementById('editTime').value     = g.eventTime  || '';
+        document.getElementById('editMax').value      = g.maxPlayers || 21;
+        document.getElementById('editVenue').value    = g.venueName  || '';
+        document.getElementById('editStatus').value   = g.status     || 'lobby';
+        document.getElementById('editNotes').value    = g.notes      || '';
+        document.getElementById('editError').style.display = 'none';
+        document.getElementById('editOverlay').classList.add('open');
+    }
+
+    function closeEditModal() {
+        document.getElementById('editOverlay').classList.remove('open');
+    }
+
+    async function saveEditGame() {
+        const gameId = document.getElementById('editGameId').value;
+        if (!gameId) return;
+
+        const storyId    = document.getElementById('editStory').value;
+        const eventDate  = document.getElementById('editDate').value;
+        const eventTime  = document.getElementById('editTime').value;
+        const maxPlayers = parseInt(document.getElementById('editMax').value) || 21;
+        const venueName  = document.getElementById('editVenue').value.trim();
+        const status     = document.getElementById('editStatus').value;
+        const notes      = document.getElementById('editNotes').value.trim();
+
+        if (!eventDate) {
+            const el = document.getElementById('editError');
+            el.textContent = 'Please set an event date.';
+            el.style.display = 'block';
+            return;
+        }
+
+        const story = STORIES[storyId] || { name: 'Mystery Dinner' };
+
+        try {
+            await db.ref('games/' + gameId).update({
+                storyId,
+                storyName:   story.name,
+                eventDate,
+                eventTime,
+                maxPlayers,
+                venueName:   venueName || null,
+                status,
+                notes:       notes || null,
+                updatedAt:   new Date().toISOString()
+            });
+            closeEditModal();
+            showToast('Party updated.', 'success');
+        } catch(err) {
+            const el = document.getElementById('editError');
+            el.textContent = 'Error saving: ' + err.message;
+            el.style.display = 'block';
+        }
     }
 
     </script>
@@ -1743,6 +1851,61 @@
 </div>
 
 <audio id="gmConfessionAudio" style="display:none;"></audio>
+
+
+<!-- ── EDIT GAME MODAL ─────────────────────────────────────────── -->
+<div class="edit-overlay" id="editOverlay" onclick="if(event.target===this)closeEditModal()">
+    <div class="edit-modal">
+        <div class="edit-modal-header">
+            <div class="edit-modal-title">Edit Party</div>
+            <button class="btn-signout" onclick="closeEditModal()">✕ Cancel</button>
+        </div>
+        <div class="edit-modal-body">
+            <input type="hidden" id="editGameId">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="editStory">Mystery</label>
+                    <select id="editStory">
+                        <option value="thoreson">The Thoreson Estate Dinner</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editDate">Date of Event</label>
+                    <input type="date" id="editDate">
+                </div>
+                <div class="form-group">
+                    <label for="editTime">Start Time</label>
+                    <input type="time" id="editTime">
+                </div>
+                <div class="form-group">
+                    <label for="editMax">Max Players</label>
+                    <input type="number" id="editMax" min="8" max="60">
+                </div>
+                <div class="form-group full">
+                    <label for="editVenue">Venue</label>
+                    <input type="text" id="editVenue" placeholder="Venue name and address">
+                </div>
+                <div class="form-group full">
+                    <label for="editStatus">Status</label>
+                    <select id="editStatus">
+                        <option value="lobby">Open Lobby</option>
+                        <option value="active">Active</option>
+                        <option value="complete">Complete</option>
+                    </select>
+                </div>
+                <div class="form-group full">
+                    <label for="editNotes">Notes <span style="color:var(--fog);font-size:10px;">(internal)</span></label>
+                    <textarea id="editNotes" placeholder="Internal notes…"></textarea>
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:8px;">
+                <button class="btn-gold" onclick="saveEditGame()">Save Changes</button>
+                <button class="btn-ghost" onclick="closeEditModal()">Cancel</button>
+            </div>
+            <div class="error-msg" id="editError"></div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
