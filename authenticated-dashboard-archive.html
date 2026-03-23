@@ -1,0 +1,3285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#c9a227">
+    <meta name="description" content="An interactive 1930s murder mystery dinner party experience">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Thoreson Estate">
+    <title>The Thoreson Estate Dinner</title>
+    <!-- v17 -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e8e8e8;
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(180deg, rgba(26, 26, 46, 0.98) 0%, rgba(26, 26, 46, 0.95) 100%);
+            border-bottom: 2px solid #c9a227;
+            padding: 15px 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .desktop-nav {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            list-style: none;
+        }
+        nav a {
+            color: #c9a227;
+            text-decoration: none;
+            font-size: 18px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+        nav a:hover {
+            color: #fff;
+            text-shadow: 0 0 10px #c9a227;
+        }
+        .mobile-nav {
+            padding: 12px 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mobile-nav select {
+            flex: 1;
+            padding: 12px 15px;
+            background: rgba(42, 47, 74, 0.8);
+            color: #c9a227;
+            border: 1px solid #c9a227;
+            border-radius: 4px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 15px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .mobile-nav select:focus {
+            outline: none;
+            background: rgba(42, 47, 74, 0.95);
+            box-shadow: 0 0 10px rgba(201, 162, 39, 0.3);
+        }
+        .mobile-nav select option {
+            background: #1a1a2e;
+            color: #c9a227;
+            padding: 10px;
+        }
+        .mobile-nav button {
+            padding: 12px 20px;
+            background: #c9a227;
+            color: #1a1a2e;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-family: 'Cormorant Garamond', serif;
+            letter-spacing: 2px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .mobile-nav button:hover {
+            background: #e8d950;
+            box-shadow: 0 0 15px rgba(201, 162, 39, 0.4);
+        }
+        
+        /* Sections */
+        section {
+            min-height: 100vh;
+            padding: 120px 30px 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 48px;
+            color: #c9a227;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 50px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Invitation Section */
+        #invitation {
+            justify-content: center;
+        }
+        .invitation-card {
+            width: 100%;
+            max-width: 550px;
+            background: linear-gradient(145deg, #f5f0e6 0%, #e8e0d0 50%, #d4c9b5 100%);
+            border: 3px solid #8b7355;
+            box-shadow: 
+                0 0 0 1px #a08060,
+                0 0 0 6px #2a2520,
+                0 0 0 8px #8b7355,
+                0 20px 60px rgba(0,0,0,0.5);
+            padding: 40px 35px;
+            position: relative;
+            overflow: hidden;
+        }
+        .invitation-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 0 L100 50 L50 100 L0 50 Z' fill='none' stroke='%23c9a22720' stroke-width='0.5'/%3E%3C/svg%3E");
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .corner {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 2px solid #8b7355;
+        }
+        .corner-tl { top: 15px; left: 15px; border-right: none; border-bottom: none; }
+        .corner-tr { top: 15px; right: 15px; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: 15px; left: 15px; border-right: none; border-top: none; }
+        .corner-br { bottom: 15px; right: 15px; border-left: none; border-top: none; }
+        .invite-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 25px;
+        }
+        .ornament {
+            font-size: 28px;
+            color: #8b7355;
+        }
+        .estate-name {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #2a2520;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+        .estate-sub {
+            font-size: 14px;
+            color: #8b7355;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin-top: -15px;
+        }
+        .divider {
+            width: 150px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #8b7355, transparent);
+        }
+        .summons {
+            font-size: 16px;
+            color: #5a4a3a;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .message {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 20px;
+            font-style: italic;
+            color: #3a3028;
+            line-height: 1.8;
+        }
+        .announcement {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 18px;
+            color: #2a2520;
+            font-weight: 600;
+        }
+        .detail-label {
+            font-size: 10px;
+            color: #8b7355;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .detail-line {
+            font-size: 18px;
+            color: #3a3028;
+            letter-spacing: 1px;
+        }
+        .address {
+            font-size: 15px;
+            color: #5a4a3a;
+            line-height: 1.5;
+        }
+        .attire {
+            font-size: 15px;
+            font-style: italic;
+            color: #6a5a4a;
+            letter-spacing: 1px;
+        }
+        .host-label {
+            font-size: 10px;
+            color: #8b7355;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+        .host-name {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 24px;
+            font-style: italic;
+            color: #2a2520;
+        }
+        .bottom-ornament {
+            font-size: 20px;
+            color: #8b7355;
+            letter-spacing: 10px;
+        }
+        
+        /* Section Titles */
+        .section-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 36px;
+            color: #c9a227;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .section-subtitle {
+            font-size: 16px;
+            color: #8b7355;
+            letter-spacing: 3px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        /* RSVP Section */
+        #rsvp {
+            background: rgba(0,0,0,0.2);
+        }
+        .rsvp-container {
+            width: 100%;
+            max-width: 500px;
+            background: linear-gradient(145deg, #f5f0e6 0%, #e8e0d0 50%, #d4c9b5 100%);
+            border: 2px solid #8b7355;
+            box-shadow: 
+                0 0 0 1px #a08060,
+                0 0 0 4px #2a2520,
+                0 0 0 6px #8b7355,
+                0 15px 40px rgba(0,0,0,0.4);
+            padding: 40px;
+        }
+        .rsvp-form {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .form-label {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2a2520;
+            letter-spacing: 1px;
+        }
+        .form-input, .form-textarea {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 18px;
+            padding: 12px 15px;
+            border: 1px solid #8b7355;
+            background: rgba(255,255,255,0.7);
+            color: #2a2520;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .form-input:focus, .form-textarea:focus {
+            border-color: #c9a227;
+            background: rgba(255,255,255,0.9);
+        }
+        .form-input::placeholder, .form-textarea::placeholder {
+            color: #8b7355;
+            font-style: italic;
+        }
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 8px 0;
+        }
+        .radio-label input[type="radio"] {
+            display: none;
+        }
+        .radio-custom {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #8b7355;
+            border-radius: 50%;
+            position: relative;
+            transition: all 0.3s;
+        }
+        .radio-label input[type="radio"]:checked + .radio-custom {
+            border-color: #c9a227;
+        }
+        .radio-label input[type="radio"]:checked + .radio-custom::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: #c9a227;
+            border-radius: 50%;
+        }
+        .radio-text {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 17px;
+            color: #3a3028;
+            font-style: italic;
+        }
+        .form-button {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 16px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            padding: 15px 30px;
+            background: #2a2520;
+            color: #e8e0d0;
+            border: 2px solid #8b7355;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        .form-button:hover {
+            background: #8b7355;
+            color: #f5f0e6;
+        }
+        .form-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .form-message {
+            text-align: center;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 18px;
+            font-style: italic;
+            padding: 15px;
+            display: none;
+        }
+        .form-message.success {
+            display: block;
+            color: #2a5a2a;
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4a7c4a;
+        }
+        .form-message.error {
+            display: block;
+            color: #5a2a2a;
+            background: rgba(175, 76, 76, 0.2);
+            border: 1px solid #7c4a4a;
+        }
+        .contact-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+            background: rgba(139, 115, 85, 0.1);
+            border-left: 3px solid #c9a227;
+            margin-top: -10px;
+        }
+        
+        /* Cocktail Menu Section */
+        #cocktails {
+            background: rgba(0,0,0,0.1);
+        }
+        .menu-container {
+            width: 100%;
+            max-width: 550px;
+            background: linear-gradient(145deg, #f5f0e6 0%, #e8e0d0 50%, #d4c9b5 100%);
+            border: 2px solid #8b7355;
+            box-shadow: 
+                0 0 0 1px #a08060,
+                0 0 0 4px #2a2520,
+                0 0 0 6px #8b7355,
+                0 20px 50px rgba(0,0,0,0.5);
+            padding: 45px;
+            text-align: left;
+            margin: 0;
+            border-radius: 2px;
+        }
+        .menu-section {
+            margin-bottom: 10px;
+        }
+        .menu-header {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #2a2520;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .menu-item {
+            margin-bottom: 18px;
+        }
+        .drink-name {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #2a2520;
+            margin-bottom: 4px;
+        }
+        .drink-desc {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 16px;
+            font-style: italic;
+            color: #5a4a3a;
+            letter-spacing: 1px;
+        }
+        .menu-divider {
+            font-size: 18px;
+            color: #8b7355;
+            margin: 25px 0;
+        }
+        
+        /* Guest List Section */
+        #guests {
+            
+        }
+        .guest-container {
+            width: 100%;
+            max-width: 620px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .guest-card {
+            background: linear-gradient(145deg, #f5f0e6 0%, #e8e0d0 100%);
+            border: 1px solid #8b7355;
+            overflow: hidden;
+        }
+        .guest-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+        .guest-card-header:hover { background: rgba(139,115,85,0.12); }
+        .guest-card-left { display: flex; flex-direction: column; gap: 2px; }
+        .guest-card-name {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 20px;
+            color: #2a2520;
+            font-style: italic;
+        }
+        .guest-card-player {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            color: #a08060;
+            font-style: normal;
+        }
+        .guest-card-role {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #8b7355;
+        }
+        .guest-card-chevron {
+            color: #8b7355;
+            font-size: 11px;
+            transition: transform 0.25s;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+        .guest-card.open .guest-card-chevron { transform: rotate(180deg); }
+        .guest-card-body {
+            display: none;
+            padding: 0 20px 16px 20px;
+            border-top: 1px solid rgba(139,115,85,0.3);
+        }
+        .guest-card.open .guest-card-body { display: block; }
+        .guest-card-desc {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 17px;
+            font-style: italic;
+            color: #5a4a3a;
+            line-height: 1.7;
+            padding-top: 12px;
+        }
+        .guest-bullet {
+            color: #8b7355;
+            font-size: 12px;
+        }
+        .guest-name {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 20px;
+            color: #2a2520;
+            letter-spacing: 1px;
+            font-style: italic;
+        }
+        .loading {
+            text-align: center;
+            color: #5a4a3a;
+            font-style: italic;
+            padding: 30px;
+            font-size: 18px;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #5a4a3a;
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            nav a {
+                font-size: 9px;
+                letter-spacing: 0.2px;
+            }
+            nav {
+                padding: 6px 0;
+            }
+            section {
+                padding: 80px 15px 40px;
+            }
+            .invitation-card {
+                padding: 25px 20px;
+            }
+            .corner {
+                width: 40px;
+                height: 40px;
+            }
+            .corner-tl, .corner-tr, .corner-bl, .corner-br {
+                top: 10px;
+                left: 10px;
+            }
+            .corner-tr, .corner-br {
+                left: auto;
+                right: 10px;
+            }
+            .corner-bl, .corner-br {
+                top: auto;
+                bottom: 10px;
+            }
+            .estate-name {
+                font-size: 22px;
+                letter-spacing: 2px;
+            }
+            .summons {
+                font-size: 12px;
+                letter-spacing: 2px;
+            }
+            .message {
+                font-size: 16px;
+            }
+            .announcement {
+                font-size: 16px;
+            }
+            .detail-line {
+                font-size: 16px;
+            }
+            .address {
+                font-size: 14px;
+            }
+            .host-name {
+                font-size: 20px;
+            }
+            .section-title {
+                font-size: 24px;
+                letter-spacing: 2px;
+            }
+            .section-subtitle {
+                font-size: 14px;
+            }
+            .rsvp-container {
+                padding: 25px 20px;
+            }
+            .form-label {
+                font-size: 14px;
+            }
+            .form-input, .form-textarea {
+                font-size: 16px;
+                padding: 10px 12px;
+            }
+            .radio-text {
+                font-size: 15px;
+            }
+            .form-button {
+                font-size: 14px;
+                padding: 12px 20px;
+            }
+            .menu-container {
+                padding: 30px 25px;
+            }
+            .menu-header {
+                font-size: 18px;
+            }
+            .drink-name {
+                font-size: 18px;
+            }
+            .drink-desc {
+                font-size: 14px;
+            }
+            .guest-container {
+                padding: 20px 25px;
+            }
+            .guest-name {
+                font-size: 18px;
+            }
+            .guest-item {
+                padding: 12px 0;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .guest-toggle {
+                font-size: 14px;
+            }
+            .guest-info {
+                width: 100% !important;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .desktop-nav {
+                gap: 0;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 6px 4px;
+            }
+            nav a {
+                font-size: 11px;
+                letter-spacing: 1px;
+                padding: 6px 8px;
+                display: block;
+            }
+            nav li {
+                flex-shrink: 0;
+            }
+        }
+        /* QR Scanner Modal */
+        .scanner-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .scanner-overlay.active { display: flex; }
+        .scanner-header {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 22px; color: #c9a227;
+            margin-bottom: 20px; text-align: center;
+        }
+        .scanner-box {
+            width: 100%; max-width: 400px;
+            border: 2px solid #c9a227;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+        }
+        .scanner-close {
+            margin-top: 25px;
+            padding: 12px 40px;
+            background: transparent;
+            color: #c9a227;
+            border: 1px solid #c9a227;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 16px;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+        .scanner-close:hover { background: rgba(201, 162, 39, 0.15); }
+        .scanner-status {
+            color: #8b8b8b;
+            font-style: italic;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        /* Skill Content Modal */
+        .skill-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2001;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .skill-modal-overlay.active { display: flex; }
+        .skill-modal {
+            background: linear-gradient(145deg, #f5f0e6 0%, #e8e0d0 50%, #d4c9b5 100%);
+            border: 2px solid #8b7355;
+            box-shadow: 0 0 0 1px #a08060, 0 0 0 4px #2a2520, 0 0 0 6px #8b7355, 0 15px 40px rgba(0,0,0,0.4);
+            padding: 35px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            text-align: center;
+        }
+        .skill-modal .skill-badge {
+            display: inline-block; background: #2a2520; color: #c9a227;
+            padding: 5px 15px; font-size: 12px; letter-spacing: 2px;
+            text-transform: uppercase; margin-bottom: 20px;
+        }
+        .skill-modal .reveal-header {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 20px; color: #2a2520; margin-bottom: 20px;
+            padding-bottom: 15px; border-bottom: 1px solid #8b7355;
+        }
+        .skill-modal .reveal-content {
+            font-size: 18px; color: #3a3028; line-height: 1.8; text-align: left;
+        }
+        .skill-modal .reveal-content p { margin-bottom: 15px; }
+        .skill-modal .reveal-highlight {
+            background: rgba(201, 162, 39, 0.2); padding: 15px;
+            border-left: 3px solid #c9a227; margin: 20px 0; font-style: italic;
+        }
+        .skill-modal .reveal-danger {
+            background: rgba(139, 74, 74, 0.2); padding: 15px;
+            border-left: 3px solid #8b4a4a; margin: 20px 0; font-style: italic;
+        }
+        .skill-modal .letter-text {
+            background: rgba(201, 162, 39, 0.15); padding: 20px;
+            border: 1px solid rgba(201, 162, 39, 0.3); margin: 20px 0;
+            font-style: italic; line-height: 2;
+        }
+        .skill-modal-close {
+            margin-top: 25px;
+            padding: 12px 40px;
+            background: #2a2520;
+            color: #e8e0d0;
+            border: 2px solid #8b7355;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 14px;
+            cursor: pointer;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+        .skill-modal-close:hover { background: #8b7355; color: #f5f0e6; }
+
+        .skill-denied {
+            color: #8b4a4a;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 20px;
+            padding: 30px;
+            text-align: center;
+        }
+        .skill-denied p { margin-top: 15px; font-size: 16px; color: #666; font-family: 'Cormorant Garamond', Georgia, serif; }
+
+        /* ── Progressive Reveal: Revealed Items ── */
+        .revealed-item {
+            border-left: 3px solid #a03030;
+            padding-left: 12px;
+            margin-left: 0;
+            background: rgba(160, 48, 48, 0.06);
+            border-radius: 0 4px 4px 0;
+            color: #c0392b;
+        }
+        .revealed-label {
+            display: inline-block;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 11px;
+            color: #a03030;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .secret-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(139, 40, 40, 0.08);
+            border: 1px solid rgba(139, 40, 40, 0.25);
+            border-radius: 6px;
+        }
+        .secret-section .section-header { color: #a04040; }
+        .confession-guide {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(160, 48, 48, 0.08);
+            border: 1px solid rgba(160, 48, 48, 0.3);
+            border-radius: 6px;
+        }
+
+        /* ── Memory Popup ── */
+        .memory-popup-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: memoryFadeIn 0.5s ease;
+        }
+        @keyframes memoryFadeIn {
+            from { opacity: 0; } to { opacity: 1; }
+        }
+        @keyframes memoryTextReveal {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .memory-popup-box {
+            background: linear-gradient(135deg, #2a2520 0%, #1a1510 100%);
+            border: 2px solid #c9a227;
+            border-radius: 8px;
+            padding: 35px 30px;
+            max-width: 380px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(201, 162, 39, 0.15);
+        }
+        .memory-popup-header {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 13px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #c9a227;
+            margin-bottom: 20px;
+            animation: memoryTextReveal 0.6s ease 0.2s both;
+        }
+        .memory-popup-text {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 18px;
+            line-height: 1.6;
+            color: #e8e0d0;
+            font-style: italic;
+            margin-bottom: 25px;
+            animation: memoryTextReveal 0.6s ease 0.5s both;
+        }
+        .memory-popup-type {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #8b7355;
+            margin-bottom: 20px;
+            animation: memoryTextReveal 0.6s ease 0.7s both;
+        }
+        .memory-popup-dismiss {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 10px 30px;
+            background: transparent;
+            color: #c9a227;
+            border: 1px solid #c9a227;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: memoryTextReveal 0.6s ease 0.9s both;
+        }
+        .memory-popup-dismiss:hover {
+            background: #c9a227;
+            color: #2a2520;
+        }
+        .memory-popup-counter {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 12px;
+            color: #8b7355;
+            margin-top: 12px;
+            animation: memoryTextReveal 0.6s ease 0.9s both;
+        }
+        /* ── Text Message Popup ── */
+        .memory-popup-box.text-message {
+            border-color: #2a5a2a;
+            background: linear-gradient(145deg, #1a2e1a 0%, #0a1a0a 100%);
+        }
+        .text-msg-from {
+            font-family: 'Courier New', monospace; font-size: 11px; color: #4caf50;
+            letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px;
+            animation: memoryTextReveal 0.6s ease 0.2s both;
+        }
+        .text-msg-header {
+            font-family: 'Courier New', monospace; font-size: 14px; color: #81c784;
+            font-weight: bold; margin-bottom: 15px; padding-bottom: 10px;
+            border-bottom: 1px solid rgba(76, 175, 80, 0.3);
+            animation: memoryTextReveal 0.6s ease 0.3s both;
+        }
+        .text-msg-body {
+            font-family: 'Courier New', monospace; font-size: 13px; color: #c8e6c9;
+            line-height: 1.8; font-style: normal; padding: 15px;
+            background: rgba(76, 175, 80, 0.08); border-radius: 8px;
+            border-left: 3px solid #4caf50;
+            white-space: pre-wrap;
+            animation: memoryTextReveal 0.6s ease 0.5s both;
+        }
+        .text-msg-action {
+            font-size: 11px; color: #4caf50; text-align: center; margin-top: 15px;
+            letter-spacing: 2px; text-transform: uppercase; font-weight: bold;
+            animation: memoryTextReveal 0.6s ease 0.7s both;
+        }
+        .memory-popup-box.text-message .memory-popup-dismiss {
+            border-color: #4caf50; color: #4caf50;
+        }
+        .memory-popup-box.text-message .memory-popup-dismiss:hover {
+            background: #4caf50; color: #1a2e1a;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <!-- Horizontal nav -->
+        <ul id="desktopNav" class="desktop-nav">
+            <li><a href="#character" onclick="return navigateAuth('#character')">Character</a></li>
+            <li><a href="#guests" onclick="return navigateAuth('#guests')">Guests</a></li>
+            <li><a href="#discoveries" onclick="return navigateAuth('#discoveries')">Discoveries</a></li>
+            <li><a href="#photos" onclick="return navigateAuth('#photos')">Photos</a></li>
+            <li id="scanNav" style="display:none;"><a href="#" onclick="openScanner(); return false;">Scan</a></li>
+            <li id="masterNav" style="display:none;"><a href="#masterclues" onclick="return navigateAuth('#masterclues')">Master Controls</a></li>
+            <li id="slideshowNav" style="display:none;"><a href="slideshow.html" target="_blank">Slideshow</a></li>
+            <li><a href="#" onclick="logout(); return false;">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- INVITATION SECTION -->
+    <section id="invitation" style="display: none;">
+        <div class="invitation-card">
+            <div class="corner corner-tl"></div>
+            <div class="corner corner-tr"></div>
+            <div class="corner corner-bl"></div>
+            <div class="corner corner-br"></div>
+            
+            <div class="invite-content">
+                <div class="ornament">✦</div>
+                
+                <div>
+                    <div class="estate-name">The Thoreson Estate</div>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="summons">You Are Cordially Summoned</div>
+                
+                <div class="message">
+                    to a dinner party at the estate.<br>
+                    Mr. Thoreson has an announcement to make<br>
+                    that shall change everything.
+                </div>
+                
+                <div class="announcement">Your presence is required.</div>
+                
+                <div class="divider"></div>
+                
+                <div>
+                    <div class="detail-label">Date</div>
+                    <div class="detail-line">Saturday, the Twenty-First of March</div>
+                    <div class="detail-line">Nineteen Thirty-Five</div>
+                </div>
+                
+                <div>
+                    <div class="detail-label">Time</div>
+                    <div class="detail-line">Cocktails at Half Past Five</div>
+                    <div class="detail-line">Arrive No Later Than Six O'Clock</div>
+                    <div class="detail-line">Dinner Promptly at Half Past Six</div>
+                </div>
+                
+                <div>
+                    <div class="detail-label">Location</div>
+                    <div class="address">16920 Old Pond Drive<br>Dallas, Texas 75248</div>
+                </div>
+                
+                <div class="attire">1930s formal attire requested</div>
+                
+                <div class="divider"></div>
+                
+                <div>
+                    <div class="host-label">Your Host</div>
+                    <div class="host-name">Mr. William Thoreson</div>
+                </div>
+                
+                <div class="bottom-ornament">✦ ✦ ✦</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RSVP SECTION -->
+    <section id="rsvp" style="display: none;">
+        <h2 class="section-title">RSVP</h2>
+        <p class="section-subtitle">Kindly respond by February 1st</p>
+        
+        <div class="rsvp-container">
+            <form id="rsvpForm" class="rsvp-form">
+                <div class="form-group">
+                    <label class="form-label">Your Name</label>
+                    <input type="text" name="name" class="form-input" required placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Will You Be Attending?</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="attending" value="Yes" required onchange="toggleContactFields()">
+                            <span class="radio-custom"></span>
+                            <span class="radio-text">Yes, I shall attend</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="attending" value="No" onchange="toggleContactFields()">
+                            <span class="radio-custom"></span>
+                            <span class="radio-text">Regretfully, I must decline</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="attending" value="Maybe" onchange="toggleContactFields()">
+                            <span class="radio-custom"></span>
+                            <span class="radio-text">I am yet uncertain</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div id="contactFields" class="contact-fields" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Telephone Number</label>
+                        <input type="tel" name="phone" class="form-input" placeholder="Your telephone number">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" name="email" class="form-input" placeholder="Your email address">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Role Preference</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="role" value="Big Dramatic Role (secrets, confrontations, spotlight moments)">
+                            <span class="radio-custom"></span>
+                            <span class="radio-text">A prominent role with secrets and intrigue</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="role" value="Quieter supporting role (important clues, observing)">
+                            <span class="radio-custom"></span>
+                            <span class="radio-text">A supporting role, observing from the shadows</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="role" value="No preference / surprise me">
+                            <span class="radio-custom"></span>
+                            <span class="radio-text">Surprise me</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Additional Notes <span style="font-weight: normal; font-style: italic;">(optional)</span></label>
+                    <textarea name="notes" class="form-textarea" placeholder="Dietary restrictions, questions, or other matters..."></textarea>
+                </div>
+                
+                <button type="submit" class="form-button">
+                    <span class="button-text">Send Response</span>
+                </button>
+                
+                <div id="formMessage" class="form-message"></div>
+            </form>
+        </div>
+    </section>
+
+    <!-- COCKTAIL MENU SECTION -->
+    <section id="cocktails" style="display: none;">
+        <h2 class="section-title">Cocktail Menu</h2>
+        <p class="section-subtitle">Libations for the evening</p>
+        
+        <div class="menu-container">
+            <div class="menu-section">
+                <div class="menu-header">Spirits</div>
+                
+                <div class="menu-item">
+                    <div class="drink-name">Old Fashioned</div>
+                    <div class="drink-desc">Whiskey, Sugar, Bitters, Orange Peel</div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="drink-name">Gin Rickey</div>
+                    <div class="drink-desc">Gin, Lime, Soda Water</div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="drink-name">Bee's Knees</div>
+                    <div class="drink-desc">Gin, Honey, Lime</div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="drink-name">Cuba Libre</div>
+                    <div class="drink-desc">Rum, Cola, Lime</div>
+                </div>
+            </div>
+            
+            <div class="menu-divider">✦</div>
+            
+            <div class="menu-section">
+                <div class="menu-header">Temperance</div>
+                
+                <div class="menu-item">
+                    <div class="drink-name">Shirley Temple</div>
+                    <div class="drink-desc">Ginger Ale, Grenadine, Cherry</div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="drink-name">Virgin Cuba Libre</div>
+                    <div class="drink-desc">Cola, Lime</div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="drink-name">Mineral Water</div>
+                    <div class="drink-desc">Sparkling, with Lemon or Lime</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GUEST LIST SECTION -->
+    <section id="guests" style="display: none;">
+        <h2 class="section-title">Expected Guests</h2>
+        <p class="section-subtitle">Those who have answered the summons</p>
+        
+        <div class="guest-container" id="guestList">
+            <div class="loading">Loading guest list&hellip;</div>
+        </div>
+    </section>
+
+    <!-- CHARACTER BACKGROUND SECTION -->
+    <section id="character" style="display: none;">
+        <h2 class="section-title" id="characterName">Character Name</h2>
+        <div id="characterContent"></div>
+    </section>
+
+    <!-- CLUES SECTION -->
+    <section id="discoveries" style="display: none;">
+        <h2 class="section-title">Discoveries</h2>
+        <div id="discoveriesContent"></div>
+    </section>
+
+    <!-- MASTER CLUES SECTION -->
+    <section id="masterclues" style="display: none;">
+        <h2 class="section-title">Master Clues Control</h2>
+        <div id="masterCluesContent"></div>
+    </section>
+
+    <!-- PHOTOS SECTION -->
+    <section id="photos" style="display: none;">
+        <h2 class="section-title">Photo Wall</h2>
+        <p class="section-subtitle">An evening at the Thoreson Estate</p>
+
+        <!-- Upload button -->
+        <div style="text-align:center; margin-bottom:30px;">
+            <input type="file" id="photoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
+            <button onclick="document.getElementById('photoInput').click()" id="photoBtn"
+                style="background:#c9a227; color:#1a1a2e; border:none; padding:14px 36px; cursor:pointer;
+                       font-family:'Playfair Display',Georgia,serif; font-size:16px; letter-spacing:3px;
+                       text-transform:uppercase; border-radius:3px;">
+                📷 Take a Photo
+            </button>
+            <div id="uploadStatus" style="margin-top:12px; font-size:14px; color:#8b8b8b; font-style:italic;"></div>
+            <div id="uploadBar" style="display:none; margin-top:10px; width:100%; max-width:400px; height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;">
+                <div id="uploadBarFill" style="height:100%; width:0%; background:#c9a227; border-radius:3px; transition:width 0.3s ease;"></div>
+            </div>
+            <div style="margin-top:8px; font-size:12px; color:#555; font-style:italic;">Keep this screen open until the upload completes.</div>
+        </div>
+
+        <!-- Photo grid -->
+        <div id="photoGrid" style="
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            width: 100%;
+            max-width: 1000px;
+        ">
+            <div style="text-align:center; color:#555; font-style:italic; grid-column:1/-1; padding:40px;">
+                No photos yet. Be the first to capture the evening.
+            </div>
+        </div>
+    </section>
+
+    <!-- QR Scanner Modal -->
+    <div class="scanner-overlay" id="scannerOverlay">
+        <div class="scanner-header">Scan Evidence</div>
+        <div class="scanner-box" id="scannerBox"></div>
+        <div class="scanner-status" id="scannerStatus">Position the QR code within the frame</div>
+        <button class="scanner-close" onclick="closeScanner()">Cancel</button>
+    </div>
+
+    <!-- Skill Content Modal -->
+    <div class="skill-modal-overlay" id="skillModalOverlay" onclick="if(event.target===this)closeSkillModal()">
+        <div class="skill-modal" id="skillModalContent"></div>
+    </div>
+
+    <footer>
+        The Thoreson Estate — 1935 <span style="opacity:0.6; margin-left:10px;">v3.21.1</span>
+    </footer>
+
+    <!-- QR Scanner -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js"></script>
+
+    <!-- Character Data -->
+    <script src="characters.js"></script>
+    <script src="skills.js"></script>
+    <script src="revelations.js"></script>
+    <script src="items.js"></script>
+
+    <script>
+        // Toggle contact fields based on attendance selection
+        function toggleContactFields() {
+            const attending = document.querySelector('input[name="attending"]:checked')?.value;
+            const contactFields = document.getElementById('contactFields');
+            const phoneInput = document.querySelector('input[name="phone"]');
+            const emailInput = document.querySelector('input[name="email"]');
+            
+            if (attending === 'Yes') {
+                contactFields.style.display = 'flex';
+                phoneInput.required = true;
+                emailInput.required = true;
+            } else {
+                contactFields.style.display = 'none';
+                phoneInput.required = false;
+                emailInput.required = false;
+            }
+        }
+        
+        // RSVP Form Submission to Google Forms
+        const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSezQ99Orc5dvvlxnPLi3Jw_dkn8kNPwVu0GnxbRd0nTM61-Xg/formResponse';
+        
+        document.getElementById('rsvpForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const button = form.querySelector('.form-button');
+            const message = document.getElementById('formMessage');
+            const buttonText = button.querySelector('.button-text');
+            
+            // Get form values
+            const name = form.querySelector('input[name="name"]').value;
+            const attending = form.querySelector('input[name="attending"]:checked')?.value || '';
+            const phone = form.querySelector('input[name="phone"]').value;
+            const email = form.querySelector('input[name="email"]').value;
+            const role = form.querySelector('input[name="role"]:checked')?.value || '';
+            const notes = form.querySelector('textarea[name="notes"]').value;
+            
+            // Disable button
+            button.disabled = true;
+            buttonText.textContent = 'Sending...';
+            
+            // Build form data for Google Forms
+            const formData = new FormData();
+            formData.append('entry.242898703', name);      // Name
+            formData.append('entry.986368937', attending); // Attending
+            formData.append('entry.409042646', phone);     // Phone
+            formData.append('entry.775321918', email);     // Email
+            formData.append('entry.196909869', role);      // Role
+            formData.append('entry.404572778', notes);     // Notes
+            
+            try {
+                // Submit to Google Forms (will fail silently due to CORS, but data goes through)
+                await fetch(GOOGLE_FORM_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: formData
+                });
+                
+                // Show success message
+                message.className = 'form-message success';
+                message.textContent = 'Your response has been received. We look forward to your presence.';
+                form.reset();
+                document.getElementById('contactFields').style.display = 'none';
+                
+            } catch (error) {
+                message.className = 'form-message error';
+                message.textContent = 'Something went wrong. Please try again or contact the host.';
+            }
+            
+            // Re-enable button
+            button.disabled = false;
+            buttonText.textContent = 'Send Response';
+        });
+        
+        // GAME DATA loaded from external files:
+        // characters.js — characterDatabase
+        // skills.js — skillsDatabase  
+        // revelations.js — revelationsDatabase
+
+        // Read skills live from characters.js — single source of truth
+        function getMySkills() {
+            const charData = characterDatabase[userSession.username];
+            return charData ? (charData.skills || []).concat(charData.hiddenSkills || []) : [];
+        }
+
+        // Broadcast Channel for real-time sync across devices on same network
+        const broadcastChannel = new BroadcastChannel('thoreson-estate-sync');
+        
+        broadcastChannel.onmessage = (event) => {
+            if (!userSession) return;
+            if (event.data.type === 'gameReset') {
+                localStorage.setItem('shownMemories', '[]');
+                localStorage.setItem('personalDiscoveries', '[]');
+            }
+            if (event.data.type === 'itemUpdate') {
+                var oldItems = userSession.activeItems || [];
+                checkForNewMemories(oldItems, event.data.activeItems || []);
+                const newlyAdded = (event.data.activeItems || []).filter(id => oldItems.indexOf(id) === -1);
+                userSession.activeItems = event.data.activeItems || [];
+                localStorage.setItem('userSession', JSON.stringify(userSession));
+                loadDiscoveriesData(newlyAdded.length > 0 ? newlyAdded[newlyAdded.length-1] : null);
+                loadCharacterData();
+            }
+            if (event.data.type === 'skillUpdate') {
+                var oldSkills = userSession.discoveredSkills || [];
+                userSession.discoveredSkills = event.data.discoveredSkills || [];
+                checkForNewMemories(oldSkills, userSession.discoveredSkills);
+                localStorage.setItem('userSession', JSON.stringify(userSession));
+                loadDiscoveriesData();
+                loadCharacterData();
+            }
+        };
+
+
+        let userSession = null;
+
+        // Firebase stubs - replace with real Firebase when ready
+        let firebaseReady = false;
+        let database = null;
+
+        // Initialize Firebase
+        try {
+            const firebaseConfig = {
+                apiKey: "AIzaSyApHrYubqWrR4m0ihdpq6Ym40jv4HTQ5i0",
+                authDomain: "thoreson-estate.firebaseapp.com",
+                databaseURL: "https://thoreson-estate-default-rtdb.firebaseio.com",
+                projectId: "thoreson-estate",
+                storageBucket: "thoreson-estate.firebasestorage.app",
+                messagingSenderId: "182924616892",
+                appId: "1:182924616892:web:8153e1c69895cee665dcb9",
+                measurementId: "G-MXHFH3FL00"
+            };
+            firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+            
+            // Test connection
+            database.ref('.info/connected').on('value', (snapshot) => {
+                if (snapshot.val() === true) {
+                    console.log('✓ Connected to Firebase');
+                    firebaseReady = true;
+                    loadFirebaseData();
+                } else {
+                    console.log('✗ Firebase disconnected');
+                    firebaseReady = false;
+                }
+            });
+        } catch(e) {
+            console.log('Firebase init error:', e.message);
+        }
+
+        function listenForFirebaseUpdates() {
+            if (!database) return;
+
+            // If testMode is active, real accounts skip live listeners
+            // Master and test accounts always listen
+            const isTest = userSession && userSession.role === 'test';
+            const isMaster = userSession && userSession.role === 'master';
+            if (!isTest && !isMaster) {
+                database.ref('testMode').once('value').then(snap => {
+                    if (snap.val() === true) {
+                        console.log('⏸ Test mode active — live updates paused for real accounts');
+                        return;
+                    }
+                    attachFirebaseListeners();
+                });
+                return;
+            }
+            attachFirebaseListeners();
+        }
+
+        function attachFirebaseListeners() {
+            if (!database) return;
+
+            database.ref('activeItems').on('value', (snapshot) => {
+                const items = snapshot.val() || [];
+                if (userSession && Array.isArray(items)) {
+                    var oldItems = userSession.activeItems || [];
+                    // Game reset detected — clear popup history and personal discoveries on all devices
+                    if (items.length === 0 && oldItems.length > 0) {
+                        localStorage.setItem('shownMemories', '[]');
+                        localStorage.setItem('personalDiscoveries', '[]');
+                    }
+                    checkForNewMemories(oldItems, items);
+                    userSession.activeItems = items;
+                    localStorage.setItem('userSession', JSON.stringify(userSession));
+                    // Detect newly added item to switch to correct tab
+                    const newlyAdded = items.filter(id => oldItems.indexOf(id) === -1);
+                    if (document.getElementById('discoveriesContent')) loadDiscoveriesData(newlyAdded.length > 0 ? newlyAdded[newlyAdded.length-1] : null);
+                    loadCharacterData();
+                    if (document.getElementById('masterCluesContent') && userSession.role === 'master') loadMasterClues();
+                }
+            });
+
+            database.ref('memoryReset').on('value', (snapshot) => {
+                const val = snapshot.val();
+                if (val) {
+                    localStorage.setItem('shownMemories', '[]');
+                    localStorage.setItem('personalDiscoveries', '[]');
+                    console.log('Memory reset received — cleared shownMemories');
+                }
+            });
+
+            database.ref('discoveredSkills').on('value', (snapshot) => {
+                const skills = snapshot.val() || [];
+                if (userSession && Array.isArray(skills)) {
+                    var oldSkills = userSession.discoveredSkills || [];
+                    userSession.discoveredSkills = skills;
+                    checkForNewMemories(oldSkills, skills);
+                    localStorage.setItem('userSession', JSON.stringify(userSession));
+                    if (document.getElementById('discoveriesContent')) loadDiscoveriesData();
+                    if (document.getElementById('masterCluesContent') && userSession.role === 'master') loadMasterClues();
+                }
+            });
+        }
+
+        function loadFirebaseData() {
+            if (!database || !userSession) return;
+
+            // Leaderboard — master only, live updates
+            if (userSession.role === 'master') {
+                database.ref('scans').on('value', snapshot => {
+                    const data = snapshot.val() || {};
+                    const el = document.getElementById('leaderboardContent');
+                    if (!el) return;
+                    const sorted = Object.entries(data).sort((a,b) => b[1]-a[1]);
+                    if (sorted.length === 0) {
+                        el.innerHTML = '<div style="color:#666; font-style:italic;">No scans yet.</div>';
+                        return;
+                    }
+                    const medals = ['🥇','🥈','🥉'];
+                    el.innerHTML = sorted.map(([player, count], i) => `
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:rgba(0,0,0,0.3); margin-bottom:6px; border-radius:3px; border-left:3px solid ${i===0?'#c9a227':i===1?'#aaaaaa':i===2?'#cd7f32':'#444'};">
+                            <span style="font-family:'Playfair Display',serif; color:#c9a227;">${medals[i]||'✦'} ${player}</span>
+                            <span style="color:#e8e8e8; font-size:16px; font-weight:bold;">${count}</span>
+                        </div>`
+                    ).join('');
+                });
+            }
+
+            database.ref('activeItems').once('value').then(snapshot => {
+                userSession.activeItems = snapshot.val() || [];
+                localStorage.setItem('userSession', JSON.stringify(userSession));
+                if (document.getElementById('discoveriesContent')) loadDiscoveriesData();
+                if (document.getElementById('masterCluesContent') && userSession.role === 'master') loadMasterClues();
+            });
+
+            database.ref('discoveredSkills').once('value').then(snapshot => {
+                userSession.discoveredSkills = snapshot.val() || [];
+                localStorage.setItem('userSession', JSON.stringify(userSession));
+                if (document.getElementById('discoveriesContent')) loadDiscoveriesData();
+                if (document.getElementById('masterCluesContent') && userSession.role === 'master') loadMasterClues();
+            });
+        }
+
+        function syncToFirebase() {
+            if (!database || !userSession) return;
+            
+            database.ref('activeItems').set(userSession.activeItems || [])
+                .then(() => console.log('\u2713 Active items synced'))
+                .catch(e => console.error('Firebase sync error:', e));
+
+            database.ref('discoveredSkills').set(userSession.discoveredSkills || [])
+                .then(() => console.log('\u2713 Active skills synced'))
+                .catch(e => console.error('Firebase sync error:', e));
+        }
+
+
+        console.log('Dashboard v17 loaded');
+
+        // Force clear old caches on load
+        if ('caches' in window) {
+            caches.keys().then(names => {
+                names.forEach(name => {
+                    if (name !== 'thoreson-estate-v16') {
+                        caches.delete(name);
+                        console.log('Cleared old cache:', name);
+                    }
+                });
+            });
+        }
+
+        // ── Initialize on load ─────────────────────────────────────
+        // Priority: Firebase Auth (new system) → localStorage (legacy system)
+        (function() {
+            const auth = firebase.auth();
+
+            auth.onAuthStateChanged(async function(user) {
+                // Real email/password user from the new registration flow
+                if (user && !user.isAnonymous && user.email) {
+                    try {
+                        const db = firebase.database();
+
+                        // Look up their game and character from Firebase
+                        const userSnap = await db.ref('users/' + user.uid).once('value');
+                        const userData = userSnap.val();
+
+                        if (userData && userData.currentGameId) {
+                            const playerSnap = await db.ref(
+                                'games/' + userData.currentGameId + '/players/' + user.uid
+                            ).once('value');
+                            const playerData = playerSnap.val();
+
+                            if (playerData && playerData.characterId) {
+                                // Build a session object in the format the dashboard expects
+                                const firebaseSession = {
+                                    username:        playerData.characterId,
+                                    displayName:     user.displayName || user.email,
+                                    role:            userData.role === 'admin' ? 'master' : 'guest',
+                                    loginTime:       new Date().toISOString(),
+                                    activeItems:     [],
+                                    discoveredSkills: []
+                                };
+                                userSession = firebaseSession;
+                                localStorage.setItem('userSession', JSON.stringify(firebaseSession));
+                                initializeAuthenticatedView();
+                                return;
+                            }
+                        }
+
+                        // Logged in but no character yet — send to picker
+                        window.location.href = 'pick.html';
+                        return;
+
+                    } catch(e) {
+                        console.warn('Firebase Auth bridge error:', e.message);
+                        // Fall through to legacy session check
+                    }
+                }
+
+                // Legacy path: localStorage session (existing players, GM, greeter)
+                const session = localStorage.getItem('userSession');
+                if (session) {
+                    userSession = JSON.parse(session);
+                    initializeAuthenticatedView();
+                } else {
+                    // Not logged in either way — show invitation / RSVP section
+                    document.getElementById('invitation').style.display = 'block';
+                }
+            });
+        })();
+
+        function initializeAuthenticatedView() {
+            try {
+                // Hide sections that shouldn't be visible
+                document.getElementById('invitation').style.display = 'none';
+                document.getElementById('cocktails').style.display = 'none';
+                document.getElementById('character').style.display = 'none';
+                
+                // Show discoveries by default (not guests)
+                document.getElementById('guests').style.display = 'none';
+                document.getElementById('discoveries').style.display = 'block';
+                
+                if (userSession.role === 'master') {
+                    document.getElementById('masterNav').style.display = 'block';
+                    document.getElementById('masterclues').style.display = 'none';
+                }
+
+                if (userSession.role === 'master' || userSession.role === 'greeter') {
+                    document.getElementById('slideshowNav').style.display = 'block';
+                }
+
+                // Greeter mode — only show photo wall
+                if (userSession.role === 'greeter') {
+                    document.querySelectorAll('nav li').forEach(li => li.style.display = 'none');
+                    document.getElementById('discoveries').style.display = 'none';
+                    document.getElementById('photos').style.display = 'block';
+                    loadPhotoWall();
+                    return;
+                }
+
+                // Show Scan nav for ALL characters
+                document.getElementById('scanNav').style.display = 'block';
+
+                // Initialize session arrays if missing
+                if (!userSession.activeItems) userSession.activeItems = [];
+                if (!userSession.discoveredSkills) userSession.discoveredSkills = [];
+
+                // Start listening for Firebase updates
+                listenForFirebaseUpdates();
+                
+                loadCharacterData();
+                loadDiscoveriesData();
+                if (userSession.role === 'master') {
+                    loadMasterClues();
+                }
+            } catch(e) {
+                document.body.insertAdjacentHTML('afterbegin', '<div style="background:red;color:white;padding:20px;position:fixed;top:60px;left:0;right:0;z-index:9999;">Init Error: ' + e.message + '<br>Username: ' + (userSession ? userSession.username : 'null') + '<br>Role: ' + (userSession ? userSession.role : 'null') + '</div>');
+            }
+        }
+
+        function loadCharacterData() {
+            try {
+                const charData = characterDatabase[userSession.username];
+                if (!charData) {
+                    document.getElementById('characterContent').innerHTML = '<div style="color: #e74c3c; padding: 20px;">Debug: No character data found for username: "' + userSession.username + '"</div>';
+                    return;
+                }
+
+                document.getElementById('characterName').textContent = charData.name;
+                
+                // Get current active revelations + discovered skills
+                var active = userSession.activeItems || [];
+                var discovered = userSession.discoveredSkills || [];
+                var charSkills = (charData.skills || []).concat(charData.hiddenSkills || []);
+                function isUnlocked(item) {
+                    if (!item.unlockedBy) return true;
+                    // Must have the skill AND the revelation must be active
+                    var hasSkill = charSkills.indexOf(item.unlockedBy) !== -1;
+                    var isActive = active.indexOf(item.unlockedBy) !== -1 || discovered.indexOf(item.unlockedBy) !== -1;
+                    return hasSkill && isActive;
+                }
+
+                const sectionStyle = "font-family: 'Playfair Display', Georgia, serif; font-size: 20px; color: #c9a227; margin-bottom: 15px; margin-top: 35px; text-transform: uppercase; border-bottom: 1px solid rgba(201,162,39,0.3); padding-bottom: 10px;";
+                const textStyle = "font-size: 16px; line-height: 1.8; color: #e8e8e8;";
+                
+                let html = '<div style="background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #c9a227; border-radius: 5px; padding: 30px; margin-bottom: 30px;">';
+                
+                // PUBLIC DESCRIPTION
+                html += '<div style="font-size: 16px; color: #8b8b8b; font-style: italic; margin-bottom: 15px;">' + charData.publicDesc + '</div>';
+                
+                // BACKSTORY
+                html += '<div style="' + sectionStyle + '">Your Story</div>';
+                html += '<div style="' + textStyle + ' margin-bottom: 20px;">' + charData.backstory + '</div>';
+                
+                // HOW TO PLAY
+                if (charData.howToPlay) {
+                    html += '<div style="' + sectionStyle + '">How To Play This Character</div>';
+                    html += '<div style="' + textStyle + ' margin-bottom: 20px;">';
+                    html += '<strong>Tone:</strong> ' + charData.howToPlay.tone + '<br><br>';
+                    html += '<strong>Key Behaviors:</strong> ' + charData.howToPlay.behaviors + '<br><br>';
+                    html += '<strong>Important:</strong> ' + charData.howToPlay.important;
+                    html += '</div>';
+                }
+                
+                // WHAT YOU KNOW (filtered by unlockedBy)
+                if (charData.knowledge && charData.knowledge.length > 0) {
+                    var visibleKnowledge = charData.knowledge.filter(isUnlocked);
+                    if (visibleKnowledge.length > 0) {
+                        html += '<div style="' + sectionStyle + '">What You Know</div>';
+                        html += '<ul style="list-style: none; padding-left: 10px;">';
+                        visibleKnowledge.forEach(function(k) {
+                            var isRevealed = k.unlockedBy !== null;
+                            if (isRevealed) {
+                                html += '<li class="revealed-item" style="margin-bottom: 12px; font-size: 15px; line-height: 1.6; padding: 10px 10px 10px 20px; position: relative;">';
+                                html += '<div class="revealed-label">Recalled during the evening</div>';
+                            } else {
+                                html += '<li style="margin-bottom: 12px; font-size: 15px; line-height: 1.6; color: #e8e8e8; padding-left: 20px; position: relative;">';
+                                html += '<span style="color: #c9a227; position: absolute; left: 0;">\u2726</span> ';
+                            }
+                            html += k.text + '</li>';
+                        });
+                        html += '</ul>';
+                    }
+                }
+                
+                // WHAT YOU CAN SHARE (filtered by unlockedBy)
+                if (charData.canShare && charData.canShare.length > 0) {
+                    var visibleShare = charData.canShare.filter(isUnlocked);
+                    if (visibleShare.length > 0) {
+                        html += '<div style="' + sectionStyle + '">What You Can Share</div>';
+                        html += '<div style="font-size: 13px; color: #8b8b8b; font-style: italic; margin-bottom: 15px;">Use these during conversation when the timing feels right.</div>';
+                        visibleShare.forEach(function(s) {
+                            var isRevealed = s.unlockedBy !== null;
+                            if (isRevealed) {
+                                html += '<div class="revealed-item" style="padding: 15px; margin-bottom: 12px; border-radius: 0 3px 3px 0;">';
+                                html += '<div class="revealed-label">Recalled during the evening</div>';
+                            } else {
+                                html += '<div style="background: rgba(201,162,39,0.08); border-left: 3px solid #c9a227; padding: 15px; margin-bottom: 12px; border-radius: 0 3px 3px 0;">';
+                            }
+                            html += '<div style="font-size: 15px; line-height: 1.6; color: #e8e8e8;">\u201C' + s.text + '\u201D</div>';
+                            html += '</div>';
+                        });
+                    }
+                }
+                
+                // GOALS
+                if (charData.goals && charData.goals.length > 0) {
+                    html += '<div style="' + sectionStyle + '">Your Goals Tonight</div>';
+                    html += '<ul style="list-style: none; padding-left: 10px;">';
+                    charData.goals.forEach(function(g) {
+                        html += '<li style="margin-bottom: 10px; font-size: 15px; color: #e8e8e8; padding-left: 20px; position: relative;"><span style="color: #c9a227; position: absolute; left: 0;">\u2726</span> ' + g + '</li>';
+                    });
+                    html += '</ul>';
+                }
+                
+                // RELATIONSHIPS
+                if (charData.relationships && charData.relationships.length > 0) {
+                    html += '<div style="' + sectionStyle + '">Key Relationships</div>';
+                    html += '<ul style="list-style: none; padding-left: 10px;">';
+                    charData.relationships.forEach(function(r) {
+                        html += '<li style="margin-bottom: 10px; font-size: 15px; color: #e8e8e8;"><strong style="color: #c9a227;">' + r.name + '</strong> \u2014 ' + r.relation + '</li>';
+                    });
+                    html += '</ul>';
+                }
+                
+                // ITEMS
+                if (charData.items && charData.items.length > 0) {
+                    html += '<div style="' + sectionStyle + '">Items On Your Person</div>';
+                    html += '<ul style="list-style: none; padding-left: 10px;">';
+                    charData.items.forEach(function(item) {
+                        html += '<li style="margin-bottom: 8px; font-size: 15px; color: #e8e8e8; padding-left: 20px; position: relative;"><span style="color: #c9a227; position: absolute; left: 0;">\u2726</span> ' + item + '</li>';
+                    });
+                    html += '</ul>';
+                }
+                
+                html += '</div>'; // close main container
+                
+                // SECRET SECTION (Miranda/Leanna only)
+                if (userSession.username === 'Leanna' && charData.secret) {
+                    html += '<div style="background: linear-gradient(145deg, #2a1010 0%, #1a0a0a 100%); border: 2px solid #8b4a4a; border-radius: 5px; padding: 30px; margin-bottom: 30px;">';
+                    html += '<div style="font-family: \'Playfair Display\', Georgia, serif; font-size: 22px; color: #8b4a4a; text-transform: uppercase; text-align: center; margin-bottom: 5px;">\u26A0 YOUR SECRET \u26A0</div>';
+                    html += '<div style="font-size: 12px; color: #8b4a4a; text-align: center; margin-bottom: 25px; font-style: italic;">Do not share this information until the confession scene.</div>';
+                    
+                    var s = charData.secret;
+                    html += '<div style="' + sectionStyle.replace(/#c9a227/g, '#8b4a4a') + '">Your True Identity: ' + s.trueIdentity + '</div>';
+                    if (s.carryingItems) {
+                        html += '<div style="' + sectionStyle.replace(/#c9a227/g, '#8b4a4a') + '">Carrying Items</div>';
+                        html += '<div style="' + textStyle + ' margin-bottom: 20px;">' + s.carryingItems + '</div>';
+                    }
+                    
+                    // Confession Guide (gated)
+                    if (charData.confessionGuide && isUnlocked(charData.confessionGuide)) {
+                        html += '<div class="confession-guide revealed-item">';
+                        html += '<div class="revealed-label">The moment is approaching</div>';
+                        html += '<div style="' + sectionStyle.replace(/#c9a227/g, '#8b4a4a') + '">Confession Guide</div>';
+                        html += '<div style="' + textStyle + '">' + charData.confessionGuide.text.replace(/\\n/g, '<br>').replace(/\n/g, '<br>') + '</div>';
+                        html += '</div>';
+                    }
+                    
+                    // Final Entry (always visible to Leanna)
+                    if (charData.finalEntry) {
+                        html += '<div style="' + sectionStyle.replace(/#c9a227/g, '#8b4a4a') + '">Your Final Journal Entry</div>';
+                        var entryContext = charData.finalEntry.context || charData.finalEntry.instructions || '';
+                        html += '<div style="font-size: 13px; color: #8b4a4a; font-style: italic; margin-bottom: 15px;">' + entryContext + '</div>';
+                        html += '<div style="' + textStyle + ' white-space: pre-line;">' + charData.finalEntry.text.replace(/\\n/g, '\n') + '</div>';
+                    }
+                    
+                    html += '</div>';
+                }
+                
+                document.getElementById('characterContent').innerHTML = html;
+            } catch(e) {
+                document.getElementById('characterContent').innerHTML = '<div style="color: #e74c3c; padding: 20px;">Error loading character: ' + e.message + '</div>';
+            }
+        }
+
+        function toggleDiscoveryCard(id) {
+            const detail = document.getElementById('detail-' + id);
+            const arrow = document.getElementById('arrow-' + id);
+            if (!detail) return;
+            const isOpen = detail.style.display !== 'none';
+            // Close all other open cards first
+            document.querySelectorAll('[id^="detail-"]').forEach(el => {
+                if (el.id !== 'detail-' + id) {
+                    el.style.display = 'none';
+                    const a = document.getElementById(el.id.replace('detail-', 'arrow-'));
+                    if (a) a.textContent = '▸';
+                }
+            });
+            detail.style.display = isOpen ? 'none' : 'block';
+            if (arrow) arrow.textContent = isOpen ? '▸' : '▾';
+        }
+
+        function loadDiscoveriesData(newItemId) {
+            if (!userSession.activeItems) userSession.activeItems = [];
+            if (!userSession.discoveredSkills) userSession.discoveredSkills = [];
+
+            // If a new item was just revealed, switch to the right tab (never memories)
+            if (newItemId) {
+                if (newItemId === 'willsDeath') {
+                    activeDiscoveryTab = 'story';
+                } else {
+                    let found = false;
+                    Object.values(revelationsDatabase).forEach(act => {
+                        act.items.forEach(item => {
+                            if (item.id === newItemId && !found) {
+                                activeDiscoveryTab = item.type === 'story' ? 'story' : 'clues';
+                                found = true;
+                            }
+                        });
+                    });
+                }
+            }
+
+            const tabStyle = (tabName) => `
+                padding: 10px 18px; cursor: pointer; border: none; border-radius: 3px 3px 0 0;
+                font-family: 'Playfair Display', Georgia, serif; font-size: 15px; letter-spacing: 1px;
+                background: ${tabName === activeDiscoveryTab ? '#c9a227' : 'rgba(0,0,0,0.3)'};
+                color: ${tabName === activeDiscoveryTab ? '#1a1a2e' : '#999'};
+                margin-right: 4px;
+            `;
+
+            let html = `
+                <div style="display: flex; flex-wrap: wrap; margin-bottom: 0; border-bottom: 2px solid #c9a227;">
+                    <button onclick="switchDiscoveryTab('clues')" id="dtab-clues" style="${tabStyle('clues')}">Clues</button>
+                    <button onclick="switchDiscoveryTab('story')" id="dtab-story" style="${tabStyle('story')}">Story</button>
+                    <button onclick="switchDiscoveryTab('expert')" id="dtab-expert" style="${tabStyle('expert')}">Expert Notes</button>
+                    <button onclick="switchDiscoveryTab('memories')" id="dtab-memories" style="${tabStyle('memories')}">Memories</button>
+                </div>
+            `;
+
+            // ── CLUES ──────────────────────────────────────────────────
+            const clueItems = [];
+            Object.entries(revelationsDatabase).forEach(([actKey, act]) => {
+                act.items.filter(i => i.type === 'clue' && userSession.activeItems.includes(i.id))
+                    .forEach(i => clueItems.push({ item: i, actLabel: act.label }));
+            });
+
+            let clueHtml = clueItems.length === 0
+                ? '<div style="text-align:center; padding:40px; color:#999; font-style:italic;">No clues discovered yet.</div>'
+                : '';
+            let lastAct = '';
+            clueItems.forEach(({ item, actLabel }) => {
+                if (actLabel !== lastAct) {
+                    clueHtml += `<div style="font-family:'Playfair Display',serif; font-size:13px; color:#8b8b8b; text-transform:uppercase; letter-spacing:3px; margin: 20px 0 8px;">${actLabel}</div>`;
+                    lastAct = actLabel;
+                }
+                clueHtml += buildDiscoveryCard(item, '#c9a227');
+            });
+
+            // ── STORY ──────────────────────────────────────────────────
+            const transcriptIds = ['transcriptAct1','transcriptAct2','transcriptAct3'];
+            // Only show the latest active transcript
+            let activeTranscript = null;
+            for (let i = transcriptIds.length - 1; i >= 0; i--) {
+                if (userSession.activeItems.includes(transcriptIds[i])) {
+                    activeTranscript = revelationsDatabase[['act1','act2','act3'][i]].items.find(x => x.id === transcriptIds[i]);
+                    break;
+                }
+            }
+
+            const storyItems = [];
+            // willsDeath handled separately — not in revelationsDatabase
+            if (userSession.activeItems.includes('willsDeath')) {
+                storyItems.push({ item: { id: 'willsDeath', title: 'William Thoreson Is Dead', summary: "William 'Will' Thoreson Sr. was found unresponsive at the estate before dinner. He was pronounced dead this evening. The cause of death is unknown.", detail: null }, actLabel: 'Act 1 — The Gathering' });
+            }
+            Object.entries(revelationsDatabase).forEach(([actKey, act]) => {
+                act.items.filter(i => i.type === 'story' && userSession.activeItems.includes(i.id) && !transcriptIds.includes(i.id))
+                    .forEach(i => storyItems.push({ item: i, actLabel: act.label }));
+            });
+
+            let storyHtml = '';
+            // Transcript card first if active
+            if (activeTranscript) {
+                const transcriptText = activeTranscript.summary.replace(/\n/g, '<br>').replace(/\[static\]/g, '<span style="color:#666; font-style:italic;">[static]</span>');
+                storyHtml += `
+                    <div style="background:rgba(0,0,0,0.3); border-left:3px solid #8b7355; margin-bottom:8px; border-radius:3px; overflow:hidden;">
+                        <div onclick="toggleDiscoveryCard('transcript-active')" style="padding:14px 18px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+                            <div style="font-family:'Playfair Display',serif; font-size:19px; color:#c9a227;">✦ Confession Recording — Transcript</div>
+                            <div id="arrow-transcript-active" style="font-size:20px; color:#c9a227; margin-left:12px; flex-shrink:0;">▸</div>
+                        </div>
+                        <div id="detail-transcript-active" style="display:none; padding:0 18px 16px 18px; border-top:1px solid rgba(201,162,39,0.15);">
+                            <div style="font-size:15px; line-height:2; color:#cccccc; padding-top:14px; font-family:Georgia,serif;">${transcriptText}</div>
+                        </div>
+                    </div>`;
+            }
+
+            if (storyItems.length === 0 && !activeTranscript) {
+                storyHtml = '<div style="text-align:center; padding:40px; color:#999; font-style:italic;">No story beats unlocked yet.</div>';
+            }
+            lastAct = '';
+            storyItems.forEach(({ item, actLabel }) => {
+                if (actLabel !== lastAct) {
+                    storyHtml += `<div style="font-family:'Playfair Display',serif; font-size:13px; color:#8b8b8b; text-transform:uppercase; letter-spacing:3px; margin: 20px 0 8px;">${actLabel}</div>`;
+                    lastAct = actLabel;
+                }
+                storyHtml += buildDiscoveryCard(item, '#8b7355');
+            });
+
+            // ── EXPERT NOTES ───────────────────────────────────────────
+            const mySkills = getMySkills();
+            const personalDisc = getPersonalDiscoveries();
+            let expertHtml = '';
+
+            mySkills.forEach(skillName => {
+                const skillData = skillsDatabase[skillName];
+                if (!skillData) return;
+                const discoveredKey = skillName.toLowerCase() + 'Discovered';
+                const isGlobalDiscovered = userSession.discoveredSkills.includes(discoveredKey);
+                const isPersonalDiscovered = personalDisc.includes(discoveredKey);
+                // Bartender recipes always visible — no scan needed
+                // Botany auto-unlocks when wolfsbane revelation is active
+                const botanyAutoUnlocked = skillName === 'Botany' && userSession.activeItems && userSession.activeItems.includes('wolfsbane');
+                if (!isGlobalDiscovered && !isPersonalDiscovered && skillName !== 'Bartender' && !botanyAutoUnlocked) return;
+
+                if (skillName === 'Bartender') {
+                    expertHtml += `
+                        <div style="background:rgba(0,0,0,0.3); border-left:3px solid #8b7355; margin-bottom:8px; border-radius:3px; overflow:hidden;">
+                            <div style="padding:14px 18px;">
+                                <div style="font-family:'Playfair Display',serif; font-size:19px; color:#c9a227; margin-bottom:8px;">✦ ${skillData.title}</div>
+                                <div style="font-size:17px; line-height:1.7; color:#cccccc;">${skillData.summary}</div>
+                            </div>
+                        </div>`;
+                } else {
+                    expertHtml += `
+                        <div style="background:rgba(0,0,0,0.3); border-left:3px solid #c9a227; margin-bottom:8px; border-radius:3px; overflow:hidden;">
+                            <div onclick="toggleDiscoveryCard('expert-${skillName}')" style="padding:14px 18px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+                                <div style="font-family:'Playfair Display',serif; font-size:19px; color:#c9a227;">✦ ${skillData.title}</div>
+                                <div id="arrow-expert-${skillName}" style="font-size:20px; color:#c9a227; margin-left:12px; flex-shrink:0;">▸</div>
+                            </div>
+                            <div id="detail-expert-${skillName}" style="display:none; padding:0 18px 16px 18px; border-top:1px solid rgba(201,162,39,0.15);">
+                                <div style="font-size:17px; line-height:1.7; color:#cccccc; padding-top:14px;">${skillData.summary}</div>
+                                ${(isPersonalDiscovered && skillData.expert) ? `<button onclick="showSkillContent('${skillName}', skillsDatabase['${skillName}'])" style="margin-top:12px; background:transparent; color:#c9a227; border:1px solid #c9a227; padding:8px 18px; cursor:pointer; font-family:'Playfair Display',serif; font-size:13px; letter-spacing:2px; text-transform:uppercase;">View Full Analysis</button>` : ''}
+                            </div>
+                        </div>`;
+                }
+            });
+
+            if (expertHtml === '') expertHtml = '<div style="text-align:center; padding:40px; color:#999; font-style:italic;">No expert notes yet. Scan a QR code with your skill to unlock them.</div>';
+
+            // ── MEMORIES ───────────────────────────────────────────────
+            const charKey = userSession.character || userSession.username;
+            const charData = characterDatabase[charKey];
+            const shown = getShownMemories();
+            let memoriesHtml = '';
+
+            if (charData && charData.memories) {
+                charData.memories.forEach(m => {
+                    if (m.unlockedBy && shown.includes(m.unlockedBy)) {
+                        memoriesHtml += `
+                            <div style="background:rgba(0,0,0,0.3); border-left:3px solid #6a5a8a; margin-bottom:8px; border-radius:3px; padding:16px 18px;">
+                                <div style="font-size:17px; line-height:1.7; color:#cccccc; font-style:italic;">"${m.text}"</div>
+                            </div>`;
+                    }
+                });
+            }
+            if (memoriesHtml === '') memoriesHtml = '<div style="text-align:center; padding:40px; color:#999; font-style:italic;">No memories unlocked yet.</div>';
+
+            html += `
+                <div id="dpanel-clues"   style="padding-top:16px; display:${activeDiscoveryTab==='clues' ? 'block' : 'none'};">${clueHtml}</div>
+                <div id="dpanel-story"   style="padding-top:16px; display:${activeDiscoveryTab==='story' ? 'block' : 'none'};">${storyHtml}</div>
+                <div id="dpanel-expert"  style="padding-top:16px; display:${activeDiscoveryTab==='expert' ? 'block' : 'none'};">${expertHtml}</div>
+                <div id="dpanel-memories" style="padding-top:16px; display:${activeDiscoveryTab==='memories' ? 'block' : 'none'};">${memoriesHtml}</div>
+            `;
+
+            if (html === '') html = '<div style="text-align:center; padding:40px; color:#999; font-style:italic;">No discoveries yet.</div>';
+            document.getElementById('discoveriesContent').innerHTML = html;
+        }
+
+        function buildDiscoveryCard(item, borderColor) {
+            return `
+                <div style="background:rgba(0,0,0,0.3); border-left:3px solid ${borderColor}; margin-bottom:8px; border-radius:3px; overflow:hidden;">
+                    <div onclick="toggleDiscoveryCard('${item.id}')" style="padding:14px 18px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+                        <div style="font-family:'Playfair Display',serif; font-size:19px; color:#c9a227;">✦ ${item.title}</div>
+                        <div id="arrow-${item.id}" style="font-size:20px; color:#c9a227; margin-left:12px; flex-shrink:0;">▸</div>
+                    </div>
+                    <div id="detail-${item.id}" style="display:none; padding:0 18px 16px 18px; border-top:1px solid rgba(201,162,39,0.15);">
+                        <div style="font-size:17px; line-height:1.7; color:#cccccc; padding-top:14px;">${item.summary}</div>
+                        ${item.detail ? `<div style="font-size:16px; line-height:1.7; color:#999; margin-top:10px;">${item.detail}</div>` : ''}
+                    </div>
+                </div>`;
+        }
+
+        function switchDiscoveryTab(tab) {
+            activeDiscoveryTab = tab;
+            ['clues','story','expert','memories'].forEach(t => {
+                const panel = document.getElementById('dpanel-' + t);
+                const btn = document.getElementById('dtab-' + t);
+                if (!panel || !btn) return;
+                const active = t === tab;
+                panel.style.display = active ? 'block' : 'none';
+                btn.style.background = active ? '#c9a227' : 'rgba(0,0,0,0.3)';
+                btn.style.color = active ? '#1a1a2e' : '#999';
+            });
+        }
+
+        function loadMasterClues() {
+            if (!userSession.activeItems) userSession.activeItems = [];
+            if (!userSession.discoveredSkills) userSession.discoveredSkills = [];
+            
+            let html = '<div style="background: rgba(201, 162, 39, 0.1); border: 2px solid #c9a227; padding: 30px; border-radius: 5px; margin-bottom: 30px;">';
+            html += '<div style="font-family: \'Playfair Display\', Georgia, serif; font-size: 24px; color: #c9a227; margin-bottom: 10px;">Master Controls</div>';
+            html += '<p style="color: #8b8b8b; margin-bottom: 25px; font-size: 14px;">Toggle items to push them to all guests\' Discoveries page in real time.</p>';
+
+            // ── OPENING SPEECH ────────────────────────────────────────
+            html += `
+            <div style="margin-bottom:24px; padding:20px 24px; background:rgba(0,0,0,0.3); border-radius:5px; border:1px solid rgba(201,162,39,0.3);">
+                <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; margin-bottom:0;">
+                    <div style="font-family:'Playfair Display',serif; font-size:18px; color:#c9a227;">📋 Opening Speech</div>
+                    <div style="color:#c9a227; font-size:16px;">▸</div>
+                </div>
+                <div style="display:none; margin-top:16px; border-top:1px solid rgba(201,162,39,0.2); padding-top:16px;">
+                    <div style="font-size:13px; color:#8b8b8b; font-style:italic; margin-bottom:16px;">Read this after everyone has a drink and you have the room's attention.</div>
+
+                    <div style="font-size:15px; line-height:2; color:#e8e8e8;">
+                        <p style="margin:0 0 12px;">"Thank you all for coming tonight. As many of you know, my father invited you here for a dinner party. He said he had an announcement to make — something that would <em>'change everything.'</em>"</p>
+                                                <p style="margin:0 0 12px;">"Most of you know my father. William Thoreson. He built this family from nothing — came to Dallas in 1899 with very little and spent the next thirty years turning it into something. Thoreson Toys. Started in a workshop on Commerce Street in 1902. By 1920 it was one of the most successful toy manufacturers in the Southwest. By 1930, his name was on buildings."</p>
+                        <p style="margin:0 0 12px;">"He was a self-made man. That's how he told it. That's how everyone told it. The Thoreson name on that company meant one thing — that Will Thoreson had built something worth having, on his own, through hard work and nothing else."</p>
+                                                <p style="margin:0 0 12px;">"He was proud of that story."</p>
+                                                <p style="margin:0 0 12px;">"Tonight he wanted to share something with all of us. He wouldn't tell me what — only that it was important. That it was time. Whatever it was, he felt it couldn't wait any longer."</p>
+                                                <p style="margin:0 0 12px;">"He never got that opportunity. My father... William Thoreson... is dead."</p>
+                                                <p style="margin:0 0 12px;">"He was found in his study earlier this evening. We don't know how. We don't know why. What we do know is that everyone who matters to this family — everyone he trusted enough to invite into this house tonight — is standing in this room right now."</p>
+                                                <p style="margin:0 0 12px;">"Which means one of you knows something."</p>
+                                                <p style="margin:0 0 12px;">"Maybe more than something."</p>
+                                                <p style="margin:0 0 12px;">"I want to be very clear about something. As of this moment, no one leaves this estate. Not until we understand what happened here tonight. I don't care who you are, I don't care how far you drove to get here — <strong style="color:#c9a227;">no one leaves.</strong>"</p>
+                                                <p style="margin:0 0 12px;">"I'm Scott Thoreson — Will's eldest son and the family's attorney. I have spent my entire career protecting this family. Tonight that means finding out what happened to my father."</p>
+                        <p style="margin:0 0 12px;">"The police are here. They're doing their job — processing the scene, taking statements, handling what they need to handle. But they weren't in this house tonight. They don't know my father. They don't know the people in this room. We do. And there are things only we are going to be able to figure out."</p>
+                        <p style="margin:0 0 20px;">"And I need every single one of you to help me."</p>
+
+                        <div style="border-top:1px solid rgba(201,162,39,0.2); padding-top:16px; margin-top:4px;">
+                            <div style="font-family:'Playfair Display',serif; font-size:14px; color:#c9a227; letter-spacing:2px; text-transform:uppercase; margin-bottom:12px;">The Rules</div>
+
+                            <p style="margin:0 0 12px;">"Now. Here is how tonight is going to work."</p>
+
+                            <p style="margin:0 0 12px;">"My father invited every one of you here for a reason. He trusted you. And somewhere in this room — in the things you've witnessed, the conversations you've had, the things people have said to you over the years — there are pieces of what really happened. No single person has the whole story. But together, we do. What we're doing tonight is building that story, one piece at a time. So talk to each other. Ask questions. Don't decide something is too small to mention — you don't know what someone else needs to hear."</p>
+
+                            
+                            <p style="margin:0 0 12px;">"Everyone should have the app open on their phone. If you haven't logged in yet, do it now. Your <strong style="color:#c9a227;">Character tab</strong> is yours alone — your history, what you know, who you are tonight. No one else can see it. Read it. Know it. Be it."</p>
+
+                            <p style="margin:0 0 12px;">"As we uncover things together, they'll appear in your <strong style="color:#c9a227;">Discoveries tab</strong> — shared across every phone in this room at the same time. Think of it as your personal evidence repository. Inside you'll find four sections: <strong style="color:#c9a227;">Clues</strong> — the physical evidence we've found; <strong style="color:#c9a227;">Story</strong> — the narrative as it comes together; <strong style="color:#c9a227;">Expert Notes</strong> — analysis from those of you with specialist knowledge; and <strong style="color:#c9a227;">Memories</strong> — the personal recollections that surface as the night goes on. When you need to go back and double-check something, that's where you look."</p>
+
+                            <p style="margin:0 0 12px;">"Now — as the evening unfolds and things come to light, you may find that old memories begin to surface. Things that didn't mean anything at the time suddenly take on a different weight. When that happens, your phone will notify you. Those memories belong to you. Share them when the moment is right. They may be exactly the piece someone else has been missing."</p>
+
+                            <p style="margin:0 0 12px;">"As you investigate, you're going to find things with QR codes on them. When you do, open the app, tap Scan in the navigation, and scan the code. Now — some of you have particular areas of expertise. You know who you are. Certain documents and clues will reveal more to the right person than they will to anyone else. A financial ledger means something different to a banker than it does to the rest of us. A medical report means something different to a trained nurse. If you scan something and it tells you that you need a specialist — find that person. Get them in front of it. The right eyes on the right document could break this whole thing open."</p>
+
+                            <p style="margin:0 0 12px;">"One last thing. Tonight is about finding the truth — that's the priority. But we're also all together in this house, and if you feel the urge to capture a moment, please do. There's a photo wall in the app — take pictures, share them with the group. The night will be what it is. Let's remember it."</p>
+
+                            
+                            <p style="margin:0 0 12px;">"We'll work in rounds. I'll give everyone time to investigate, then I'll call us back together to share what we've learned. Every round brings us closer. No one sits this out — if you're standing in this room, you're part of this investigation."</p>
+
+                            <p style="margin:0 0 12px;">"Most of the estate is open to you. Search freely. If you see <strong style="color:#c9a227;">blue tape</strong> on something — a drawer, a cabinet, a box — leave it alone. Blue tape means there's nothing there worth your time. Could be family documents, something fragile, something private. It is not a clue. Move on."</p>
+
+                            <p style="margin:0 0 12px;">"My father's office is currently off limits. The police are in there dealing with the situation and they've asked us to stay out while they work. That may change later in the evening — I'll let you know when it does."</p>
+
+                            
+                            <p style="margin:0 0 12px;">"My father spent thirty years building something in this city. He was not a perfect man — I'm beginning to understand that more clearly than I ever have tonight. But he was my father. And he deserved better than this."</p>
+
+                            <p style="margin:0 0 16px;">"So let's find out what happened to him."</p>
+
+                            <p style="margin:0;">"Begin."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+
+            // Game Start button
+            var gameStarted = userSession.activeItems.includes('willsDeath');
+            html += '<div style="margin-bottom: 24px; padding: 16px; background: rgba(0,0,0,0.3); border-radius: 5px; border: 2px solid ' + (gameStarted ? '#4caf50' : '#c9a227') + '; display: flex; justify-content: space-between; align-items: center;">';
+            html += '<div>';
+            html += '<div style="font-family: \'Playfair Display\', Georgia, serif; font-size: 18px; color: #c9a227; margin-bottom: 4px;">🕯 Start the Game</div>';
+            html += '<div style="font-size: 13px; color: #999;">Reveals Will\'s death to all guests and opens the investigation.</div>';
+            html += '</div>';
+            html += '<button onclick="toggleItem(\'willsDeath\')" style="background: ' + (gameStarted ? '#e74c3c' : '#c9a227') + '; color: ' + (gameStarted ? 'white' : '#1a1a2e') + '; border: none; padding: 10px 24px; cursor: pointer; border-radius: 3px; font-size: 14px; font-weight: bold; white-space: nowrap; margin-left: 20px;">' + (gameStarted ? '✕ Hide' : '▶ Begin') + '</button>';
+            html += '</div>';
+
+            // ── PER-ACT GRID: revelations + DJ text + confession audio ──
+            const djTextsByAct = {
+                act1: { id: 'djCountyClerk', label: 'County Clerk Report',        preview: 'Original 1902 filing — Thoreson &amp; Hartley Toys' },
+                act2: { id: 'djCoroner',     label: "Coroner's Report",            preview: 'Preliminary autopsy — needs medical interpretation' },
+                act3: { id: 'djPinkerton',   label: 'Pinkerton Background Checks', preview: 'Two name changes flagged among party guests' }
+            };
+            const confessionByAct = {
+                act1: 'audio/confession_act1.mp3',
+                act2: 'audio/confession_act2.mp3',
+                act3: 'audio/confession_act3.mp3'
+            };
+            html += '<audio id="confessionAudio" style="display:none;"></audio>';
+            html += '<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px;">';
+            Object.entries(revelationsDatabase).forEach(([actKey, act]) => {
+                const dj = djTextsByAct[actKey];
+                const confSrc = confessionByAct[actKey];
+                const djSent = dj && userSession.activeItems.includes(dj.id);
+
+                html += `<div style="background: rgba(0,0,0,0.2); border-radius: 5px; padding: 16px; border-top: 2px solid rgba(201,162,39,0.4); display:flex; flex-direction:column;">`;
+                html += `<div style="font-family: 'Playfair Display', Georgia, serif; font-size: 15px; color: #c9a227; text-transform: uppercase; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(201,162,39,0.2);">${act.label}</div>`;
+
+                // Revelation toggles
+                act.items.forEach(item => {
+                    const isActive = userSession.activeItems.includes(item.id);
+                    const badgeBg = item.type === 'story' ? '#8b7355' : '#c9a227';
+                    const badgeColor = item.type === 'story' ? 'white' : '#1a1a2e';
+                    const badgeLabel = item.type === 'story' ? 'STORY' : 'CLUE';
+                    const btnBg = isActive ? '#c0392b' : '#2d7a2d';
+                    html += `
+                        <button onclick="toggleItem('${item.id}')" style="width:100%; background:${btnBg}; color:white; border:none; padding:10px 12px; cursor:pointer; border-radius:3px; margin-bottom:8px; text-align:left; line-height:1.4;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-family:'Playfair Display',serif; font-size:14px; font-weight:bold;">${item.title}</span>
+                                <span style="display:flex; align-items:center; gap:6px; flex-shrink:0; margin-left:8px;">
+                                    <span style="font-size:9px; background:${badgeBg}; color:${badgeColor}; padding:2px 5px; border-radius:2px;">${badgeLabel}</span>
+                                    <span style="font-size:12px; opacity:0.8;">${isActive ? '✕ Hide' : '✓ Reveal'}</span>
+                                </span>
+                            </div>
+                        </button>
+                    `;
+                });
+
+                // Spacer to push footer items down
+                html += `<div style="flex:1;"></div>`;
+
+                // DJ text button
+                if (dj) {
+                    html += `<div style="margin-top:12px; padding:10px; background:rgba(0,0,0,0.3); border-radius:3px; border-left:3px solid ${djSent ? '#4caf50' : '#3a8fd4'}; ${djSent ? 'opacity:0.6;' : ''}">`;
+                    html += `<div style="font-size:12px; color:#c9a227; margin-bottom:3px;">📱 ${dj.label}</div>`;
+                    html += `<div style="font-size:11px; color:#999; font-style:italic; margin-bottom:8px;">${dj.preview}</div>`;
+                    html += `<button onclick="fireDJText('${dj.id}')" ${djSent ? 'disabled' : ''} style="width:100%; background:${djSent ? '#555' : '#3a8fd4'}; color:white; border:none; padding:6px 0; cursor:${djSent ? 'default' : 'pointer'}; border-radius:3px; font-size:12px; letter-spacing:1px;">${djSent ? '✓ Sent' : 'Send to DJ'}</button>`;
+                    html += `</div>`;
+                }
+
+                // Confession audio button
+                if (confSrc) {
+                    html += `<div style="margin-top:10px;">`;
+                    html += `<button onclick="playConfession('${actKey}')" style="width:100%; padding:9px 0; cursor:pointer; border-radius:3px; font-family:'Playfair Display',serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; border:1px solid #c9a227; background:rgba(201,162,39,0.15); color:#c9a227;">🎙 Play Confession</button>`;
+                    html += `</div>`;
+                }
+
+                html += `</div>`;
+            });
+            html += '</div>';
+
+            html += '</div>';
+
+            // ── CLUE SCAN LEADERBOARD ─────────────────────────────────
+            html += '<div style="margin-top:30px; border-top:2px solid rgba(201,162,39,0.3); padding-top:20px;">';
+            html += '<div style="font-family:\'Playfair Display\',Georgia,serif; font-size:20px; color:#c9a227; margin-bottom:5px;">🔎 Clue Scan Leaderboard</div>';
+            html += '<p style="color:#8b8b8b; margin-bottom:15px; font-size:13px;">Updates in real time as guests scan QR codes.</p>';
+            html += '<div id="leaderboardContent" style="font-size:14px; color:#999; font-style:italic;">Loading...</div>';
+            html += '</div>';
+
+            // BRADFORD CHASE SCRIPT
+            html += '<div style="margin-top:30px; padding:20px; border:1px solid #8b6914; background:rgba(201,162,39,0.05);">';
+            html += '<div style="font-family:\'Playfair Display\',serif; font-size:15px; letter-spacing:2px; text-transform:uppercase; color:#c9a227; margin-bottom:8px;">🔑 GM Emergency Reference</div>';
+            html += '<div style="font-size:13px; color:#8b8b8b; margin-bottom:10px;">All skill expert content, character memories, revelation summaries, and login codes in one page.</div>';
+            html += '<a href="gm-reference.html" target="_blank" style="display:inline-block; padding:10px 24px; border-radius:3px; font-family:\'Playfair Display\',serif; font-size:13px; letter-spacing:2px; text-transform:uppercase; border:1px solid #c9a227; background:transparent; color:#c9a227; text-decoration:none;">Open GM Reference</a>';
+            html += '</div>';
+
+            html += '<div style="margin-top:30px; padding:20px; border:1px solid #8b6914; background:rgba(201,162,39,0.05);">';
+            html += '<div style="font-family:\'Playfair Display\',serif; font-size:15px; letter-spacing:2px; text-transform:uppercase; color:#c9a227; margin-bottom:8px;">🚔 Bradford Chase Updates</div>';
+            html += '<div style="font-size:13px; color:#8b8b8b; margin-bottom:15px;">Announce these in character throughout the night. Tap to expand, read aloud, then collapse.</div>';
+
+            var chaseUpdates = [
+                { timing: "COCKTAIL HOUR", text: "Ladies and gentlemen — I\\'ve just received word from the sheriff\\'s office. Thomas Bradford, who was expected this evening, has fled Dallas County. His home was found empty this afternoon. Deputies are in pursuit. A wanted notice has been posted. I\\'m told he should be considered... well, let\\'s say \\'uncooperative.\\'" },
+                { timing: "MID ACT 1", text: "Update from the sheriff — Bradford\\'s automobile was spotted heading south on Route 77 at considerable speed. He ran two stop signs in Waxahachie. Officers are in pursuit. I\\'m sure this has nothing to do with the patent letter he sent three weeks ago." },
+                { timing: "LATE ACT 1", text: "I\\'m told Bradford\\'s car ran out of fuel near Corsicana. He was last seen on foot, heading into a cotton field. The deputy described him as \\'surprisingly fast for a man of his build.\\'" },
+                { timing: "ACT 2", text: "Bradford update — he was briefly apprehended hiding in a barn outside Ennis. He escaped custody when the deputy went inside for coffee. The sheriff has requested additional resources. And, apparently, faster deputies." },
+                { timing: "ACT 3", text: "Final update on our friend Mr. Bradford — he was spotted boarding a southbound freight train near Waco, disguised as... and I am reading this directly... a feed salesman. The five-hundred-dollar reward remains available. The sheriff\\'s department asks that if you see a nervous man in a bad hat asking questions about grain prices, please contact the authorities." }
+            ];
+
+            chaseUpdates.forEach(function(update, i) {
+                html += '<div style="margin:8px 0; border:1px solid rgba(201,162,39,0.2); border-radius:3px;">';
+                html += '<div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\'" style="padding:10px 14px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;">';
+                html += '<span style="font-size:13px; color:#c9a227;">' + update.timing + '</span>';
+                html += '<span style="font-size:11px; color:#666;">tap to read</span>';
+                html += '</div>';
+                html += '<div style="display:none; padding:8px 14px 14px; font-size:14px; line-height:1.7; color:#d4c090; font-style:italic; border-top:1px solid rgba(201,162,39,0.1);">"' + update.text + '"</div>';
+                html += '</div>';
+            });
+            html += '</div>';
+
+            // START GAME / RESET button
+            // Test Mode toggle
+            html += '<div style="margin-top:30px; padding:20px; border:1px solid #c9a227; background:rgba(201,162,39,0.05);">';
+            html += '<div style="font-family:\'Playfair Display\',serif; font-size:15px; letter-spacing:2px; text-transform:uppercase; color:#c9a227; margin-bottom:8px;">🧪 Test Mode</div>';
+            html += '<div style="font-size:13px; color:#8b8b8b; margin-bottom:15px;">When ON — real player codes receive no live updates. Only you (master) and the 5 test accounts see changes in real time.</div>';
+            html += '<button onclick="toggleTestMode()" id="testModeBtn" style="padding:10px 24px; cursor:pointer; border-radius:3px; font-family:\'Playfair Display\',serif; font-size:13px; letter-spacing:2px; text-transform:uppercase; border:1px solid #c9a227; background:transparent; color:#c9a227; margin-right:10px;">Checking...</button>';
+            html += '</div>';
+
+            html += '<div style="margin-top:30px; padding-top:25px; border-top:1px solid #3a3a2a;">';
+            html += '<div style="font-family:\'Playfair Display\',serif; font-size:15px; letter-spacing:2px; text-transform:uppercase; color:#c9a227; margin-bottom:8px;">\ud83d\udd04 Force Reload All Devices</div>';
+            html += '<div style="font-size:13px; color:#8b8b8b; margin-bottom:15px;">After pushing a code update to GitHub (wait ~3 min for deploy), press this to instantly reload every connected device to the latest version.</div>';
+            html += '<button onclick="forceReloadAll()" style="padding:10px 24px; cursor:pointer; border-radius:3px; font-family:\'Playfair Display\',serif; font-size:13px; letter-spacing:2px; text-transform:uppercase; border:1px solid #c9a227; background:transparent; color:#c9a227;">Force Reload All</button>';
+            html += '</div>';
+
+            html += '<div style="margin-top:40px; padding-top:25px; border-top:3px solid #e74c3c;">';
+            html += '<div style="font-family:\'Playfair Display\',serif; font-size:16px; letter-spacing:3px; text-transform:uppercase; color:#e74c3c; margin-bottom:12px;">\u26A0 GAME RESET</div>';
+            html += '<div style="font-size:13px; color:#8b8b8b; margin-bottom:15px;">Clears ALL revelations, skill discoveries, and popup history across all connected devices. Use before the event starts to ensure a clean slate.</div>';
+            html += '<button onclick="resetGame()" style="background:#e74c3c; color:white; border:none; padding:12px 30px; cursor:pointer; border-radius:3px; font-family:\'Playfair Display\',serif; font-size:14px; letter-spacing:2px; text-transform:uppercase;">Reset &amp; Start Fresh</button>';
+            html += '</div>';
+
+            document.getElementById('masterCluesContent').innerHTML = html;
+            updateTestModeBtn();
+        }
+
+        function fireDJText(itemId) {
+            if (!userSession.activeItems) userSession.activeItems = [];
+            var isTesting = userSession.role === 'master' || userSession.role === 'test';
+            if (userSession.activeItems.includes(itemId)) {
+                if (!isTesting) return; // real game — one-shot only
+                // Test mode: allow re-fire by removing from activeItems + shownMemories first
+                userSession.activeItems = userSession.activeItems.filter(function(id) { return id !== itemId; });
+                var shown = getShownMemories();
+                shown = shown.filter(function(id) { return id !== itemId; });
+                localStorage.setItem('shownMemories', JSON.stringify(shown));
+                // Also clear it from Firebase shownMemories signal
+                if (database) database.ref('memoryReset').set(Date.now());
+            }
+            var oldItems = userSession.activeItems.slice();
+            userSession.activeItems.push(itemId);
+            checkForNewMemories(oldItems, userSession.activeItems);
+            localStorage.setItem('userSession', JSON.stringify(userSession));
+            syncToFirebase();
+            broadcastChannel.postMessage({ type: 'itemUpdate', activeItems: userSession.activeItems });
+            loadMasterClues();
+        }
+
+        function toggleItem(itemId) {
+            if (!userSession.activeItems) userSession.activeItems = [];
+            var oldItems = userSession.activeItems.slice(); // snapshot before change
+            const index = userSession.activeItems.indexOf(itemId);
+            if (index === -1) {
+                userSession.activeItems.push(itemId);
+            } else {
+                userSession.activeItems.splice(index, 1);
+                // Clear from shown memories so it can re-trigger if toggled back on
+                var shown = getShownMemories();
+                var shownIndex = shown.indexOf(itemId);
+                if (shownIndex !== -1) {
+                    shown.splice(shownIndex, 1);
+                    localStorage.setItem('shownMemories', JSON.stringify(shown));
+                }
+            }
+            // Check for new memories on THIS device (the one toggling)
+            checkForNewMemories(oldItems, userSession.activeItems);
+            localStorage.setItem('userSession', JSON.stringify(userSession));
+            syncToFirebase();
+            broadcastChannel.postMessage({ type: 'itemUpdate', activeItems: userSession.activeItems });
+            loadMasterClues();
+            loadCharacterData();
+        }
+
+        function updateTestModeBtn() {
+            const btn = document.getElementById('testModeBtn');
+            if (!btn || !database) return;
+            database.ref('testMode').once('value').then(snap => {
+                const on = snap.val() === true;
+                btn.textContent = on ? '✓ Test Mode ON — Turn Off' : 'Test Mode OFF — Turn On';
+                btn.style.background = on ? '#c9a227' : 'transparent';
+                btn.style.color = on ? '#1a1a2e' : '#c9a227';
+            });
+        }
+
+        function playConfession(act) {
+            const files = { act1: 'audio/confession_act1.mp3', act2: 'audio/confession_act2.mp3', act3: 'audio/confession_act3.mp3' };
+            const audio = document.getElementById('confessionAudio');
+            if (!audio) return;
+            if (!audio.paused && audio.src.includes(files[act])) {
+                audio.pause();
+                audio.currentTime = 0;
+                return;
+            }
+            audio.src = files[act];
+            audio.play();
+        }
+
+        function toggleTestMode() {
+            if (!database) return;
+            database.ref('testMode').once('value').then(snap => {
+                const current = snap.val() === true;
+                database.ref('testMode').set(!current).then(() => {
+                    updateTestModeBtn();
+                    console.log('testMode set to', !current);
+                });
+            });
+        }
+
+        function forceReloadAll() {
+            if (!confirm('This will reload all connected devices to the latest version. Continue?')) return;
+            var newVersion = Date.now();
+            database.ref('appVersion').set(newVersion).then(function() {
+                console.log('Force reload triggered:', newVersion);
+            });
+        }
+
+        function watchAppVersion() {
+            if (!database || !userSession) return;
+            var myLoadTime = Date.now();
+            database.ref('appVersion').on('value', function(snap) {
+                var v = snap.val();
+                // Only reload if version was set AFTER this session loaded
+                // and we're not the master (master just set it, no need to reload)
+                if (v && v > myLoadTime && userSession.username !== 'Scott') {
+                    console.log('New app version detected, reloading...');
+                    setTimeout(function() { window.location.reload(true); }, 1500);
+                }
+            });
+        }
+
+        function resetGame() {
+            if (!confirm('This will clear ALL revelations, skill discoveries, popup history, and scan counts for every connected device. Are you sure?')) return;
+            
+            // Clear local state
+            userSession.activeItems = [];
+            userSession.discoveredSkills = [];
+            localStorage.setItem('userSession', JSON.stringify(userSession));
+            localStorage.setItem('shownMemories', '[]');
+            localStorage.setItem('personalDiscoveries', '[]');
+            
+            // Clear Firebase (triggers listeners on all devices)
+            if (database) {
+                database.ref('activeItems').set([]);
+                database.ref('discoveredSkills').set([]);
+                database.ref('memoryReset').set(Date.now());
+                database.ref('scans').remove();
+                database.ref('scanLog').remove();
+                database.ref('photos').remove();
+                // Also clear Storage photos
+                try {
+                    const storage = firebase.storage();
+                    storage.ref('photos/wall').listAll().then(res => res.items.forEach(item => item.delete()));
+                    storage.ref('photos/full').listAll().then(res => res.items.forEach(item => item.delete()));
+                } catch(e) {}
+            }
+            
+            // Broadcast to same-device tabs
+            broadcastChannel.postMessage({ type: 'itemUpdate', activeItems: [] });
+            broadcastChannel.postMessage({ type: 'skillUpdate', discoveredSkills: [] });
+            broadcastChannel.postMessage({ type: 'gameReset' });
+            
+            // Re-render
+            loadMasterClues();
+            loadCharacterData();
+            loadDiscoveriesData();
+        }
+
+        function toggleSkill(skillName) {
+            if (!userSession.discoveredSkills) userSession.discoveredSkills = [];
+            const discoveredKey = skillName.toLowerCase() + 'Discovered';
+            const index = userSession.discoveredSkills.indexOf(discoveredKey);
+            if (index === -1) {
+                userSession.discoveredSkills.push(discoveredKey);
+            } else {
+                userSession.discoveredSkills.splice(index, 1);
+            }
+            localStorage.setItem('userSession', JSON.stringify(userSession));
+            syncToFirebase();
+            broadcastChannel.postMessage({ type: 'skillUpdate', discoveredSkills: userSession.discoveredSkills });
+            loadMasterClues();
+        }
+
+        // ── MEMORY POPUP SYSTEM ──────────────────────────────────
+        var memoryQueue = [];
+        var activeDiscoveryTab = 'clues';
+
+        // Track which triggers have already shown popups (persists across sessions)
+        function getShownMemories() {
+            try {
+                return JSON.parse(localStorage.getItem('shownMemories') || '[]');
+            } catch(e) { return []; }
+        }
+        function markMemoryShown(triggerIds) {
+            var shown = getShownMemories();
+            triggerIds.forEach(function(id) {
+                if (shown.indexOf(id) === -1) shown.push(id);
+            });
+            localStorage.setItem('shownMemories', JSON.stringify(shown));
+        }
+
+        function checkForNewMemories(oldItems, newItems) {
+            var shown = getShownMemories();
+            var newlyAdded = newItems.filter(function(id) {
+                return oldItems.indexOf(id) === -1 && shown.indexOf(id) === -1;
+            });
+            if (newlyAdded.length === 0) return;
+
+            var username = userSession.username;
+            var charKey = (userSession.character) ? userSession.character : username;
+            var charData = characterDatabase[charKey];
+            if (!charData) return;
+
+            var memories = [];
+            var triggersToMark = [];
+
+            // Get character's skills for gating
+            var charSkills = (charData.skills || []).concat(charData.hiddenSkills || []);
+
+            if (charData.knowledge) {
+                charData.knowledge.forEach(function(item) {
+                    if (item.unlockedBy && newlyAdded.indexOf(item.unlockedBy) !== -1 && charSkills.indexOf(item.unlockedBy) !== -1) {
+                        memories.push({ text: item.text, type: 'knowledge', triggerId: item.unlockedBy });
+                        if (triggersToMark.indexOf(item.unlockedBy) === -1) triggersToMark.push(item.unlockedBy);
+                    }
+                });
+            }
+
+            if (charData.canShare) {
+                charData.canShare.forEach(function(item) {
+                    if (item.unlockedBy && newlyAdded.indexOf(item.unlockedBy) !== -1 && charSkills.indexOf(item.unlockedBy) !== -1) {
+                        memories.push({ text: item.text, type: 'canShare', triggerId: item.unlockedBy });
+                        if (triggersToMark.indexOf(item.unlockedBy) === -1) triggersToMark.push(item.unlockedBy);
+                    }
+                });
+            }
+
+            // memories array — direct personal triggers, NO skills gate
+            // Used for DJ texts and similar character-specific private messages
+            if (charData.memories) {
+                charData.memories.forEach(function(item) {
+                    if (item.unlockedBy && newlyAdded.indexOf(item.unlockedBy) !== -1) {
+                        memories.push({ text: item.text, type: 'knowledge', triggerId: item.unlockedBy, tier: item.tier || 2 });
+                        if (triggersToMark.indexOf(item.unlockedBy) === -1) triggersToMark.push(item.unlockedBy);
+                    }
+                });
+            }
+
+            if (memories.length > 0) {
+                markMemoryShown(triggersToMark);
+
+                // Auto-unlock skills triggered by revelations (no QR needed)
+                var autoSkillUnlocks = { 'wolfsbane': 'Botany' };
+                triggersToMark.forEach(function(triggerId) {
+                    if (autoSkillUnlocks[triggerId]) {
+                        var skillName = autoSkillUnlocks[triggerId];
+                        if ((charData.skills || []).concat(charData.hiddenSkills || []).indexOf(skillName) !== -1) {
+                            var discoveryKey = skillName.toLowerCase() + 'Discovered';
+                            if (!userSession.discoveredSkills.includes(discoveryKey)) {
+                                database.ref('discoveredSkills').once('value', function(snap) {
+                                    var current = snap.val() || [];
+                                    if (!current.includes(discoveryKey)) {
+                                        current.push(discoveryKey);
+                                        database.ref('discoveredSkills').set(current);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+
+                memoryQueue = memoryQueue.concat(memories);
+                if (!document.querySelector('.memory-popup-overlay')) {
+                    showNextMemory();
+                }
+            }
+
+            // Auto-trigger skills based on revelations
+            // Maps: revelation ID → skill name that should auto-fire (like a QR scan)
+            var skillAutoTriggers = {
+                'wolfsbane': 'Botany'
+                // Add more here as needed, e.g.: 'someRevelation': 'SomeSkill'
+            };
+
+            var mySkills = getMySkills();
+            newlyAdded.forEach(function(triggerId) {
+                var autoSkill = skillAutoTriggers[triggerId];
+                if (autoSkill && mySkills.indexOf(autoSkill) !== -1) {
+                    // Queue the skill expert modal after memory popups
+                    var skillData = skillsDatabase[autoSkill];
+                    if (skillData) {
+                        // Add to personal discoveries (same as QR scan)
+                        var key = autoSkill.toLowerCase() + 'Discovered';
+                        var personal = getPersonalDiscoveries();
+                        if (personal.indexOf(key) === -1) {
+                            personal.push(key);
+                            localStorage.setItem('personalDiscoveries', JSON.stringify(personal));
+                        }
+                        // Queue the expert modal to show after any memory popups
+                        pendingSkillPopup = { skillName: autoSkill, skillData: skillData };
+                    }
+                }
+            });
+
+            // If no memory popups queued but we have a pending skill popup, show it directly
+            if (memories.length === 0 && pendingSkillPopup) {
+                var sp = pendingSkillPopup;
+                pendingSkillPopup = null;
+                loadDiscoveriesData();
+                showSkillContent(sp.skillName, sp.skillData);
+            }
+        }
+
+        // Holds a skill popup waiting to show after memory popups finish
+        var pendingSkillPopup = null;
+
+        function showNextMemory() {
+            if (memoryQueue.length === 0) return;
+
+            var memory = memoryQueue.shift();
+            var remaining = memoryQueue.length;
+
+            // Text message style triggers
+            var textMessageTriggers = {
+                'backgroundCheck': { from: 'PINKERTON DETECTIVE AGENCY', action: '\u26A0\uFE0F SHARE THIS WITH THE GROUP' },
+                'djCountyClerk': { from: 'DALLAS COUNTY CLERK\u2019S OFFICE', action: '\u26A0\uFE0F SHARE THIS WITH THE GROUP' },
+                'djCoroner': { from: 'DALLAS COUNTY CORONER\u2019S OFFICE', action: '\u26A0\uFE0F FIND SOMEONE WITH MEDICAL TRAINING \u2014 AND HAND OVER THE KEY' },
+                'djPinkerton': { from: 'PINKERTON NATIONAL DETECTIVE AGENCY', action: '\u26A0\uFE0F READ THIS CAREFULLY \u2014 THEN SHARE WITH THE GROUP' }
+            };
+
+            var isTextMsg = memory.triggerId && textMessageTriggers[memory.triggerId];
+
+            // ── NATIVE NOTIFICATION ───────────────────────────────────
+            if (isTextMsg) {
+                var tmInfo = textMessageTriggers[memory.triggerId];
+                sendNativeNotification(
+                    '📱 ' + tmInfo.from,
+                    memory.text,
+                    'thoreson-dj-' + memory.triggerId
+                );
+            } else {
+                sendNativeNotification(
+                    '🕵️ Thoreson Estate',
+                    memory.text,
+                    'thoreson-memory-' + (memory.triggerId || Date.now())
+                );
+            }
+
+            var overlay = document.createElement('div');
+            overlay.className = 'memory-popup-overlay';
+
+            if (isTextMsg) {
+                var tmData = textMessageTriggers[memory.triggerId];
+                overlay.innerHTML =
+                    '<div class="memory-popup-box text-message">' +
+                        '<div class="text-msg-from">TEXT RECEIVED FROM</div>' +
+                        '<div class="text-msg-header">' + tmData.from + '</div>' +
+                        '<div class="text-msg-body">' + memory.text + '</div>' +
+                        '<div class="text-msg-action">' + tmData.action + '</div>' +
+                        '<button class="memory-popup-dismiss" onclick="dismissMemory()">' +
+                            (remaining > 0 ? 'Next' : 'Dismiss') +
+                        '</button>' +
+                        (remaining > 0
+                            ? '<div class="memory-popup-counter">' + remaining + ' more</div>'
+                            : '') +
+                    '</div>';
+            } else {
+                var isTier1 = memory.tier === 1;
+                var typeLabel = isTier1
+                    ? '⚠ Share this with the group immediately'
+                    : (memory.type === 'canShare' ? 'You may share this with others' : 'Something you now recall');
+
+                overlay.innerHTML =
+                    '<div class="memory-popup-box" style="' + (isTier1 ? 'border-color:#e74c3c; box-shadow:0 0 0 2px #e74c3c, 0 15px 40px rgba(0,0,0,0.5);' : '') + '">' +
+                        (isTier1 ? '<div style="background:#e74c3c; color:white; font-size:12px; letter-spacing:3px; text-transform:uppercase; padding:8px 16px; margin:-20px -20px 16px -20px; text-align:center;">⚠ Important — Share With The Group</div>' : '') +
+                        '<div class="memory-popup-header">' + (isTier1 ? 'A Critical Memory\u2026' : 'A Memory Surfaces\u2026') + '</div>' +
+                        '<div class="memory-popup-text">\u201C' + memory.text + '\u201D</div>' +
+                        '<div class="memory-popup-type" style="' + (isTier1 ? 'color:#e74c3c;' : '') + '">' + typeLabel + '</div>' +
+                        '<button class="memory-popup-dismiss" onclick="dismissMemory()">' +
+                            (remaining > 0 ? 'Next' : 'Dismiss') +
+                        '</button>' +
+                        (remaining > 0
+                            ? '<div class="memory-popup-counter">' + remaining + ' more memor' + (remaining === 1 ? 'y' : 'ies') + '</div>'
+                            : '') +
+                    '</div>';
+            }
+
+            document.body.appendChild(overlay);
+        }
+
+        function dismissMemory() {
+            var overlay = document.querySelector('.memory-popup-overlay');
+            if (overlay) overlay.remove();
+            if (memoryQueue.length > 0) {
+                showNextMemory();
+            } else {
+                loadCharacterData();
+                loadDiscoveriesData();
+                // Show skill expert modal if one was queued by auto-trigger
+                if (pendingSkillPopup) {
+                    var sp = pendingSkillPopup;
+                    pendingSkillPopup = null;
+                    showSkillContent(sp.skillName, sp.skillData);
+                }
+            }
+        }
+
+        // ── QR SCANNER ──────────────────────────────────────────
+        let html5QrCode = null;
+
+        function openScanner() {
+            const overlay = document.getElementById('scannerOverlay');
+            overlay.classList.add('active');
+            document.getElementById('scannerStatus').textContent = 'Starting camera...';
+
+            html5QrCode = new Html5Qrcode('scannerBox');
+            html5QrCode.start(
+                { facingMode: 'environment' },
+                { fps: 10, qrbox: { width: 250, height: 250 } },
+                onScanSuccess,
+                function() {} // ignore scan failures (no QR in frame yet)
+            ).then(function() {
+                document.getElementById('scannerStatus').textContent = 'Position the QR code within the frame';
+            }).catch(function(err) {
+                document.getElementById('scannerStatus').textContent = 'Camera access denied. Please allow camera permissions.';
+                console.error('Scanner error:', err);
+                // Clean up so closeScanner doesn't try to stop a never-started scanner
+                try { html5QrCode.clear(); } catch(e) {}
+                html5QrCode = null;
+            });
+        }
+
+        function closeScanner() {
+            var overlay = document.getElementById('scannerOverlay');
+            if (html5QrCode) {
+                html5QrCode.stop().then(function() {
+                    html5QrCode.clear();
+                    html5QrCode = null;
+                }).catch(function() {
+                    // Scanner may never have started (e.g. camera denied)
+                    try { html5QrCode.clear(); } catch(e) {}
+                    html5QrCode = null;
+                });
+            }
+            overlay.classList.remove('active');
+        }
+
+        function onScanSuccess(decodedText) {
+            closeScanner();
+
+            // Block all scans until game has started
+            if (!userSession.activeItems || !userSession.activeItems.includes('willsDeath')) {
+                showSkillDenied('Not Yet', 'The investigation has not begun. Wait for the game to start.');
+                return;
+            }
+
+            // Generic prop scan — URL format
+            if (decodedText.includes('scan.html') || decodedText.includes('clue.html')) {
+                try {
+                    const params = new URL(decodedText).searchParams;
+                    const propId = params.get('id') || params.get('item') || 'unknown';
+                    const player = userSession.username;
+                    database.ref('scans/' + player).transaction(c => (c || 0) + 1);
+                    database.ref('scanLog').push({ player, propId, time: Date.now() });
+                } catch(e) {}
+                var modal = document.getElementById('skillModalContent');
+                var itemLabel = '';
+                try {
+                    var params = new URL(decodedText).searchParams;
+                    var itemId = params.get('id') || params.get('item') || '';
+                    var found = (typeof itemDatabase !== 'undefined') && itemDatabase.find(function(i) { return i.id === itemId; });
+                    if (found) itemLabel = found.label;
+                } catch(e2) {}
+                modal.innerHTML = `
+                    <div style="text-align:center; padding:10px 0;">
+                        <svg viewBox="0 0 680 860" xmlns="http://www.w3.org/2000/svg" style="width:160px; margin:0 auto 16px; display:block;">
+                            <style>.ct{font-family:'Playfair Display',Georgia,serif;fill:#c9a227}.ctd{font-family:'Playfair Display',Georgia,serif;fill:#1a1205}</style>
+                            <path d="M 190,90 L 490,90 L 490,470 Q 490,575 340,660 Q 190,575 190,470 Z" fill="#1a1205" stroke="#c9a227" stroke-width="3"/>
+                            <path d="M 208,108 L 472,108 L 472,468 Q 472,562 340,638 Q 208,562 208,468 Z" fill="none" stroke="#c9a227" stroke-width="1.2" stroke-dasharray="4,3"/>
+                            <polygon points="375,155 295,330 345,318 308,478 420,280 362,295 400,155" fill="#c9a227"/>
+                            <circle cx="210" cy="108" r="4.5" fill="#c9a227"/>
+                            <circle cx="470" cy="108" r="4.5" fill="#c9a227"/>
+                            <rect x="160" y="42" width="360" height="48" rx="3" fill="#c9a227"/>
+                            <text x="340" y="75" text-anchor="middle" class="ctd" font-size="22" font-weight="700" letter-spacing="5">THORESON</text>
+                            <path d="M 185,668 Q 340,715 495,668 L 478,702 Q 340,748 202,702 Z" fill="#c9a227"/>
+                            <path d="M 185,668 L 202,702 L 182,720 Q 145,700 185,668 Z" fill="#a8871f"/>
+                            <path d="M 495,668 L 478,702 L 498,720 Q 535,700 495,668 Z" fill="#a8871f"/>
+                            <text x="340" y="702" text-anchor="middle" class="ctd" font-size="13" font-weight="700" letter-spacing="2">THORESON FAMILY ESTATE</text>
+                        </svg>
+                        <div style="font-family:'Playfair Display',serif; font-size:22px; color:#c9a227; margin-bottom:8px;">✦ Clue Found</div>
+                        <div style="font-size:17px; color:#d4c090; letter-spacing:1px; margin-bottom:8px; font-family:'Playfair Display',serif;">${itemLabel || ''}</div>
+                        <div style="font-size:15px; color:#aaaaaa; letter-spacing:1px;">Bring this to the group.</div>
+                    </div>
+                    <button class="skill-modal-close" onclick="closeSkillModal()">Dismiss</button>`;
+                document.getElementById('skillModalOverlay').classList.add('active');
+                return;
+            }
+
+            // Netsuke side quest
+            if (decodedText.includes('netsuke.html')) {
+                const player = userSession.username;
+                database.ref('scans/' + player).transaction(c => (c || 0) + 1);
+                database.ref('scanLog').push({ player, propId: 'netsuke', time: Date.now() });
+                var modal = document.getElementById('skillModalContent');
+                modal.style.background = '#0d0b08';
+                modal.style.borderColor = '#c9a227';
+                modal.innerHTML = `
+                    <div style="font-family:'Playfair Display',Georgia,serif;">
+                        <div style="font-size:11px; letter-spacing:4px; text-transform:uppercase; color:#8b6914; text-align:center; margin-bottom:10px;">Side Quest</div>
+                        <div style="font-size:26px; color:#c9a227; text-align:center; margin-bottom:4px;">The Netsuke Case</div>
+                        <div style="font-size:13px; color:#6a5a2a; font-style:italic; text-align:center; letter-spacing:2px; margin-bottom:20px;">A Matter of Personal Honor</div>
+                        <div style="border-top:1px solid #3a2a06; margin-bottom:16px;"></div>
+                        <p style="font-size:15px; line-height:1.8; color:#d4c090; margin-bottom:12px; text-align:left;">Rupert Thoreson — Will's twin brother and the estate's unofficial photographer — is the proud owner of a remarkable collection of <strong style="color:#c9a227;">Japanese Netsuke</strong>: hand-carved ivory and boxwood toggles from the Edo period. Frogs. Dragons. Merchants. Monks. Each one small enough to fit in a closed fist. Each one irreplaceable.</p>
+                        <p style="font-size:15px; line-height:1.8; color:#d4c090; margin-bottom:12px; text-align:left;">The collection lives in a hand-lacquered case Rupert acquired in Kyoto in 1921. The case is locked. The key is missing. He last saw it Tuesday.</p>
+                        <div style="border:1px solid #5a4209; padding:14px 16px; margin:16px 0; background:rgba(201,162,39,0.06);">
+                            <p style="font-size:14px; line-height:1.8; color:#c9a227; margin:0; text-align:left;">"I'm not saying it's important. I'd just like to know where it is. If anyone happens to see a small brass key — slightly worn, loop at the top — no rush. Truly. No rush at all."</p>
+                            <p style="font-size:12px; color:#8b6914; margin-top:8px; margin-bottom:0; text-align:right;">— Rupert Thoreson, pretending he is fine</p>
+                        </div>
+                        <div style="font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#8b6914; margin:16px 0 8px; text-align:left;">What You're Looking For</div>
+                        <p style="font-size:15px; line-height:1.8; color:#d4c090; margin-bottom:12px; text-align:left;">A small brass key. Slightly worn. Loop at the top. Approximately the size of a large coat button. Possibly a faded red ribbon through the loop. You'll know it when you see it.</p>
+                        <div style="border:2px solid #c9a227; padding:16px; text-align:center; margin:16px 0;">
+                            <div style="font-size:11px; letter-spacing:4px; text-transform:uppercase; color:#8b6914; margin-bottom:6px;">Upon Completion</div>
+                            <div style="font-size:18px; color:#c9a227; margin-bottom:4px;">The Eternal Gratitude of Rupert Thoreson</div>
+                            <div style="font-size:13px; color:#8b7355; font-style:italic;">One (1) extremely sincere thank you and a very firm handshake.</div>
+                        </div>
+                        <p style="font-size:13px; color:#6a5a2a; font-style:italic; text-align:center;">This quest is not canon. It will not help you solve the murder. It will, however, make one man very happy.</p>
+                    </div>
+                    <button class="skill-modal-close" onclick="closeSkillModal()" style="margin-top:12px;">Dismiss</button>`;
+                document.getElementById('skillModalOverlay').classList.add('active');
+                return;
+            }
+            if (decodedText.includes('photo.html')) {
+                try {
+                    const id = new URL(decodedText).searchParams.get('id');
+                    const posterMap = {
+                        'p1': 'posters/wanted_aaron.jpg',
+                        'p2': 'posters/missing_sarah.jpg',
+                        'p3': 'posters/missing_laurie.jpg',
+                        'p4': 'posters/missing_robin.jpg',
+                        'p5': 'posters/wanted_bradford.jpg',
+                        'e1': 'photos/easter1.jpeg',
+                        'e2': 'photos/easter2.jpeg',
+                        'e3': 'photos/easter3.jpeg',
+                        'e4': 'photos/easter4.jpeg',
+                        'e5': 'photos/easter5.jpeg',
+                        'bathroom': 'photos/bathroom_cat.jpeg',
+                        'wedding': 'photos/easter_collage.jpeg',
+                    };
+                    const posterUrl = posterMap[id];
+                    if (posterUrl) {
+                        const player = userSession.username;
+                        const fullUrl = 'https://thoresonws-pixel.github.io/Thoreson_Estate_Dinner/' + posterUrl;
+                        // Count as a clue scan
+                        database.ref('scans/' + player).transaction(c => (c || 0) + 1);
+                        database.ref('scanLog').push({ player, propId: id, time: Date.now() });
+
+                        // Special bathroom counter
+                        if (id === 'bathroom') {
+                            database.ref('bathroomScans').transaction(c => (c || 0) + 1);
+                        }
+
+                        firebase.database().ref('photos').orderByChild('wallUrl').equalTo(fullUrl).once('value', snap => {
+                            if (!snap.exists()) {
+                                var photoData = { player, wallUrl: fullUrl, fullUrl, time: Date.now(), isPoster: true };
+                                if (id === 'bathroom') {
+                                    photoData.caption = "Why are you looking for clues in the bathroom?!";
+                                    photoData.showCounter = true;
+                                }
+                                firebase.database().ref('photos').push(photoData);
+                            }
+                        });
+                        // Show popup
+                        var modal = document.getElementById('skillModalContent');
+                        if (id === 'bathroom') {
+                            database.ref('bathroomScans').once('value', function(snap) {
+                                var count = snap.val() || 1;
+                                modal.innerHTML = `
+                                    <div style="text-align:center; padding:10px 0;">
+                                        <img src="${fullUrl}" style="max-width:100%; max-height:50vh; display:block; margin:0 auto 14px; border:2px solid #c9a227;">
+                                        <div style="font-size:20px; color:#c9a227; font-family:'Playfair Display',serif; margin:10px 0;">Why are you looking for clues in the bathroom?!</div>
+                                        <div style="font-size:15px; color:#8b7355; margin-top:8px;">${count} detective${count > 1 ? 's have' : ' has'} made this mistake</div>
+                                    </div>
+                                    <button class="skill-modal-close" onclick="closeSkillModal()">Dismiss</button>`;
+                                document.getElementById('skillModalOverlay').classList.add('active');
+                            });
+                        } else {
+                            modal.innerHTML = `
+                                <div style="text-align:center; padding:10px 0;">
+                                    <img src="${fullUrl}" style="max-width:100%; max-height:70vh; display:block; margin:0 auto 14px; border:2px solid #c9a227;">
+                                    <div style="font-size:13px; color:#8b7355; letter-spacing:1px;">Added to the photo wall.</div>
+                                </div>
+                                <button class="skill-modal-close" onclick="closeSkillModal()">Dismiss</button>`;
+                            document.getElementById('skillModalOverlay').classList.add('active');
+                        }
+                    }
+                } catch(e) {}
+                return;
+            }
+
+            // Parse QR code — expected format: THORESON:SkillName
+            if (!decodedText.startsWith('THORESON:')) {
+                showSkillDenied('Unrecognized Document', 'This does not appear to be a valid estate document.');
+                return;
+            }
+
+            var skillName = decodedText.substring(9); // everything after "THORESON:"
+            var skillData = skillsDatabase[skillName];
+
+            if (!skillData) {
+                showSkillDenied('Unknown Document', 'This document type is not recognized.');
+                return;
+            }
+
+            // Check if this user has the required skill
+            var mySkills = getMySkills();
+            if (!mySkills.includes(skillName)) {
+                showSkillDenied(
+                    'Restricted Document',
+                    'This document requires <strong>' + skillName.toLowerCase() + '</strong> expertise to analyze. Perhaps someone else at the table can help?'
+                );
+                return;
+            }
+
+            // User has the skill — show the expert content
+            showSkillContent(skillName, skillData);
+
+            // Write discovery to Firebase
+            markSkillDiscovered(skillName);
+        }
+
+        function showSkillContent(skillName, skillData) {
+            var modal = document.getElementById('skillModalContent');
+            var content = skillData.expert || skillData.summary;
+            modal.innerHTML =
+                '<div class="skill-badge">' + (skillData.badge || skillName) + '</div>' +
+                '<div class="reveal-header">' + (skillData.header || skillData.title) + '</div>' +
+                '<div class="reveal-content">' + content + '</div>' +
+                '<button class="skill-modal-close" onclick="closeSkillModal()">Close</button>';
+            document.getElementById('skillModalOverlay').classList.add('active');
+        }
+
+        function showSkillDenied(title, message) {
+            var modal = document.getElementById('skillModalContent');
+            modal.innerHTML =
+                '<div class="skill-denied">' +
+                    '<div>' + title + '</div>' +
+                    '<p>' + message + '</p>' +
+                '</div>' +
+                '<button class="skill-modal-close" onclick="closeSkillModal()">Close</button>';
+            document.getElementById('skillModalOverlay').classList.add('active');
+        }
+
+        function closeSkillModal() {
+            document.getElementById('skillModalOverlay').classList.remove('active');
+            var modal = document.getElementById('skillModalContent');
+            modal.style.background = '';
+            modal.style.borderColor = '';
+        }
+
+        function markSkillDiscovered(skillName) {
+            // Save to LOCAL storage only — not Firebase
+            // Only the scanning player sees this on their Discoveries page
+            // Scott's Master Controls toggle pushes to Firebase for everyone
+            var key = skillName.toLowerCase() + 'Discovered';
+            var personal = getPersonalDiscoveries();
+            if (personal.indexOf(key) === -1) {
+                personal.push(key);
+                localStorage.setItem('personalDiscoveries', JSON.stringify(personal));
+                console.log('Skill discovered locally via scan:', key);
+                loadDiscoveriesData(); // re-render to show it
+            }
+        }
+
+        function getPersonalDiscoveries() {
+            try {
+                return JSON.parse(localStorage.getItem('personalDiscoveries') || '[]');
+            } catch(e) { return []; }
+        }
+
+
+        function navigateAuth(pageId) {
+            if (!pageId) return false;
+            // Hide all sections
+            document.querySelectorAll('section').forEach(section => {
+                section.style.display = 'none';
+            });
+            // Show selected section
+            const sectionId = pageId.substring(1);
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.style.display = 'block';
+                window.scrollTo(0, 0);
+                if (sectionId === 'photos') loadPhotoWall();
+            }
+            // Reset dropdown
+            const dropdown = document.getElementById('pageSelect');
+            if (dropdown) {
+                dropdown.value = '';
+            }
+            return false;
+        }
+
+        function navigateToPage(pageId) {
+            if (!pageId) return;
+            // Hide all sections
+            document.querySelectorAll('section').forEach(section => {
+                section.style.display = 'none';
+            });
+            // Show selected section
+            const section = document.getElementById(pageId.substring(1));
+            if (section) {
+                section.style.display = 'block';
+                window.scrollTo(0, 0);
+                if (pageId.substring(1) === 'photos') loadPhotoWall();
+            }
+            // Reset dropdown
+            document.getElementById('pageSelect').value = '';
+        }
+
+        // ── PHOTO WALL ────────────────────────────────────────────────
+
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const status = document.getElementById('uploadStatus');
+            const btn = document.getElementById('photoBtn');
+            const bar = document.getElementById('uploadBar');
+            const barFill = document.getElementById('uploadBarFill');
+            btn.disabled = true;
+            btn.textContent = 'Uploading...';
+            bar.style.display = 'block';
+            barFill.style.width = '0%';
+            status.textContent = 'Processing...';
+
+            const player = userSession.username;
+            const ts = Date.now();
+            const ext = file.name.split('.').pop() || 'jpg';
+
+            compressImage(file, 1200, 0.85, function(compressed) {
+                const storage = firebase.storage();
+
+                // Step 1: upload compressed wall version (fast)
+                const wallRef = storage.ref(`photos/wall/${ts}_${player}.jpg`);
+                wallRef.put(compressed).then(() => {
+                    wallRef.getDownloadURL().then(wallUrl => {
+                        barFill.style.width = '40%';
+                        status.textContent = 'Saving full resolution...';
+
+                        // Step 2: upload full res (this is what we wait for)
+                        const fullRef = storage.ref(`photos/full/${ts}_${player}.${ext}`);
+                        const fullTask = fullRef.put(file);
+
+                        fullTask.on('state_changed',
+                            snapshot => {
+                                const pct = 40 + Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 60);
+                                barFill.style.width = pct + '%';
+                                status.textContent = `Saving full resolution... ${pct}%`;
+                            },
+                            err => {
+                                status.textContent = 'Full res failed: ' + err.code + ' — wall version saved.';
+                                // Still add to wall with compressed only
+                                firebase.database().ref('photos').push({
+                                    player, wallUrl, fullUrl: null, time: ts
+                                });
+                                btn.disabled = false;
+                                btn.textContent = '📷 Take a Photo';
+                                bar.style.display = 'none';
+                                document.getElementById('photoInput').value = '';
+                            },
+                            () => {
+                                fullTask.snapshot.ref.getDownloadURL().then(fullUrl => {
+                                    barFill.style.width = '100%';
+                                    // Only now add to wall — both versions saved
+                                    firebase.database().ref('photos').push({
+                                        player, wallUrl, fullUrl, time: ts
+                                    });
+                                    status.textContent = '✓ Photo saved!';
+                                    btn.disabled = false;
+                                    btn.textContent = '📷 Take a Photo';
+                                    document.getElementById('photoInput').value = '';
+                                    setTimeout(() => {
+                                        status.textContent = '';
+                                        bar.style.display = 'none';
+                                        barFill.style.width = '0%';
+                                    }, 2000);
+                                });
+                            }
+                        );
+                    });
+                }).catch(err => {
+                    status.textContent = 'Upload failed: ' + err.code;
+                    btn.disabled = false;
+                    btn.textContent = '📷 Take a Photo';
+                    bar.style.display = 'none';
+                    document.getElementById('photoInput').value = '';
+                });
+            });
+        }
+
+                function compressImage(file, maxWidth, quality, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let w = img.width, h = img.height;
+                    if (w > maxWidth) { h = h * maxWidth / w; w = maxWidth; }
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    canvas.toBlob(callback, 'image/jpeg', quality);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function loadPhotoWall() {
+            const grid = document.getElementById('photoGrid');
+            if (!grid || !firebase.database) return;
+
+            firebase.database().ref('photos').orderByChild('time').on('value', snap => {
+                const data = snap.val();
+                if (!data) {
+                    grid.innerHTML = '<div style="text-align:center; color:#555; font-style:italic; grid-column:1/-1; padding:40px;">No photos yet. Be the first to capture the evening.</div>';
+                    return;
+                }
+                const photos = Object.values(data).sort((a,b) => b.time - a.time);
+                const fullUrls = photos.filter(p => p.fullUrl).map(p => p.fullUrl);
+
+                grid.innerHTML = photos.map(p => `
+                    <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(201,162,39,0.2); border-radius:4px; overflow:hidden;">
+                        <div style="position:relative; background:#000;">
+                            <img src="${p.wallUrl}" style="width:100%; display:block; max-height:400px; object-fit:contain;" loading="lazy">
+                        </div>
+                        ${p.caption ? `<div style="padding:8px 12px; text-align:center; font-family:'Playfair Display',serif; font-size:15px; color:#c9a227;">${p.caption}</div>` : ''}
+                        ${p.showCounter ? `<div id="bathroomCount" style="text-align:center; font-size:13px; color:#8b7355; padding-bottom:6px;"></div>` : ''}
+                        <div style="padding:10px 12px; display:flex; justify-content:space-between; align-items:center;">
+                            <div style="font-family:'Playfair Display',serif; font-size:13px; color:#8b7355;">
+                                ${p.player} · ${new Date(p.time).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}
+                            </div>
+                            <a href="${p.fullUrl}" download target="_blank"
+                               style="font-size:12px; color:${p.fullUrl ? '#c9a227' : '#555'}; text-decoration:none; letter-spacing:1px; border:1px solid rgba(201,162,39,0.4); padding:4px 10px; border-radius:2px; pointer-events:${p.fullUrl ? 'auto' : 'none'};">
+                                ${p.fullUrl ? '↓ Full' : '⏳'}
+                            </a>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Update bathroom counter if present
+                var bcEl = document.getElementById('bathroomCount');
+                if (bcEl) {
+                    database.ref('bathroomScans').on('value', function(snap) {
+                        var count = snap.val() || 0;
+                        bcEl.textContent = count + ' detective' + (count !== 1 ? 's have' : ' has') + ' checked the bathroom for clues';
+                    });
+                }
+
+            });
+        }
+
+        function logout() {
+            if (confirm('Logout?')) {
+                localStorage.removeItem('userSession');
+                window.location.href = 'index.html';
+            }
+        }
+
+            const charactersList = [
+            // Family
+            { name: "William 'Scott' Thoreson Jr.", irlName: "Scott", role: "The Host / Game Master", publicDesc: "Eldest son of William Thoreson Sr. and the family's attorney. A man of integrity who has dedicated his career to managing the family's legal affairs." },
+            { name: "Frederick Thoreson", irlName: "BrianT", role: "The Younger Brother", publicDesc: "Younger son of William Thoreson Sr. The easygoing one. Here for the food and the drinks." },
+            { name: "Charlotte Waverly", irlName: "Clara", role: "Scott's Wife / The Bartender", publicDesc: "Scott's wife. Warm, practical, and the one keeping things running tonight." },
+            { name: "Eleanor Thoreson (Linda)", irlName: "", role: "The Grieving Widow", publicDesc: "William Thoreson's wife of many years. Dignified in grief, as she has always been dignified in everything. Knows more than she has said." },
+            { name: "Rupert Thoreson (Bill)", irlName: "", role: "Will's Identical Twin", publicDesc: "William Thoreson's identical twin brother. An amateur photographer who has spent the evening behind a camera. Quietly devastated by the loss of his brother." },
+            // Mixed
+            { name: "Charles Sterling", irlName: "Jeff", role: "The Retired Banker", publicDesc: "A retired Dallas banker and old friend of the Thoreson family. Traditional, principled, and sharp as ever." },
+            { name: "Lillian Ashford", irlName: "Katie", role: "The Family Friend", publicDesc: "A dear friend of the Thoreson family for over thirty years. Warm, sharp-tongued, and the best-dressed woman in any room she enters." },
+            { name: "Raymond Hammond", irlName: "Peter", role: "The Business Manager", publicDesc: "Business Manager at Thoreson Toys for fifteen years. Handles operations, vendor relationships, and day-to-day management." },
+            { name: "Victoria Grant", irlName: "Krystal", role: "The Importer's Wife", publicDesc: "Her husband runs a successful import business with ties to Thoreson Toys. Sophisticated, socially savvy, and sharper than people expect." },
+            { name: "Vivienne Ashford", irlName: "Hannah", role: "The Worldly Cousin", publicDesc: "Scott and Frederick's cousin on their mother's side. Recently returned from years living in Paris. Cultured, worldly, and fluent in French." },
+            { name: "Patricia Chamberlain", irlName: "Casey", role: "The Guardian", publicDesc: "An independent woman of means and strong will. Guardian to two young men. Protective, perceptive, and doesn't suffer fools." },
+            { name: "Elizabeth Monroe", irlName: "Lindsey", role: "The Socialite", publicDesc: "A fixture of Dallas society and the life of every party she has ever attended. Knows everyone, remembers everything, and makes it all look effortless." },
+            { name: "Walter Lippman", irlName: "Marc", role: "The Journalist", publicDesc: "A journalist for the Dallas Herald, covering business and society. Known for thorough, honest reporting." },
+            { name: "Thomas Bradford", irlName: "BrianS", role: "The Competitor", publicDesc: "Runs Bradford & Sons, a competing toy manufacturer. Charming, ambitious, and very interested in Thoreson Toys' secrets." },
+            { name: "Marcus Brennan", irlName: "Arash", role: "The Investor", publicDesc: "A successful Dallas businessman with a significant stake in Thoreson Toys. Analytical, measured, and protective of his money." },
+            { name: "Dorothy Wells", irlName: "Michelle", role: "The Society Elder", publicDesc: "One of the most well-connected women in Dallas society. Knows what's happening in every corner of the city." },
+            { name: "David Richardson", irlName: "DJ", role: "The Private Investigator", publicDesc: "A cousin on the Thoreson side and a licensed private investigator. Invited to tonight's dinner — now using his connections to help the family get answers." },
+            { name: "Theodore 'Teddy' Winslow", irlName: "Dylan", role: "Vivienne's Guest", publicDesc: "Vivienne's boyfriend and an accounting student at SMU. Quiet until someone puts numbers in front of him." },
+            { name: "Victoria Ashworth", irlName: "Becky", role: "The Investor", publicDesc: "A sharp businesswoman and Thoreson Toys investor. Active in Dallas society with a keen eye for detail." },
+            { name: "Sophie Vanderpool", irlName: "Maisy", role: "The Journalist's Assistant", publicDesc: "Walter Lippman's assistant at the Dallas Herald. Smart, energetic, and eager to prove herself." },
+            { name: "James Sterling", irlName: "Bradey", role: "The Banker's Son", publicDesc: "Son of Charles Sterling, the retired banker. Young, ambitious, and seeing the Thoreson family with fresh eyes." },
+            { name: "Miranda Longfellow", irlName: "Leanna", role: "Legal Assistant", publicDesc: "Scott Thoreson's legal assistant. Professional, competent, and discreet. Has worked for the family for nearly ten years." },
+            { name: "William Chamberlain", irlName: "Alexander", role: "The Ward (age 17)", publicDesc: "A young man under the guardianship of Patricia Chamberlain. Intelligent, thoughtful, and quietly ambitious." },
+            { name: "Henry Caldwell", irlName: "Preston", role: "Late Arrival", publicDesc: "Arrived late to the evening. Knows Scott through mutual friends. Seems to be taking all of this remarkably in stride." },
+            { name: "Robert Chamberlain", irlName: "Jesse", role: "The Ward (age 15)", publicDesc: "The younger of Patricia Chamberlain's two wards. Loyal, protective, and more emotionally attuned than people give him credit for." },
+        ];
+        
+        function loadGuests() {
+            displayGuests(charactersList);
+        }
+        
+        function displayGuests(guests) {
+            const container = document.getElementById('guestList');
+            if (!guests || guests.length === 0) {
+                container.innerHTML = '<div class="loading">Awaiting responses...</div>';
+                return;
+            }
+            container.innerHTML = guests.map((c, i) => `
+                <div class="guest-card" id="gc${i}">
+                    <div class="guest-card-header" onclick="toggleGuestCard(${i})">
+                        <div class="guest-card-left">
+                            <div class="guest-card-name">${c.name} <span class="guest-card-player">(${c.irlName})</span></div>
+                            <div class="guest-card-role">${c.role || ''}</div>
+                        </div>
+                        <div class="guest-card-chevron">&#9660;</div>
+                    </div>
+                    <div class="guest-card-body">
+                        <div class="guest-card-desc">${c.publicDesc || ''}</div>
+                    </div>
+                </div>`).join('');
+        }
+
+        function toggleGuestCard(i) {
+            document.getElementById('gc' + i).classList.toggle('open');
+        }
+
+        function toggleGuestInfo(element) {
+            const info = element.querySelector('.guest-info');
+            const toggle = element.querySelector('.guest-toggle');
+            if (info.style.display === 'none') {
+                info.style.display = 'block';
+                toggle.style.transform = 'rotate(180deg)';
+            } else {
+                info.style.display = 'none';
+                toggle.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        // Handle section navigation
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    e.preventDefault();
+                    // Hide all sections
+                    document.querySelectorAll('section').forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    // Show clicked section
+                    const sectionId = href.substring(1);
+                    const section = document.getElementById(sectionId);
+                    if (section) {
+                        section.style.display = 'block';
+                        window.scrollTo(0, 0);
+                    }
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', loadGuests);
+    </script>
+    <!-- Firebase configured -->
+
+    <script>
+        // ── SERVICE WORKER + NOTIFICATIONS ──────────────────────────
+        var swRegistration = null;
+
+        const VAPID_KEY = 'BBsN1tI_vAdJ8WzsyMJR_LEAgFjea-CPG_bB9lGa19yFcxIDt174kGyxnc7kcJNmMQMH_bVmErj6t1GAccNv7ag';
+
+        function registerServiceWorker() {
+            if (!('serviceWorker' in navigator)) return;
+            navigator.serviceWorker.register('/Thoreson_Estate_Dinner/sw.js')
+                .then(function(reg) {
+                    swRegistration = reg;
+                    console.log('SW registered');
+                    // Wire FCM to our service worker
+                    try {
+                        var messagingInstance = firebase.messaging();
+                        messagingInstance.useServiceWorker(reg);
+                    } catch(e) {
+                        console.log('FCM useServiceWorker:', e.message);
+                    }
+                })
+                .catch(function(err) {
+                    console.log('SW registration failed:', err);
+                });
+        }
+
+        function requestNotificationPermission() {
+            if (!('Notification' in window)) return;
+            if (Notification.permission === 'granted') {
+                registerFCMToken();
+                return;
+            }
+            if (Notification.permission === 'denied') return;
+            setTimeout(function() {
+                Notification.requestPermission().then(function(permission) {
+                    if (permission === 'granted') registerFCMToken();
+                });
+            }, 3000);
+        }
+
+        function registerFCMToken() {
+            if (!userSession) return;
+            try {
+                var messagingInstance = firebase.messaging();
+                messagingInstance.getToken({ vapidKey: VAPID_KEY }).then(function(token) {
+                    if (!token) { console.log('No FCM token received'); return; }
+                    console.log('FCM token registered');
+                    // Save token under fcmTokens/{username} in Firebase
+                    var charKey = userSession.character || userSession.username;
+                    if (database) {
+                        database.ref('fcmTokens/' + charKey + '/' + token.substring(0, 20)).set(token);
+                    }
+                }).catch(function(err) {
+                    console.log('FCM getToken error:', err);
+                });
+            } catch(e) {
+                console.log('FCM not available:', e.message);
+            }
+        }
+
+        function sendNativeNotification(title, body, tag) {
+            if (!('Notification' in window)) return;
+            if (Notification.permission !== 'granted') return;
+
+            // Only fire notifications to test/master accounts while test mode is active.
+            // Real guest accounts get nothing until test mode is OFF.
+            var isTestOrMaster = userSession && (userSession.role === 'test' || userSession.role === 'master');
+            if (!isTestOrMaster && database) {
+                database.ref('testMode').once('value').then(function(snap) {
+                    if (snap.val() === true) return; // test mode on — silence real accounts
+                    _fireNotification(title, body, tag);
+                });
+                return;
+            }
+
+            _fireNotification(title, body, tag);
+        }
+
+        function _fireNotification(title, body, tag) {
+            if (swRegistration && swRegistration.active) {
+                swRegistration.active.postMessage({
+                    type: 'SHOW_NOTIFICATION',
+                    title: title,
+                    body: body,
+                    tag: tag || 'thoreson-' + Date.now()
+                });
+            } else {
+                new Notification(title, { body: body, tag: tag });
+            }
+        }
+
+        registerServiceWorker();
+        requestNotificationPermission();
+        watchAppVersion();
+    </script>
+</body>
+</html>
