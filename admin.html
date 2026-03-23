@@ -1229,7 +1229,7 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="storySelect">Mystery / Story</label>
-                        <select id="storySelect">
+                        <select id="storySelect" onchange="updatePlayerRange()">
                             <option value="thoreson_estate_dinner">The Thoreson Estate Dinner</option>
                         <option value="devereaux_masquerade">The Devereaux Masquerade</option>
                         <option value="last_train_wicker_park">Last Train to Wicker Park</option>
@@ -1249,8 +1249,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="maxPlayers">Max Players</label>
-                        <input type="number" id="maxPlayers" min="8" max="60" value="21" placeholder="21">
+                        <label>Player Range</label>
+                        <div id="playerRangeDisplay" style="padding:10px 14px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--mist);">Select a story first</div>
                     </div>
 
                     <div class="form-group full">
@@ -1589,13 +1589,32 @@
         detail.classList.toggle('open');
     }
 
+
+    function updatePlayerRange() {
+        const storyId = document.getElementById('storySelect').value;
+        const story   = STORIES[storyId];
+        const el      = document.getElementById('playerRangeDisplay');
+        if (story && el) {
+            el.textContent = story.minPlayers + ' min — ' + story.maxPlayers + ' max';
+            el.style.color = 'var(--accent-lt)';
+        }
+    }
+
+    function updateEditPlayerRange() {
+        const storyId = document.getElementById('editStory').value;
+        const story   = STORIES[storyId];
+        const el      = document.getElementById('editPlayerRange');
+        if (story && el) el.textContent = story.minPlayers + ' min — ' + story.maxPlayers + ' max';
+    }
+
     // ── Create game ───────────────────────────────────────
     async function createGame() {
         const partyName  = document.getElementById('partyName').value.trim();
         const storyId    = document.getElementById('storySelect').value;
         const eventDate  = document.getElementById('gameDate').value;
         const eventTime  = document.getElementById('gameTime').value;
-        const maxPlayers = parseInt(document.getElementById('maxPlayers').value) || 21;
+        const maxPlayers = STORIES[storyId]?.maxPlayers || 21;
+        const minPlayers = STORIES[storyId]?.minPlayers || 8;
         const venueName  = document.getElementById('venueName').value.trim();
         const notes      = document.getElementById('gameNotes').value.trim();
 
@@ -1721,7 +1740,8 @@
         document.getElementById('storySelect').value    = 'thoreson_estate_dinner';
         document.getElementById('gameDate').value    = new Date().toISOString().split('T')[0];
         document.getElementById('gameTime').value    = '18:30';
-        document.getElementById('maxPlayers').value  = '21';
+        document.getElementById('playerRangeDisplay').textContent = 'Select a story first';
+        document.getElementById('playerRangeDisplay').style.color = 'var(--mist)';
         document.getElementById('venueName').value   = '';
         document.getElementById('gameNotes').value   = '';
         document.getElementById('creationResult').classList.remove('visible');
@@ -1962,7 +1982,9 @@
         document.getElementById('editStory').value    = g.storyId    || 'thoreson';
         document.getElementById('editDate').value     = g.eventDate  || '';
         document.getElementById('editTime').value     = g.eventTime  || '';
-        document.getElementById('editMax').value      = g.maxPlayers || 21;
+        const editStory = STORIES[g.storyId];
+        const editRange = document.getElementById('editPlayerRange');
+        if (editRange && editStory) editRange.textContent = editStory.minPlayers + ' min — ' + editStory.maxPlayers + ' max';
         document.getElementById('editVenue').value    = g.venueName  || '';
         document.getElementById('editStatus').value   = g.status     || 'lobby';
         document.getElementById('editNotes').value    = g.notes      || '';
@@ -1981,7 +2003,7 @@
         const storyId    = document.getElementById('editStory').value;
         const eventDate  = document.getElementById('editDate').value;
         const eventTime  = document.getElementById('editTime').value;
-        const maxPlayers = parseInt(document.getElementById('editMax').value) || 21;
+        const maxPlayers = STORIES[storyId]?.maxPlayers || g.maxPlayers || 21;
         const venueName  = document.getElementById('editVenue').value.trim();
         const status     = document.getElementById('editStatus').value;
         const notes      = document.getElementById('editNotes').value.trim();
@@ -2420,7 +2442,7 @@
                 </div>
                 <div class="form-group">
                     <label for="editStory">Mystery</label>
-                    <select id="editStory">
+                    <select id="editStory" onchange="updateEditPlayerRange()">
                         <option value="thoreson_estate_dinner">The Thoreson Estate Dinner</option>
                         <option value="devereaux_masquerade">The Devereaux Masquerade</option>
                         <option value="last_train_wicker_park">Last Train to Wicker Park</option>
@@ -2435,8 +2457,8 @@
                     <input type="time" id="editTime">
                 </div>
                 <div class="form-group">
-                    <label for="editMax">Max Players</label>
-                    <input type="number" id="editMax" min="8" max="60">
+                    <label>Player Range</label>
+                    <div id="editPlayerRange" style="padding:10px 14px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent-lt);">—</div>
                 </div>
                 <div class="form-group full">
                     <label for="editVenue">Venue</label>
