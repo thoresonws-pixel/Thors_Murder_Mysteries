@@ -82,7 +82,7 @@ const characterDatabase = {
         ],
         relationships: [
             { name: "William Thoreson Sr.", relation: "Your father (deceased)" },
-            { name: "{{eleanor_thoreson}}", relation: "Your mother" },
+            { name: "Eleanor Thoreson", relation: "Your mother (not a player)" },
             { name: "{{miranda_longfellow}}", relation: "Your trusted assistant for 10 years" },
             { name: "{{charlotte_waverly}}", relation: "Your spouse" },
             { name: "{{vivienne_ashford}}", relation: "Your cousin on your mother's side" }
@@ -138,7 +138,7 @@ const characterDatabase = {
         ],
         relationships: [
             { name: "{{scott_thoreson}}", relation: "Your cousin" },
-            { name: "{{eleanor_thoreson}}", relation: "Your aunt" },
+            
             { name: "William Thoreson Sr.", relation: "Your uncle (deceased)" }
         ],
         items: []
@@ -164,7 +164,7 @@ const characterDatabase = {
         relationships: [
             { name: "{{scott_thoreson}}", relation: "Your spouse" },
             { name: "William Thoreson Sr.", relation: "Your father-in-law (deceased)" },
-            { name: "{{eleanor_thoreson}}", relation: "Your mother-in-law" },
+            
             { name: "{{miranda_longfellow}}", relation: "{{scott_thoreson}}'s assistant — always around" }
         ],
         items: []
@@ -182,14 +182,14 @@ const characterDatabase = {
         backstory: "You have known the Thoreson family for years through charitable connections. William specifically asked you to come tonight. You did not think much of it at the time. You are thinking more of it now.",
         memories: [
             { text: "You remember a conversation with William at a charity dinner years ago. William said a person could do something they knew was wrong and still believe they were the best person to have done it. You asked what was meant. William laughed it off.", unlockedBy: "stolenCompany" },
-            { text: "You know {{eleanor_thoreson}} well enough to have seen the worst and the best. {{eleanor_thoreson}} was not a person who frightened easily.", unlockedBy: null }
+            { text: "You know Eleanor well enough to have seen the worst and the best. Eleanor was not a person who frightened easily.", unlockedBy: null }
         ],
         canShare: [
             { text: "Don't let sentimentality cloud judgment. If William wronged people, the truth serves everyone — including this family.", unlockedBy: null }
         ],
         relationships: [
             { name: "William Thoreson Sr.", relation: "Family acquaintance (deceased)" },
-            { name: "{{eleanor_thoreson}}", relation: "Long-time acquaintance" },
+            
             { name: "{{dorothy_wells}}", relation: "Mutual friend through charitable circles" }
         ],
         items: []
@@ -204,7 +204,7 @@ const characterDatabase = {
         picker: { role: "Dallas Society Elder", involvement: "moderate", isKiller: false },
         publicDesc: "One of the most well-connected people in Dallas. Has been watching this city for longer than most guests have been alive.",
         hiddenSkills: [],
-        backstory: "You are eighty-one years old and you have outlived most of the people you loved. You are {{eleanor_thoreson}}'s great-aunt — peripheral enough to have watched this family without being entirely inside it. You have always believed the truth is better than comfortable silence.",
+        backstory: "You are eighty-one years old and you have outlived most of the people you loved. You are Eleanor's great-aunt — peripheral enough to have watched this family without being entirely inside it. You have always believed the truth is better than comfortable silence.",
         knowledge: [
             { text: "You recognize what killed William Thoreson. Check your Expert Notes — you know exactly what this means and where it comes from.", unlockedBy: "wolfsbane" }
         ],
@@ -217,7 +217,7 @@ const characterDatabase = {
             { text: "I have lived long enough to stop being frightened by difficult truths.", unlockedBy: null }
         ],
         relationships: [
-            { name: "{{eleanor_thoreson}}", relation: "Your great-niece" },
+            
             { name: "{{victoria_ashworth}}", relation: "Friend from society circles" },
             { name: "{{elizabeth_monroe}}", relation: "Friend and fellow long-time Dallas resident" },
             { name: "William Thoreson Sr.", relation: "Social acquaintance of forty years (deceased)" }
@@ -234,9 +234,9 @@ const characterDatabase = {
         picker: { role: "The Cousin from Paris", involvement: "moderate", isKiller: false },
         publicDesc: "{{scott_thoreson}}'s cousin on the mother's side. Recently returned from years abroad.",
         hiddenSkills: [],
-        backstory: "You are {{scott_thoreson}}'s cousin — {{eleanor_thoreson}}'s niece. You spent years living abroad and came home eight months ago. You see this family with the slight detachment of someone who has lived somewhere else, which means you see it more clearly.",
+        backstory: "You are {{scott_thoreson}}'s cousin — Eleanor's niece. You spent years living abroad and came home eight months ago. You see this family with the slight detachment of someone who has lived somewhere else, which means you see it more clearly.",
         memories: [
-            { text: "You remember your mother and {{eleanor_thoreson}} speaking in low voices once when you were small. Your mother said something about a woman Will had known before {{eleanor_thoreson}}. {{eleanor_thoreson}} said the name Margaret and changed the subject.", unlockedBy: "margaretsLetter" }
+            { text: "You remember your mother and Eleanor speaking in low voices once when you were small. Your mother said something about a woman Will had known before Eleanor. Eleanor said the name Margaret and changed the subject.", unlockedBy: "margaretsLetter" }
         ],
         canShare: [
             { text: "Uncle Will always seemed like he was carrying something heavy. I assumed it was just the pressure of running a company.", unlockedBy: null },
@@ -244,39 +244,9 @@ const characterDatabase = {
         ],
         relationships: [
             { name: "{{scott_thoreson}}", relation: "Your cousin" },
-            { name: "{{eleanor_thoreson}}", relation: "Your aunt" },
+            
             { name: "William Thoreson Sr.", relation: "Your uncle (deceased)" },
             { name: "{{charlotte_waverly}}", relation: "Your cousin's spouse" }
-        ],
-        items: []
-    },
-
-    // ============================================================
-    // ELEANOR THORESON — The Widow
-    // ============================================================
-    "eleanor_thoreson": {
-        name: "Eleanor Thoreson",
-        nameVariants: { female: "Eleanor Thoreson", male: "Elliott Thoreson" },
-        picker: { role: "The Widow", involvement: "moderate", isKiller: false },
-        publicDesc: "William Thoreson's spouse of forty years. Dignified in grief, as always dignified in everything.",
-        hiddenSkills: [],
-        backstory: "You have been Eleanor Thoreson for forty years. You built a life with William, raised a family, and learned to be fluent in the silence a long marriage produces — including the silence that means there are things you have chosen not to know.",
-        memories: [
-            { text: "William told you once there had been a partner in the early days who left under difficult circumstances. That it was handled. You never asked again. You have been sitting with that answer for thirty years.", unlockedBy: "stolenCompany", tier: 1 },
-            { text: "You knew about Margaret. Not everything — not the child, not the depth of it. But you knew the name. You heard it once and chose to bury it. You are reconsidering that decision.", unlockedBy: "affair", tier: 1 },
-            { text: "{{miranda_longfellow}} has been in this house for ten years. You always thought something was slightly off — a quality of attention that seemed like more than an assistant ought to have. You said nothing. You are thinking about that now.", unlockedBy: "mirandasIdentity", tier: 1 }
-        ],
-        canShare: [
-            { text: "William was a good man in many ways. But good people can do terrible things and spend the rest of their lives trying to outrun them.", unlockedBy: null },
-            { text: "I have known something was wrong since long before tonight. I chose not to look directly at it. That was my mistake.", unlockedBy: "stolenCompany" }
-        ],
-        relationships: [
-            { name: "William Thoreson Sr.", relation: "Your spouse of forty years (deceased)" },
-            { name: "{{scott_thoreson}}", relation: "Your child" },
-            { name: "{{charlotte_waverly}}", relation: "Your child's spouse" },
-            { name: "{{vivienne_ashford}}", relation: "Your niece" },
-            { name: "{{dorothy_wells}}", relation: "Your great-aunt" },
-            { name: "{{miranda_longfellow}}", relation: "{{scott_thoreson}}'s assistant — in your home for ten years" }
         ],
         items: []
     },
@@ -375,14 +345,14 @@ const characterDatabase = {
         backstory: "You are the most fun person in the room and you have been for three decades running. You know everyone in this city and you remember everything. You have heard the name Hartley before — said once at a party by someone who immediately wished they hadn't. You filed it away. You always file things away.",
         memories: [
             { text: "You remember the newspaper piece about Robert Hartley's death in 1910. Two inches of column. Investigation closed in under a day. At the time you thought nothing of it.", unlockedBy: "stolenCompany", tier: 2 },
-            { text: "You have watched {{eleanor_thoreson}} tonight with the attention of someone who has known a person for twenty years. {{eleanor_thoreson}} is not surprised by what is being revealed. Shocked, yes — but not surprised.", unlockedBy: "affair", tier: 2 }
+            { text: "You have watched Eleanor tonight with the attention of someone who has known a person for twenty years. Eleanor is not surprised by what is being revealed. Shocked, yes — but not surprised.", unlockedBy: "affair", tier: 2 }
         ],
         canShare: [
             { text: "I know everyone in this city and I remember everything. Tonight is testing the limits of that considerably.", unlockedBy: null },
             { text: "I heard the name Hartley once at a party. Someone said it and immediately wished they hadn't.", unlockedBy: "stolenCompany" }
         ],
         relationships: [
-            { name: "{{eleanor_thoreson}}", relation: "Friend of twenty years" },
+            
             { name: "{{dorothy_wells}}", relation: "Fellow long-time Dallas resident" },
             { name: "William Thoreson Sr.", relation: "Social acquaintance (deceased)" },
             { name: "{{scott_thoreson}}", relation: "Watched this one grow up" }

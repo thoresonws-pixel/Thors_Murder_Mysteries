@@ -38,7 +38,6 @@ const rolesConfig = {
             // (smoking-gun skills, pipeline role, or story-critical fixed positions)
             ineligibleChars: [
                 "david_richardson",    // pipeline — receives report naming the killer
-                "eleanor_thoreson",    // the widow — too central, no access story
                 "dorothy_wells",       // botanist — literally identifies the poison
                 "patricia_chamberlain",// physician — interprets the autopsy
                 "marcus_brennan",      // no plausible access story
@@ -58,7 +57,6 @@ const rolesConfig = {
             // These characters can never be the heir
             // (too embedded in known family structure or no plausible backstory)
             ineligibleChars: [
-                "eleanor_thoreson",    // William's spouse — can't be secret child
                 "scott_thoreson",      // William's known child
                 "charlotte_waverly",   // Scott's spouse — family by marriage, not blood
                 "patricia_chamberlain",// No trust fund backstory
