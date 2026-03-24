@@ -1565,6 +1565,7 @@
         document.getElementById('mainContent').style.display = 'block';
         document.getElementById('gameDate').value = new Date().toISOString().split('T')[0];
         loadGames();
+    updatePlayerRange();
     }
 
     auth.onAuthStateChanged(async user => {
@@ -1595,6 +1596,7 @@
         document.getElementById('gameDate').value = new Date().toISOString().split('T')[0];
 
         loadGames();
+    updatePlayerRange();
     });
 
     // ── Load all games (live) ─────────────────────────────
@@ -1951,6 +1953,7 @@
         document.getElementById('hostEmail').value        = '';
         document.getElementById('hostPhone').value        = '';
         document.getElementById('storySelect').value    = 'thoreson_estate_dinner';
+        updatePlayerRange();
         document.getElementById('gameDate').value    = new Date().toISOString().split('T')[0];
         document.getElementById('gameTime').value    = '18:30';
         document.getElementById('playerRangeDisplay').textContent = 'Select a story first';
