@@ -979,7 +979,7 @@
         <ul id="desktopNav" class="desktop-nav">
             <li><a href="#character" onclick="return navigateAuth('#character')">Character</a></li>
             <li><a href="#guests" onclick="return navigateAuth('#guests')">Guests</a></li>
-            <li><a href="#discoveries" onclick="return navigateAuth('#discoveries')">Discoveries</a></li>
+            <li><a href="#discoveries" onclick="return navigateAuth('#discoveries')">Case File</a></li>
             <li><a href="#photos" onclick="return navigateAuth('#photos')">Photos</a></li>
             <li id="scanNav" style="display:none;"><a href="#" onclick="openScanner(); return false;">Scan</a></li>
             <li><a href="#" onclick="leaveGame(); return false;">Leave Game</a></li>
@@ -1199,7 +1199,7 @@
 
     <!-- CLUES SECTION -->
     <section id="discoveries" style="display: none;">
-        <h2 class="section-title">Discoveries</h2>
+        <h2 class="section-title">Case File</h2>
         <div id="discoveriesContent"></div>
     </section>
 
@@ -1394,7 +1394,9 @@
         };
 
 
-        let userSession = null;
+        let userSession     = null;
+        let currentPhaseId  = null;
+        let myQuests        = [];
 
         // Firebase stubs - replace with real Firebase when ready
         let firebaseReady = false;
@@ -1540,6 +1542,26 @@
 
         function attachFirebaseListeners() {
             if (!database) return;
+
+            // Listen to current game phase
+            gameRef('currentPhase').on('value', (snap) => {
+                const prev = currentPhaseId;
+                currentPhaseId = snap.val() ? snap.val().id : null;
+                // Auto-switch to Assignments when cocktail phase starts
+                if (prev !== currentPhaseId) {
+                    if (currentPhaseId === 'cocktail') activeDiscoveryTab = 'assignments';
+                    if (document.getElementById('discoveriesContent')) loadDiscoveriesData();
+                }
+            });
+
+            // Listen to my cocktail quests
+            if (userSession.firebaseUid) {
+                database.ref('games/' + userSession.currentGameId + '/players/' + userSession.firebaseUid + '/cocktailQuests')
+                    .on('value', (snap) => {
+                        myQuests = snap.val() || [];
+                        if (document.getElementById('discoveriesContent')) loadDiscoveriesData();
+                    });
+            }
 
             gameRef('activeItems').on('value', (snapshot) => {
                 const items = snapshot.val() || [];
@@ -2052,8 +2074,12 @@
                 margin-right: 4px;
             `;
 
+            // Show Assignments tab only during cocktail phase and if quests exist
+            const showAssignments = currentPhaseId === 'cocktail' && myQuests.length > 0;
+
             let html = `
                 <div style="display: flex; flex-wrap: wrap; margin-bottom: 0; border-bottom: 2px solid #c9a227;">
+                    ${showAssignments ? `<button onclick="switchDiscoveryTab('assignments')" id="dtab-assignments" style="${tabStyle('assignments')}">Assignments</button>` : ''}
                     <button onclick="switchDiscoveryTab('clues')" id="dtab-clues" style="${tabStyle('clues')}">Clues</button>
                     <button onclick="switchDiscoveryTab('story')" id="dtab-story" style="${tabStyle('story')}">Story</button>
                     <button onclick="switchDiscoveryTab('expert')" id="dtab-expert" style="${tabStyle('expert')}">Expert Notes</button>
@@ -2188,7 +2214,26 @@
             }
             if (memoriesHtml === '') memoriesHtml = '<div style="text-align:center; padding:40px; color:#999; font-style:italic;">No memories unlocked yet.</div>';
 
+            // ── ASSIGNMENTS ────────────────────────────────────────
+            let assignmentsHtml = '';
+            if (myQuests.length === 0) {
+                assignmentsHtml = '<div style="text-align:center; padding:40px; color:#999; font-style:italic;">No assignments yet — they'll appear when cocktail hour begins.</div>';
+            } else {
+                const done   = myQuests.filter(q => q.completed).length;
+                const total  = myQuests.length;
+                assignmentsHtml += `<div style="font-size:13px;color:#8b8b8b;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;">${done} of ${total} complete</div>`;
+                myQuests.forEach(q => {
+                    const isDone = q.completed;
+                    assignmentsHtml += `
+                        <div style="background:rgba(0,0,0,0.3);border-left:3px solid ${isDone ? '#3fb950' : '#c9a227'};margin-bottom:12px;border-radius:3px;padding:16px 18px;opacity:${isDone ? '0.6' : '1'};">
+                            <div style="font-size:16px;line-height:1.7;color:${isDone ? '#888' : '#cccccc'};font-family:Georgia,serif;${isDone ? 'text-decoration:line-through;' : ''}">${q.text}</div>
+                            ${!isDone ? `<button onclick="completeQuest('${q.id}')" style="margin-top:12px;background:transparent;color:#c9a227;border:1px solid #c9a227;padding:7px 18px;cursor:pointer;font-family:'Playfair Display',serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;">✓ Mark Complete</button>` : '<div style="margin-top:8px;font-size:12px;color:#3fb950;letter-spacing:1px;">✓ Completed</div>'}
+                        </div>`;
+                });
+            }
+
             html += `
+                <div id="dpanel-assignments" style="padding-top:16px; display:${activeDiscoveryTab==='assignments' ? 'block' : 'none'};">${assignmentsHtml}</div>
                 <div id="dpanel-clues"   style="padding-top:16px; display:${activeDiscoveryTab==='clues' ? 'block' : 'none'};">${clueHtml}</div>
                 <div id="dpanel-story"   style="padding-top:16px; display:${activeDiscoveryTab==='story' ? 'block' : 'none'};">${storyHtml}</div>
                 <div id="dpanel-expert"  style="padding-top:16px; display:${activeDiscoveryTab==='expert' ? 'block' : 'none'};">${expertHtml}</div>
@@ -2197,6 +2242,18 @@
 
             if (html === '') html = '<div style="text-align:center; padding:40px; color:#999; font-style:italic;">No discoveries yet.</div>';
             document.getElementById('discoveriesContent').innerHTML = html;
+        }
+
+        async function completeQuest(questId) {
+            if (!userSession || !userSession.currentGameId || !userSession.firebaseUid) return;
+            const questsRef = database.ref(
+                'games/' + userSession.currentGameId + '/players/' + userSession.firebaseUid + '/cocktailQuests'
+            );
+            const snap = await questsRef.once('value');
+            const quests = snap.val() || [];
+            const updated = quests.map(q => q.id === questId ? { ...q, completed: true } : q);
+            await questsRef.set(updated);
+            // myQuests updated via listener — no manual reload needed
         }
 
         function buildDiscoveryCard(item, borderColor) {
