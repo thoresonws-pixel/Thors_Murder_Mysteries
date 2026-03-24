@@ -13,20 +13,16 @@ const cocktailMenu = {
         {
             heading: "Spirits",
             items: [
-                { name: "Old Fashioned",  desc: "Whiskey, Sugar, Bitters, Orange Peel" },
-                { name: "Gin Rickey",     desc: "Gin, Lime, Soda Water" },
-                { name: "Bee's Knees",    desc: "Gin, Honey, Lemon" },
-                { name: "Cuba Libre",     desc: "Rum, Cola, Lime" },
-                { name: "Sidecar",        desc: "Cognac, Cointreau, Lemon" }
-            ]
-        },
-
-        {
-            heading: "Temperance",
-            items: [
-                { name: "Shirley Temple",     desc: "Ginger Ale, Grenadine, Cherry" },
-                { name: "Virgin Cuba Libre",  desc: "Cola, Lime" },
-                { name: "Mineral Water",      desc: "Sparkling, with Lemon or Lime" }
+                { name: "Old Fashioned",    desc: "Whiskey, Sugar, Bitters, Orange Peel" },
+                { name: "Gin Rickey",       desc: "Gin, Lime, Soda Water" },
+                { name: "Bee's Knees",      desc: "Gin, Honey, Lemon" },
+                { name: "Cuba Libre",       desc: "Rum, Cola, Lime" },
+                { name: "Sidecar",          desc: "Cognac, Cointreau, Lemon" },
+                { name: "French 75",        desc: "Gin, Champagne, Lemon, Sugar" },
+                { name: "Southside",        desc: "Gin, Mint, Lime, Sugar" },
+                { name: "Whiskey Sour",     desc: "Bourbon, Lemon, Simple Syrup, Egg White" },
+                { name: "Dark & Stormy",    desc: "Dark Rum, Ginger Beer, Lime" },
+                { name: "Manhattan",        desc: "Rye, Sweet Vermouth, Bitters" }
             ]
         }
 
