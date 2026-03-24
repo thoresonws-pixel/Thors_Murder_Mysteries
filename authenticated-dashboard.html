@@ -2217,7 +2217,7 @@
             // ── ASSIGNMENTS ────────────────────────────────────────
             let assignmentsHtml = '';
             if (myQuests.length === 0) {
-                assignmentsHtml = '<div style="text-align:center; padding:40px; color:#999; font-style:italic;">No assignments yet — they'll appear when cocktail hour begins.</div>';
+                assignmentsHtml = '<div style="text-align:center; padding:40px; color:#999; font-style:italic;">No assignments yet &#8212; they&#8217;ll appear when cocktail hour begins.</div>';
             } else {
                 const done   = myQuests.filter(q => q.completed).length;
                 const total  = myQuests.length;
@@ -3068,7 +3068,7 @@
 
         function registerServiceWorker() {
             if (!('serviceWorker' in navigator)) return;
-            navigator.serviceWorker.register('/Thors_Murder_Mysteries/sw.js')
+            navigator.serviceWorker.register('/sw.js')
                 .then(function(reg) {
                     swRegistration = reg;
                     console.log('SW registered');

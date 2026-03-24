@@ -1,0 +1,16 @@
+{
+  "name": "Thor's Murder Mysteries",
+  "short_name": "ThorsMystery",
+  "description": "Interactive murder mystery dinner experiences",
+  "start_url": "/home.html",
+  "display": "standalone",
+  "background_color": "#06040a",
+  "theme_color": "#c9a227",
+  "icons": [
+    {
+      "src": "https://thoreson-estate.web.app/photos/bathroom_cat.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    }
+  ]
+}
