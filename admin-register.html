@@ -377,6 +377,12 @@ async function finalizeAdminAccount(user, displayName) {
         currentGameId: null
     });
 
+    // Verify the write succeeded before continuing
+    const verify = await db.ref('users/' + user.uid + '/role').once('value');
+    if (verify.val() !== 'admin') {
+        throw new Error('Failed to set admin role — please try again.');
+    }
+
     // Mark invite as used
     await db.ref('adminInvites/' + inviteCode).update({
         used:       true,
@@ -400,7 +406,7 @@ async function handleGoogleSignIn() {
         await finalizeAdminAccount(cred.user, cred.user.displayName);
 
         showSuccess('Admin account ready. Redirecting to dashboard…');
-        setTimeout(() => window.location.href = 'admin.html', 1500);
+        setTimeout(() => window.location.href = 'admin.html', 2500);
 
     } catch(err) {
         btn.disabled = false;
@@ -433,7 +439,7 @@ async function handleRegister() {
         await finalizeAdminAccount(cred.user, displayName);
 
         showSuccess('Admin account ready. Redirecting to dashboard…');
-        setTimeout(() => window.location.href = 'admin.html', 1500);
+        setTimeout(() => window.location.href = 'admin.html', 2500);
 
     } catch(err) {
         btn.disabled = false;

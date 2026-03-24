@@ -1484,15 +1484,17 @@
             return;
         }
 
-        try {
-            const snap = await db.ref('users/' + user.uid + '/role').once('value');
-            if (snap.val() !== 'admin') {
-                await auth.signOut();
-                window.location.href = 'signin.html';
-                return;
-            }
-        } catch(e) {
-            // DB read failed — if not in known admin list, boot them
+        // Retry role check up to 3 times — gives Firebase time to propagate new records
+        let role = null;
+        for (let attempt = 0; attempt < 3; attempt++) {
+            try {
+                const snap = await db.ref('users/' + user.uid + '/role').once('value');
+                role = snap.val();
+                if (role === 'admin') break;
+            } catch(e) {}
+            if (attempt < 2) await new Promise(r => setTimeout(r, 1000));
+        }
+        if (role !== 'admin') {
             await auth.signOut();
             window.location.href = 'signin.html';
             return;
