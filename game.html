@@ -1587,7 +1587,7 @@ function refreshHealth() {
         return `
             <tr>
                 <td><span class="activity-dot ${dotClass}"></span>${p.displayName || '—'}</td>
-                <td style="color:var(--gold);font-style:italic;">${p.characterId || '—'}</td>
+                <td style="color:var(--gold);font-style:italic;">${resolveCharName(p.characterId, p.gender) || p.characterId || '—'}</td>
                 <td>${lastSeen}</td>
                 <td>${playerScans}</td>
                 <td style="font-family:'Special Elite',monospace;font-size:11px;color:var(--fog);">${p.status || '—'}</td>
@@ -1618,7 +1618,7 @@ function renderGuests() {
             <td>
                 <div class="guest-name">${p.displayName || uid} ${isTest ? '<span style="font-size:11px;color:var(--fog);">(test)</span>' : ''}</div>
             </td>
-            <td style="color:var(--gold);font-style:italic;font-size:14px;">${p.characterId || '—'}</td>
+            <td style="color:var(--gold);font-style:italic;font-size:14px;">${resolveCharName(p.characterId, p.gender) || p.characterId || '—'}</td>
             <td>
                 <div class="guest-score-bar">
                     <div class="score-track"><div class="score-fill" style="width:${pct}%"></div></div>
@@ -2053,12 +2053,20 @@ const TEST_FIRST = ['James','Emma','Oliver','Sophia','Henry','Clara','Ruth','Ros
     async function saveTestPlayers() {
         if (tpRowData.length === 0) { closeTPModal(); return; }
         const writes = {};
+        const resolvedGenderWrites = {};
         tpRowData.forEach((row, i) => {
             const uid = 'test_player_' + Date.now() + '_' + i;
+            // Resolve character name based on gender
+            let charName = row.characterId.replace(/_/g,' ');
+            if (typeof characterDatabase !== 'undefined' && characterDatabase[row.characterId]) {
+                const cv = characterDatabase[row.characterId].nameVariants;
+                if (cv) charName = row.gender === 'male' ? cv.male : cv.female;
+            }
             writes[uid] = {
                 displayName:   row.name,
                 characterId:   row.characterId,
-                characterName: row.characterId.replace(/_/g,' '),
+                characterName: charName,
+                gender:        row.gender,
                 status:        'ready',
                 joinedAt:      new Date().toISOString(),
                 testEmail:     row.email || null,
@@ -2066,10 +2074,11 @@ const TEST_FIRST = ['James','Emma','Oliver','Sophia','Henry','Clara','Ruth','Ros
                 questionnaire: {
                     gender:          row.gender,
                     involvementScore: row.score,
-                    secrets:         'yes',
                     completedAt:     new Date().toISOString()
                 }
             };
+            // Write resolved gender to game state
+            resolvedGenderWrites['games/' + gameId + '/state/resolvedGenders/' + row.characterId] = row.gender;
         });
         await db.ref('games/' + gameId + '/players').update(writes);
         showToast(tpRowData.length + ' test players added.', 'success');
@@ -2370,6 +2379,7 @@ ${inviteUrl}
 
         // Write to Firebase — each player gets their facts
         const writes = {};
+        const resolvedGenderWrites = {};
         Object.entries(assignments).forEach(([uid, facts]) => {
             writes['games/' + gameId + '/players/' + uid + '/cocktailFacts'] =
                 facts.map(f => ({ id: f.id, text: f.text }));
@@ -2405,6 +2415,7 @@ ${inviteUrl}
         const discovery = eligible.filter(q => q.type === 'discovery');
 
         const writes = {};
+        const resolvedGenderWrites = {};
         const usedQuestIds = new Set();
 
         Object.entries(charToUid).forEach(([charId, uid]) => {
@@ -2458,6 +2469,15 @@ ${inviteUrl}
             renderPhaseControls();
             renderChecklist();
         });
+    }
+
+
+    function resolveCharName(charId, gender) {
+        if (!charId || typeof characterDatabase === 'undefined') return charId;
+        const char = characterDatabase[charId];
+        if (!char || !char.nameVariants) return charId;
+        if (gender === 'male') return char.nameVariants.male;
+        return char.nameVariants.female;
     }
 
 </script>
