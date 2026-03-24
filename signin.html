@@ -116,7 +116,7 @@ async function route(user) {
         });
     }
     // Always go to home — home.html handles routing based on currentGameId
-    window.location.href = 'home.html';
+    const _p = new URLSearchParams(window.location.search); window.location.href = 'home.html' + (_p.get('code') ? '?code=' + _p.get('code') : '');
 }
 
 // Handle Google redirect result FIRST before anything else

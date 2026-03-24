@@ -440,7 +440,7 @@
             await writeUserRecord(result.user, result.user.displayName);
             showSuccess('Signed in! Redirecting…');
             const params = new URLSearchParams(window.location.search);
-            const dest = params.get('code') ? 'join.html?code=' + params.get('code') : 'join.html';
+            const dest = 'home.html' + (params.get('code') ? '?code=' + params.get('code') : '');
             setTimeout(() => window.location.href = dest, 800);
         }
     }).catch(err => {
@@ -476,9 +476,7 @@
 
             showSuccess('Signed in! Redirecting…');
             const params = new URLSearchParams(window.location.search);
-            const dest   = params.get('code')
-                ? 'join.html?code=' + params.get('code')
-                : 'join.html';
+            const dest   = 'home.html' + (params.get('code') ? '?code=' + params.get('code') : '');
             setTimeout(() => window.location.href = dest, 800);
 
         } catch (err) {

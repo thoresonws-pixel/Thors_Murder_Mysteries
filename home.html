@@ -369,6 +369,19 @@ auth.onAuthStateChanged(async user => {
 
     document.getElementById('loadingScreen').style.display = 'none';
     document.getElementById('mainContent').style.display = 'block';
+
+    // If arriving from an invite link, auto-fill and trigger join
+    const _urlParams = new URLSearchParams(window.location.search);
+    const _inviteCode = _urlParams.get('code');
+    if (_inviteCode) {
+        const codeInput = document.getElementById('partyCodeInput');
+        if (codeInput) {
+            codeInput.value = _inviteCode.toUpperCase();
+            // Scroll to it and trigger join
+            codeInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => joinGame(), 400);
+        }
+    }
 });
 
 async function loadUserGames(user) {
