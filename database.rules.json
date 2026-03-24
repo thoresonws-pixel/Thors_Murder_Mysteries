@@ -10,12 +10,20 @@
       ".read": "auth != null",
       ".write": "auth != null"
     },
+    "partyCodeIndex": {
+      ".read": true,
+      ".write": "auth != null"
+    },
     "cancelledGames": {
       ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'",
       ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'"
     },
     "adminInvites": {
       ".read": "auth != null",
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'"
+    },
+    "venues": {
+      ".read": true,
       ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'"
     },
     "photos": {

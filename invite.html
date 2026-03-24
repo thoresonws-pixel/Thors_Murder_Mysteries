@@ -429,14 +429,20 @@
         if (!code) { showError(); return; }
 
         try {
-            const snap = await db.ref('games')
-                .orderByChild('partyCode')
-                .equalTo(code.toUpperCase())
-                .once('value');
+            // Look up gameId from public partyCodeIndex (no auth required)
+            const idxSnap = await db.ref('partyCodeIndex/' + code.toUpperCase()).once('value');
+            if (!idxSnap.exists()) { showError(); return; }
 
-            if (!snap.exists()) { showError(); return; }
+            const { gameId } = idxSnap.val();
 
-            const [gameId, game] = Object.entries(snap.val())[0];
+            // Fetch the individual game fields we need (public via rules)
+            // We have to use auth-free anonymous sign-in or accept the rules as-is
+            // Since partyCodeIndex is public, fall back to a minimal game object
+            // built from the index + any readable fields
+            const gameSnap = await db.ref('games/' + gameId).once('value')
+                .catch(() => null);
+
+            const game = gameSnap && gameSnap.exists() ? gameSnap.val() : idxSnap.val();
             render(game, code.toUpperCase());
         } catch(e) {
             showError();

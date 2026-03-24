@@ -1616,7 +1616,25 @@
             allGames = snap.val() || {};
             renderStats();
             renderGames();
+            backfillPartyCodeIndex();
         });
+    }
+
+    async function backfillPartyCodeIndex() {
+        // Ensure every existing game has an entry in the public partyCodeIndex
+        const writes = {};
+        Object.entries(allGames).forEach(([gameId, g]) => {
+            if (g.partyCode) {
+                writes['partyCodeIndex/' + g.partyCode] = {
+                    gameId,
+                    storyId:   g.storyId   || '',
+                    storyName: g.storyName || ''
+                };
+            }
+        });
+        if (Object.keys(writes).length > 0) {
+            await db.ref().update(writes).catch(() => {});
+        }
     }
 
     // ── Stats ─────────────────────────────────────────────
@@ -1877,6 +1895,13 @@
             };
 
             const ref = await db.ref('games').push(gameData);
+
+            // Write public party code index so invite.html can look up without auth
+            await db.ref('partyCodeIndex/' + partyCode).set({
+                gameId:    ref.key,
+                storyId:   storyId,
+                storyName: story.name
+            });
 
             // Show result
             const inviteUrl = `${GAME_BASE_URL}?code=${partyCode}`;
