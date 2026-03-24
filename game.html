@@ -1842,78 +1842,22 @@ function renderCharacters() {
 function renderGenModal() {
     const grid = document.getElementById('genModalGrid');
 
-    // Build a map of characterId → eligible role labels from rolesConfig
-    const charEligibleRoles = {};
-    Object.values(rolesConfig.priorities || {}).forEach(roleCfg => {
-        if (roleCfg.assignTo) {
-            charEligibleRoles[roleCfg.assignTo] = charEligibleRoles[roleCfg.assignTo] || [];
-            charEligibleRoles[roleCfg.assignTo].push(roleCfg.label);
-        } else {
-            (roleCfg.eligibleChars || []).forEach(cid => {
-                charEligibleRoles[cid] = charEligibleRoles[cid] || [];
-                charEligibleRoles[cid].push(roleCfg.label);
-            });
-        }
-    });
-
-    // Derive skill list from rolesConfig.skills keys
-    const allSkills = Object.keys(rolesConfig.skills || {});
-
-    // Build current role assignments map (role → uid) for duplicate checking
-    const roleTaken = {};
-    Object.entries(genAssignments).forEach(([uid, a]) => {
-        if (a.role) roleTaken[a.role] = uid;
-    });
-
     grid.innerHTML = Object.values(genPlayers).map(player => {
         const a    = genAssignments[player.uid] || {};
         const char = characterDatabase?.[player.characterId];
         const name = char?.nameVariants?.female || player.characterId;
 
-        // Only show role options this character is eligible for
-        const eligibleRoles = charEligibleRoles[player.characterId] || [];
-        const roleOptions = ['(no role)', ...eligibleRoles].map(r => {
-            // Disable role if already taken by someone else
-            const takenByOther = r !== '(no role)' && roleTaken[r] && roleTaken[r] !== player.uid;
-            return `<option value="${r}" ${a.role === r ? 'selected' : ''} ${takenByOther ? 'disabled' : ''}>${r}${takenByOther ? ' (taken)' : ''}</option>`;
-        }).join('');
+        const roleBadge  = a.role  ? `<span style="font-family:'Special Elite',monospace;font-size:9px;padding:2px 9px;background:rgba(139,26,26,0.25);color:#e08080;border:1px solid rgba(139,26,26,0.4);letter-spacing:1px;text-transform:uppercase;">${a.role}</span>` : '';
+        const skillBadge = a.skill ? `<span style="font-family:'Special Elite',monospace;font-size:9px;padding:2px 9px;background:rgba(39,170,91,0.12);color:#7adba0;border:1px solid rgba(39,170,91,0.25);letter-spacing:1px;text-transform:uppercase;">${a.skill}</span>` : '';
+        const none       = (!a.role && !a.skill) ? `<span style="font-size:12px;color:var(--fog);font-style:italic;">no assignment</span>` : '';
 
-        const skillOptions = ['(no skill)', ...allSkills].map(s =>
-            `<option value="${s}" ${a.skill === s ? 'selected' : ''}>${s}</option>`).join('');
         return `
         <div style="background:var(--card);border:1px solid var(--border);padding:14px 16px;">
             <div style="font-family:'Playfair Display',serif;font-size:15px;color:var(--white);font-weight:700;margin-bottom:2px;">${player.displayName}</div>
-            <div style="font-size:12px;color:var(--gold);font-style:italic;margin-bottom:8px;">${name}</div>
-            <div style="display:flex;gap:6px;margin-bottom:8px;">
-                ${a.role  ? `<span style="font-family:'Special Elite',monospace;font-size:9px;padding:2px 7px;background:rgba(139,26,26,0.25);color:#e08080;border:1px solid rgba(139,26,26,0.4);">${a.role}</span>` : ''}
-                ${a.skill ? `<span style="font-family:'Special Elite',monospace;font-size:9px;padding:2px 7px;background:rgba(39,170,91,0.12);color:#7adba0;border:1px solid rgba(39,170,91,0.25);">${a.skill}</span>` : ''}
-                ${!a.role && !a.skill ? `<span style="font-size:12px;color:var(--fog);font-style:italic;">no assignment</span>` : ''}
-            </div>
-            <select onchange="overrideGenRole('${player.uid}','role',this.value)"
-                style="width:100%;background:#1c2128;border:1px solid rgba(201,162,39,0.2);color:var(--white);font-family:'Cormorant Garamond',serif;font-size:13px;padding:6px 8px;margin-bottom:6px;">
-                ${roleOptions}
-            </select>
-            <select onchange="overrideGenRole('${player.uid}','skill',this.value)"
-                style="width:100%;background:#1c2128;border:1px solid rgba(201,162,39,0.2);color:var(--white);font-family:'Cormorant Garamond',serif;font-size:13px;padding:6px 8px;">
-                ${skillOptions}
-            </select>
+            <div style="font-size:12px;color:var(--gold);font-style:italic;margin-bottom:10px;">${name}</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">${roleBadge}${skillBadge}${none}</div>
         </div>`;
     }).join('');
-}
-
-function overrideGenRole(uid, field, value) {
-    if (!genAssignments[uid]) genAssignments[uid] = { role: null, skill: null, ineligibleSkills: [] };
-    const newVal = (value === '(no role)' || value === '(no skill)') ? null : value;
-
-    // If assigning a role, clear it from anyone else who has it
-    if (field === 'role' && newVal) {
-        Object.entries(genAssignments).forEach(([otherUid, a]) => {
-            if (otherUid !== uid && a.role === newVal) a.role = null;
-        });
-    }
-
-    genAssignments[uid][field] = newVal;
-    renderGenModal();
 }
 
 async function lockGameAssignments() {
