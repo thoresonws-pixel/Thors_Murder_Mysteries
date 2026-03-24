@@ -105,29 +105,27 @@
         }
     }
 
-    // FirebaseUI config — handles ALL browsers including Safari and Firefox mobile
+    // Handle auth state — fires after any sign in including FirebaseUI redirect
+    auth.onAuthStateChanged(async user => {
+        if (!user || user.isAnonymous) return;
+
+        // Ensure user record exists
+        const snap = await db.ref('users/' + user.uid).once('value');
+        if (!snap.exists()) {
+            await db.ref('users/' + user.uid).set({
+                displayName:   user.displayName || user.email.split('@')[0],
+                email:         user.email,
+                createdAt:     new Date().toISOString(),
+                gamesPlayed:   [],
+                currentGameId: null
+            });
+        }
+
+        await routeUser(user);
+    });
+
+    // FirebaseUI config
     const uiConfig = {
-        callbacks: {
-            signInSuccessWithAuthResult: function(authResult) {
-                // Ensure user record exists then route
-                const user = authResult.user;
-                db.ref('users/' + user.uid).once('value').then(snap => {
-                    if (!snap.exists()) {
-                        return db.ref('users/' + user.uid).set({
-                            displayName:   user.displayName || user.email.split('@')[0],
-                            email:         user.email,
-                            createdAt:     new Date().toISOString(),
-                            gamesPlayed:   [],
-                            currentGameId: null
-                        });
-                    }
-                }).then(() => routeUser(user));
-                return false; // Prevent default redirect
-            },
-            signInFailure: function(error) {
-                console.error('Sign in failed:', error);
-            }
-        },
         signInOptions: [
             firebase.auth.GoogleAuthProvider.PROVIDER_ID,
             {
@@ -135,7 +133,8 @@
                 requireDisplayName: true
             }
         ],
-        signInFlow: 'redirect',  // Always use redirect — FirebaseUI handles this correctly on all browsers
+        signInFlow: 'redirect',
+        signInSuccessUrl: 'signin.html', // Come back here, onAuthStateChanged handles routing
         tosUrl: '#',
         privacyPolicyUrl: '#'
     };
