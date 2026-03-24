@@ -1125,7 +1125,7 @@
         <div class="section-head">
             <div class="section-title">Character Assignments</div>
             <div style="display:flex;gap:10px;">
-                <button class="btn-gold" onclick="openGenerateRoles()">⚄ Generate Roles</button>
+                <button class="btn-gold" onclick="openGenerateRoles()" id="generateRolesBtn">⚄ Generate Roles</button>
             </div>
         </div>
 
@@ -1681,6 +1681,20 @@ function renderCharacters() {
         if (p.characterId) charToPlayer[p.characterId] = p;
     });
 
+    // Update generate button label with player status
+    const _readyCount = Object.values(players).filter(p => p.characterId && p.status === 'ready').length;
+    const _minReq     = gameData?.minPlayers || 8;
+    const _genBtn     = document.getElementById('generateRolesBtn');
+    if (_genBtn) {
+        if (_readyCount < _minReq) {
+            _genBtn.textContent = `⚄ Generate Roles (${_readyCount}/${_minReq} players)`;
+            _genBtn.style.opacity = '0.6';
+        } else {
+            _genBtn.textContent = '⚄ Generate Roles';
+            _genBtn.style.opacity = '1';
+        }
+    }
+
     grid.innerHTML = Object.entries(characterDatabase).map(([slug, char]) => {
         const player   = charToPlayer[slug];
         const role     = roleAssign[slug];
@@ -1723,8 +1737,16 @@ function renderCharacters() {
             }
         });
 
-        if (Object.keys(genPlayers).length === 0) {
+        const readyCount = Object.keys(genPlayers).length;
+        const minRequired = gameData?.minPlayers || 8;
+
+        if (readyCount === 0) {
             showToast('No players have chosen characters yet.', 'error');
+            return;
+        }
+
+        if (readyCount < minRequired) {
+            showToast(`Need at least ${minRequired} players to generate roles — only ${readyCount} ready.`, 'error');
             return;
         }
 

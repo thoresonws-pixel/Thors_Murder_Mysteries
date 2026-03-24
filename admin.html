@@ -1845,6 +1845,7 @@
         const eventTime  = document.getElementById('gameTime').value;
         const maxPlayers = STORIES[storyId]?.maxPlayers || 21;
         const minPlayers = STORIES[storyId]?.minPlayers || 8;
+        const minPlayers = STORIES[storyId]?.minPlayers || 8;
         const { venueId, venueName, venueAddress } = resolveVenueFromForm('create');
         const notes      = document.getElementById('gameNotes').value.trim();
 
@@ -1890,6 +1891,7 @@
                 eventDate,
                 eventTime,
                 maxPlayers,
+                minPlayers,
                 venueId:      venueId      || null,
                 venueName:    venueName    || null,
                 venueAddress: venueAddress || null,
@@ -2295,6 +2297,7 @@
                 eventDate,
                 eventTime,
                 maxPlayers,
+                minPlayers,
                 venueId:      venueId      || null,
                 venueName:    venueName    || null,
                 venueAddress: venueAddress || null,
