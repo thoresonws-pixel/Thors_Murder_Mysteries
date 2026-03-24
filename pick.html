@@ -739,10 +739,8 @@ function renderGrid() {
         const taken  = !!takenCharacters[char.id];
         const hidden = false; // filtering now done at roster build time
 
-        const stripClass = 'char-card-strip';
-
         return `
-        <div class="char-card ${taken ? 'taken' : ''} ${hidden ? 'hidden-card' : ''} ${stripClass}"
+        <div class="char-card ${taken ? 'taken' : ''} ${hidden ? 'hidden-card' : ''}"
              onclick="${taken ? '' : `openModal('${char.id}')`}">
             <div class="char-card-strip"></div>
             <div class="taken-badge">Taken</div>
