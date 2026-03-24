@@ -1627,8 +1627,13 @@
             if (g.partyCode) {
                 writes['partyCodeIndex/' + g.partyCode] = {
                     gameId,
-                    storyId:   g.storyId   || '',
-                    storyName: g.storyName || ''
+                    storyId:      g.storyId      || '',
+                    storyName:    g.storyName    || '',
+                    partyName:    g.partyName    || null,
+                    eventDate:    g.eventDate    || null,
+                    eventTime:    g.eventTime    || null,
+                    venueName:    g.venueName    || null,
+                    venueAddress: g.venueAddress || null
                 };
             }
         });
@@ -1896,11 +1901,16 @@
 
             const ref = await db.ref('games').push(gameData);
 
-            // Write public party code index so invite.html can look up without auth
+            // Write public party code index with all invite fields
             await db.ref('partyCodeIndex/' + partyCode).set({
-                gameId:    ref.key,
-                storyId:   storyId,
-                storyName: story.name
+                gameId:       ref.key,
+                storyId:      storyId,
+                storyName:    story.name,
+                partyName:    partyName    || null,
+                eventDate:    eventDate    || null,
+                eventTime:    eventTime    || null,
+                venueName:    venueName    || null,
+                venueAddress: venueAddress || null
             });
 
             // Show result
@@ -2292,6 +2302,20 @@
                 notes:       notes || null,
                 updatedAt:   new Date().toISOString()
             });
+
+            // Keep partyCodeIndex in sync with updated invite fields
+            const g = allGames[gameId];
+            if (g && g.partyCode) {
+                await db.ref('partyCodeIndex/' + g.partyCode).update({
+                    storyName:    story.name,
+                    partyName:    partyNameEdit  || null,
+                    eventDate:    eventDate       || null,
+                    eventTime:    eventTime       || null,
+                    venueName:    venueName       || null,
+                    venueAddress: venueAddress    || null
+                });
+            }
+
             closeEditModal();
             showToast('Party updated.', 'success');
         } catch(err) {

@@ -429,21 +429,12 @@
         if (!code) { showError(); return; }
 
         try {
-            // Look up gameId from public partyCodeIndex (no auth required)
+            // partyCodeIndex is publicly readable — no auth required
             const idxSnap = await db.ref('partyCodeIndex/' + code.toUpperCase()).once('value');
             if (!idxSnap.exists()) { showError(); return; }
 
-            const { gameId } = idxSnap.val();
-
-            // Fetch the individual game fields we need (public via rules)
-            // We have to use auth-free anonymous sign-in or accept the rules as-is
-            // Since partyCodeIndex is public, fall back to a minimal game object
-            // built from the index + any readable fields
-            const gameSnap = await db.ref('games/' + gameId).once('value')
-                .catch(() => null);
-
-            const game = gameSnap && gameSnap.exists() ? gameSnap.val() : idxSnap.val();
-            render(game, code.toUpperCase());
+            // All invite fields are stored directly in the index
+            render(idxSnap.val(), code.toUpperCase());
         } catch(e) {
             showError();
         }
