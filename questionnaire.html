@@ -333,17 +333,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Q3: Kept secrets  -->
-            <div class="question-block">
-                <div class="question-label">Can you keep a secret?</div>
-                <div class="question-hint">Some characters hold information critical to the mystery. How are you with that?</div>
-                <div class="tile-group cols-2" id="secretsGroup">
-                    <div class="tile" data-group="secrets" data-value="yes" onclick="selectTile(this)">
-                        <div class="tile-check"></div>
-                        <span class="tile-icon">🤫</span>
-                        <div class="tile-title">My lips are sealed</div>
-                    </div>
                     <div class="tile" data-group="secrets" data-value="no" onclick="selectTile(this)">
                         <div class="tile-check"></div>
                         <span class="tile-icon">😅</span>
@@ -384,7 +373,7 @@
     let currentGameId = null;
 
     // ── Required groups — all must be answered to enable Continue ──
-    const REQUIRED_GROUPS = ['gender', 'secrets'];
+    const REQUIRED_GROUPS = ['gender'];
     const answers = {};
 
     // ── Auth check ────────────────────────────────────────────────
@@ -425,7 +414,6 @@
             const q = playerData.questionnaire;
             if (q.gender)      prefill('gender', q.gender);
             if (q.involvement) prefill('involvement', q.involvement);
-            if (q.secrets)     prefill('secrets', q.secrets);
         }
 
         document.getElementById('mainContent').style.display = 'block';
@@ -497,7 +485,6 @@
                 questionnaire: {
                     gender:          answers.gender,
                     involvementScore: answers.involvement,  // number 1-10
-                    secrets:         answers.secrets,
                     completedAt:     new Date().toISOString()
                 }
             });
