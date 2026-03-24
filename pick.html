@@ -661,19 +661,19 @@ auth.onAuthStateChanged(async user => {
     const userSnap = await db.ref(`users/${user.uid}`).once('value');
     const userData = userSnap.val();
 
-    if (!userData?.currentGameId) { window.location.href = 'join.html'; return; }
+    if (!userData?.currentGameId) { window.location.href = 'home.html'; return; }
     currentGameId = userData.currentGameId;
 
     // Load game data
     const gameSnap = await db.ref(`games/${currentGameId}`).once('value');
     gameData = gameSnap.val();
-    if (!gameData) { window.location.href = 'join.html'; return; }
+    if (!gameData) { window.location.href = 'home.html'; return; }
 
     // Check if they already chose
     const playerSnap = await db.ref(`games/${currentGameId}/players/${user.uid}`).once('value');
     const playerData = playerSnap.val();
     if (playerData?.characterId && playerData?.status === 'ready') {
-        window.location.href = 'authenticated-dashboard.html';
+        window.location.href = 'home.html';
         return;
     }
 
@@ -690,6 +690,10 @@ auth.onAuthStateChanged(async user => {
     // Load story scripts then show UI
     const storyId = gameData.storyId || 'thoreson_estate_dinner';
     loadStoryScripts(storyId, function() {
+        if (typeof characterDatabase === 'undefined' || Object.keys(characterDatabase).length === 0) {
+            document.getElementById('loadingScreen').innerHTML = '<p style="color:#c9a227;font-family:serif;font-size:16px;padding:40px;">Error loading characters. Please refresh the page.</p>';
+            return;
+        }
         ROSTER = buildRoster(false);
 
         // Show UI
@@ -861,7 +865,7 @@ async function confirmSelection() {
 // REDIRECT
 // ─────────────────────────────────────────────────────────────
 function proceedToDashboard() {
-    window.location.href = 'authenticated-dashboard.html';
+    window.location.href = 'home.html';
 }
 </script>
 </body>
