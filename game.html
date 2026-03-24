@@ -1284,6 +1284,9 @@ let activeItems  = [];
 let scans        = {};
 let roleAssign   = {};
 let skillAssign  = {};
+let genPlayers      = {};
+let genAssignments  = {};
+let rolesConfig     = null;
 // rolesConfig loaded from stories/{storyId}/roles.js
 
 // ── AUTH ──────────────────────────────────────────────────────
@@ -1876,6 +1879,16 @@ function renderGenModal() {
 
 async function lockGameAssignments() {
     const btn = document.getElementById('lockGenBtn');
+
+    if (!gameId) {
+        showToast('No game loaded — cannot lock assignments.', 'error');
+        return;
+    }
+    if (!genAssignments || Object.keys(genAssignments).length === 0) {
+        showToast('No assignments to lock — generate first.', 'error');
+        return;
+    }
+
     btn.disabled = true;
     btn.textContent = 'Locking…';
 
