@@ -2601,7 +2601,7 @@ ${inviteUrl}
         // Fire quiz on all phones 5 minutes before end (at 40 min mark)
         // For now: fire quiz automatically after 40 minutes
         const COCKTAIL_DURATION_MS = 45 * 60 * 1000;
-        const QUIZ_BEFORE_END_MS   =  5 * 60 * 1000;
+        const QUIZ_BEFORE_END_MS   =  0 * 60 * 1000;
         const quizDelay = COCKTAIL_DURATION_MS - QUIZ_BEFORE_END_MS;
         cocktailQuizTimer = setTimeout(async () => {
             await db.ref('games/' + gameId + '/state/cocktailQuiz').set({ active: true, firedAt: Date.now() });
