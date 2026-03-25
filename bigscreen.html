@@ -923,7 +923,7 @@
                 <p class="opening-stage">Stand where everyone can see you. Take a breath.</p>
                 <p class="opening-line">"Thank you all for coming tonight."</p>
                 <p class="opening-stage">Look around the room.</p>
-                <p class="opening-line">"As many of you know, my father invited you here for a dinner party. He said he had an announcement to make — something that would 'change everything.'"</p>
+                <p class="opening-line">"As many of you know, my father invited you here for a dinner party. He said he had an announcement to make — something that would "change everything.""</p>
                 <p class="opening-line">"Most of you know my father. William Thoreson. He built this family from nothing — came to Dallas in 1899 with very little and spent the next thirty years turning it into something."</p>
                 <p class="opening-line">"Thoreson Toys. Started in a workshop on Commerce Street in 1902. By 1920 it was one of the most successful toy manufacturers in the Southwest. By 1930, his name was on buildings."</p>
                 <p class="opening-line">"He was a self-made man. That's how he told it. That's how everyone told it."</p>
@@ -1232,7 +1232,7 @@
         ledger:           'T.H. Payments',
         margaretsLetter:  'Letter in French',
         birthCertificate: 'Birth Certificate',
-        margaretDeath:    'Margaret's Obituary',
+        margaretDeath:    'Margaret Obituary',
         will:             'Last Will',
         coroner:          'Autopsy Report',
         travelJournal:    'Travel Journal',
@@ -1453,84 +1453,19 @@
 
     // ── CINEMATIC OPENING ─────────────────────────────────────
     const CIN_SECTIONS = [
-        {
-            label: '',
-            text: '"Thank you all for coming tonight."',
-            size: 'large',
-            duration: 5000
-        },
-        {
-            label: 'The Announcement',
-            text: '"As many of you know, my father invited you here for a dinner party. He said he had an announcement to make — something that would 'change everything.'"',
-            size: 'normal',
-            duration: 9000
-        },
-        {
-            label: '',
-            text: '"Most of you know my father. William Thoreson. He built this family from nothing — came to Dallas in 1899 with very little and spent the next thirty years turning it into something. Thoreson Toys. Started in a workshop on Commerce Street in 1902. By 1920, one of the most successful toy manufacturers in the Southwest. By 1930, his name was on buildings."',
-            size: 'normal',
-            duration: 14000
-        },
-        {
-            label: '',
-            text: '"He was a self-made man. That's how he told it. That's how everyone told it."',
-            size: 'large',
-            duration: 7000
-        },
-        {
-            label: '',
-            text: '"My father... William Thoreson... is dead."',
-            size: 'key',
-            duration: 8000
-        },
-        {
-            label: '',
-            text: '"He was found earlier this evening. I don't know how. I don't know why. The authorities have been contacted, but due to the storm, we're on our own for now."',
-            size: 'normal',
-            duration: 10000
-        },
-        {
-            label: '',
-            text: '"No one leaves until we understand what happened."',
-            size: 'key',
-            duration: 7000
-        },
-        {
-            label: '',
-            text: '"I'm Scott Thoreson — his eldest son. I've handled this family's legal affairs for years. I never imagined I'd be investigating my own father's death. But here we are. And I need your help."',
-            size: 'normal',
-            duration: 11000
-        },
-        {
-            label: 'The Rules',
-            text: '"We'll investigate in phases. After each phase, I'll call everyone back together to share what we've found. Some rooms are open now — others will open as the evening progresses. You'll see blue tape on certain items. Those are personal belongings. Please respect them."',
-            size: 'normal',
-            duration: 14000
-        },
-        {
-            label: '',
-            text: '"Some of you have particular expertise. If you find something you can't make sense of, look for someone who can. Some documents require specific skills to interpret. If you find a QR code, scan it in the app — but you'll need the right skill to unlock it."',
-            size: 'normal',
-            duration: 13000
-        },
-        {
-            label: '',
-            text: '"The goal is simple: find out what happened to my father. Let's start with what we know about him — his business, his dealings, anything that might explain why someone in this room wanted him dead."',
-            size: 'normal',
-            duration: 12000
-        },
-        {
-            label: '',
-            text: '"The Living Room, Dining Room, Parlor, Kitchen, Breakfast Nook, and my father's Office are all open."',
-            size: 'large',
-            duration: 8000
-        },
-        {
-            label: '',
-            text: 'BEGIN.',
-            size: 'closing',
-            duration: 6000
-        },
+        { label: '', text: `"Thank you all for coming tonight."`, size: 'large', duration: 5000 },
+        { label: 'The Announcement', text: `"As many of you know, my father invited you here for a dinner party. He said he had an announcement to make — something that would change everything."`, size: 'normal', duration: 9000 },
+        { label: '', text: `"Most of you know my father. William Thoreson. He built this family from nothing — came to Dallas in 1899 with very little and spent the next thirty years turning it into something. Thoreson Toys. Started in a workshop on Commerce Street in 1902. By 1920, one of the most successful toy manufacturers in the Southwest. By 1930, his name was on buildings."`, size: 'normal', duration: 14000 },
+        { label: '', text: `"He was a self-made man. That is how he told it. That is how everyone told it."`, size: 'large', duration: 7000 },
+        { label: '', text: `"My father... William Thoreson... is dead."`, size: 'key', duration: 8000 },
+        { label: '', text: `"He was found earlier this evening. I do not know how. I do not know why. The authorities have been contacted, but due to the storm, we are on our own for now."`, size: 'normal', duration: 10000 },
+        { label: '', text: `"No one leaves until we understand what happened."`, size: 'key', duration: 7000 },
+        { label: '', text: `"I am Scott Thoreson — his eldest son. I have handled this family's legal affairs for years. I never imagined I would be investigating my own father's death. But here we are. And I need your help."`, size: 'normal', duration: 11000 },
+        { label: 'The Rules', text: `"We will investigate in phases. After each phase, I will call everyone back together to share what we have found. Some rooms are open now — others will open as the evening progresses. You will see blue tape on certain items. Those are personal belongings. Please respect them."`, size: 'normal', duration: 14000 },
+        { label: '', text: `"Some of you have particular expertise. If you find something you cannot make sense of, look for someone who can. Some documents require specific skills to interpret. If you find a QR code, scan it in the app — but you will need the right skill to unlock it."`, size: 'normal', duration: 13000 },
+        { label: '', text: `"The goal is simple: find out what happened to my father. His business, his dealings, anything that might explain why someone in this room wanted him dead."`, size: 'normal', duration: 12000 },
+        { label: '', text: `"The Living Room, Dining Room, Parlor, Kitchen, Breakfast Nook, and my father's Office are all open."`, size: 'large', duration: 8000 },
+        { label: '', text: `BEGIN.`, size: 'closing', duration: 6000 },
     ];
 
     let cinIndex = 0;
