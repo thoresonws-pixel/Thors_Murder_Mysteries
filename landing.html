@@ -89,6 +89,41 @@
             transition: color 0.2s;
         }
         .nav-links a:hover { color: var(--gold); }
+        .nav-links a.nav-active { color: var(--gold); }
+
+        .mobile-nav {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 0; flex-direction: column; height: auto; }
+            .nav-brand { padding: 16px 20px 12px; }
+            .mobile-nav {
+                display: flex;
+                width: 100%;
+                overflow-x: auto;
+                gap: 0;
+                border-top: 1px solid rgba(201,162,39,0.1);
+                scrollbar-width: none;
+            }
+            .mobile-nav::-webkit-scrollbar { display: none; }
+            .mobile-nav button {
+                font-family: 'Cinzel', serif;
+                font-size: 9px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                color: var(--fog);
+                background: none;
+                border: none;
+                border-bottom: 2px solid transparent;
+                padding: 10px 16px;
+                cursor: pointer;
+                white-space: nowrap;
+                transition: all 0.2s;
+            }
+            .mobile-nav button:hover,
+            .mobile-nav button.nav-active { color: var(--gold); border-bottom-color: var(--gold); }
+        }
 
         .nav-cta {
             font-family: 'Cinzel', serif;
@@ -281,6 +316,8 @@
 
         /* ── SECTIONS COMMON ─────────────────────────────────── */
         section { position: relative; }
+        section[data-page]:not([data-page="home"]) { display: none; }
+        section[data-page="home"] .hero { display: flex; }
 
         .section-inner {
             max-width: 1100px;
@@ -911,18 +948,29 @@
 
 <!-- ── NAVIGATION ─────────────────────────────────────────── -->
 <nav>
-    <a href="/" class="nav-brand">Thor's Murder Mysteries</a>
+    <a href="#" class="nav-brand" onclick="showPage('home');return false;">Thor's Murder Mysteries</a>
     <ul class="nav-links">
-        <li><a href="#how-it-works">How It Works</a></li>
-        <li><a href="#stories">Stories</a></li>
-        <li><a href="#pricing">Pricing</a></li>
-        <li><a href="#contact">Book an Event</a></li>
+        <li><a href="#" onclick="showPage('home');return false;" data-navlink="home" class="nav-active">Home</a></li>
+        <li><a href="#" onclick="showPage('how');return false;"  data-navlink="how">How It Works</a></li>
+        <li><a href="#" onclick="showPage('stories');return false;" data-navlink="stories">Stories</a></li>
+        <li><a href="#" onclick="showPage('pricing');return false;" data-navlink="pricing">Pricing</a></li>
+        <li><a href="#" onclick="showPage('book');return false;" data-navlink="book">Book an Event</a></li>
+        <li><a href="#" onclick="showPage('login');return false;" data-navlink="login">Join a Game</a></li>
         <li><a href="home.html" class="nav-cta">Player Login</a></li>
     </ul>
+    <!-- Mobile nav -->
+    <div class="mobile-nav" id="mobileNav">
+        <button onclick="showPage('home');return false;"   data-mobilelink="home"    class="nav-active">Home</button>
+        <button onclick="showPage('how');return false;"    data-mobilelink="how">How It Works</button>
+        <button onclick="showPage('stories');return false;" data-mobilelink="stories">Stories</button>
+        <button onclick="showPage('pricing');return false;" data-mobilelink="pricing">Pricing</button>
+        <button onclick="showPage('book');return false;"   data-mobilelink="book">Book</button>
+        <button onclick="showPage('login');return false;"  data-mobilelink="login">Join</button>
+    </div>
 </nav>
 
 <!-- ── HERO ───────────────────────────────────────────────── -->
-<section class="hero">
+<section class="hero" data-page="home">
     <div class="hero-bg"></div>
     <div class="hero-content">
         <div class="hero-eyebrow">Dallas, Texas &nbsp;✦&nbsp; Immersive Experiences</div>
@@ -947,7 +995,7 @@
 </section>
 
 <!-- ── HOW IT WORKS ───────────────────────────────────────── -->
-<section class="how-section" id="how-it-works">
+<section class="how-section" id="how-it-works" data-page="how">
     <div class="section-inner">
         <div class="section-eyebrow">The Experience</div>
         <h2 class="section-title">How the Evening Unfolds</h2>
@@ -999,7 +1047,7 @@
 </section>
 
 <!-- ── STORIES ─────────────────────────────────────────────── -->
-<section class="stories-section" id="stories">
+<section class="stories-section" id="stories" data-page="stories">
     <div class="section-inner">
         <div class="section-eyebrow">The Mysteries</div>
         <h2 class="section-title">Choose Your Story</h2>
@@ -1061,7 +1109,7 @@
 </section>
 
 <!-- ── EXPERIENCE STATS ───────────────────────────────────── -->
-<section class="experience-section">
+<section class="experience-section" data-page="stories">
     <div class="section-inner">
         <div class="section-eyebrow">Why Thor's</div>
         <h2 class="section-title">This Isn't a Kit.<br>It's a Production.</h2>
@@ -1122,7 +1170,7 @@
 </section>
 
 <!-- ── PRICING ─────────────────────────────────────────────── -->
-<section class="pricing-section" id="pricing">
+<section class="pricing-section" id="pricing" data-page="pricing">
     <div class="section-inner">
         <div class="section-eyebrow">Investment</div>
         <h2 class="section-title">Pricing</h2>
@@ -1185,7 +1233,7 @@
 </section>
 
 <!-- ── TESTIMONIALS ───────────────────────────────────────── -->
-<section class="testimonials-section" id="testimonials">
+<section class="testimonials-section" id="testimonials" data-page="book">
     <div class="section-inner">
         <div class="section-eyebrow">From the Guests</div>
         <h2 class="section-title">What People Are Saying</h2>
@@ -1216,7 +1264,7 @@
 </section>
 
 <!-- ── BOOK / CONTACT ─────────────────────────────────────── -->
-<section class="contact-section" id="contact">
+<section class="contact-section" id="contact" data-page="book">
     <div class="section-inner">
         <div class="contact-grid">
             <div>
@@ -1298,7 +1346,7 @@
 </section>
 
 <!-- ── JOIN / LOGIN ───────────────────────────────────────── -->
-<section class="join-section">
+<section class="join-section" data-page="login">
     <div class="section-inner">
         <div class="section-eyebrow">Already Registered?</div>
         <h2 class="section-title">Join the Evening</h2>
@@ -1348,22 +1396,57 @@
         e.target.querySelector('button[type=submit]').disabled = true;
     }
 
-    // ── SCROLL REVEAL ─────────────────────────────────────────
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
+    // ── PAGE SWITCHING ────────────────────────────────────────
+    function showPage(page) {
+        // Show/hide sections
+        document.querySelectorAll('section[data-page]').forEach(s => {
+            s.style.display = s.dataset.page === page ? 'block' : 'none';
         });
-    }, { threshold: 0.1 });
+        // Hero uses flex
+        if (page === 'home') {
+            document.querySelector('.hero').style.display = 'flex';
+        }
 
-    document.querySelectorAll('.step, .story-card, .price-card, .testimonial, .stat-card').forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(20px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(el);
+        // Update nav active states
+        document.querySelectorAll('[data-navlink]').forEach(a => {
+            a.classList.toggle('nav-active', a.dataset.navlink === page);
+        });
+        document.querySelectorAll('[data-mobilelink]').forEach(b => {
+            b.classList.toggle('nav-active', b.dataset.mobilelink === page);
+        });
+
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Update URL hash without reload
+        history.replaceState(null, '', '#' + page);
+
+        // Animate new cards in
+        document.querySelectorAll('section[data-page="' + page + '"] .step, section[data-page="' + page + '"] .story-card, section[data-page="' + page + '"] .price-card, section[data-page="' + page + '"] .testimonial, section[data-page="' + page + '"] .stat-card').forEach((el, i) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s ease ' + (i * 0.07) + 's, transform 0.5s ease ' + (i * 0.07) + 's';
+            requestAnimationFrame(() => {
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            });
+        });
+    }
+
+    // Also wire the hero CTA buttons
+    document.querySelectorAll('a[href="#contact"]').forEach(a => {
+        a.addEventListener('click', e => { e.preventDefault(); showPage('book'); });
     });
+    document.querySelectorAll('a[href="#stories"]').forEach(a => {
+        a.addEventListener('click', e => { e.preventDefault(); showPage('stories'); });
+    });
+
+    // Check hash on load
+    const hash = window.location.hash.replace('#','');
+    const validPages = ['home','how','stories','pricing','book','login'];
+    if (hash && validPages.includes(hash)) {
+        showPage(hash);
+    }
 </script>
 
 </body>
