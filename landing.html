@@ -943,6 +943,37 @@
         }
 
 
+
+        /* ── MINI INVITATION CARD ────────────────────────────── */
+        .mini-invite {
+            background: #f5f0e6;
+            border: 1.5px solid #8b7355;
+            box-shadow: 0 0 0 1px #a08060, 0 4px 20px rgba(0,0,0,0.4);
+            padding: 18px 16px 14px;
+            text-align: center;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            color: #2a2520;
+            position: relative;
+        }
+        .mi-corner {
+            position: absolute;
+            width: 14px; height: 14px;
+            border: 1.5px solid #8b7355;
+        }
+        .mi-tl { top:6px; left:6px;  border-right:none; border-bottom:none; }
+        .mi-tr { top:6px; right:6px; border-left:none;  border-bottom:none; }
+        .mi-bl { bottom:6px; left:6px;  border-right:none; border-top:none; }
+        .mi-br { bottom:6px; right:6px; border-left:none;  border-top:none; }
+        .mi-orn   { font-size:9px; color:#8b7355; letter-spacing:2px; margin-bottom:6px; }
+        .mi-title { font-family:'Cinzel',serif; font-size:11px; font-weight:700; letter-spacing:2px; color:#2a2520; margin-bottom:4px; }
+        .mi-rule  { width:30px; height:1px; background:#8b7355; margin:6px auto; }
+        .mi-summon{ font-size:7px; letter-spacing:2px; text-transform:uppercase; color:#8b7355; margin-bottom:6px; }
+        .mi-body  { font-size:9px; font-style:italic; line-height:1.5; color:#3a3028; margin-bottom:6px; }
+        .mi-required { font-size:9px; font-weight:600; color:#2a2520; margin-bottom:6px; }
+        .mi-label { font-size:6px; letter-spacing:2px; text-transform:uppercase; color:#8b7355; margin-bottom:2px; margin-top:6px; }
+        .mi-value { font-size:9px; line-height:1.5; color:#3a3028; margin-bottom:2px; }
+        .mi-host  { font-family:'Cinzel',serif; font-size:10px; font-style:italic; color:#2a2520; }
+
         /* ── DETECTIVE BOARD ─────────────────────────────────── */
         .detective-board {
             margin-top: 60px;
@@ -1192,8 +1223,25 @@
             <div class="board-step">
                 <div class="board-photo">
                     <div class="photo-pin"></div>
-                    <div class="photo-placeholder">
-                        <span class="photo-label">📜 The Invitation</span>
+                    <div class="mini-invite">
+                        <div class="mi-corner mi-tl"></div>
+                        <div class="mi-corner mi-tr"></div>
+                        <div class="mi-corner mi-bl"></div>
+                        <div class="mi-corner mi-br"></div>
+                        <div class="mi-orn">✦</div>
+                        <div class="mi-title">THE THORESON ESTATE</div>
+                        <div class="mi-rule"></div>
+                        <div class="mi-summon">You Are Cordially Summoned</div>
+                        <div class="mi-body"><em>to a dinner party at the estate.<br>Mr. Thoreson has an announcement<br>that shall change everything.</em></div>
+                        <div class="mi-required">Your presence is required.</div>
+                        <div class="mi-rule"></div>
+                        <div class="mi-label">DATE</div>
+                        <div class="mi-value">Saturday, the 21st of March<br>Nineteen Thirty-Five</div>
+                        <div class="mi-label">LOCATION</div>
+                        <div class="mi-value">Thoreson Residence<br><span style="font-size:10px;color:#8b7355;">16920 Old Pond Dr · Dallas, TX</span></div>
+                        <div class="mi-label" style="margin-top:10px;">YOUR HOST</div>
+                        <div class="mi-host">Mr. William Thoreson</div>
+                        <div class="mi-orn" style="margin-top:10px;">✦ &nbsp; ✦ &nbsp; ✦</div>
                     </div>
                     <div class="photo-caption">Guests arrive already in character</div>
                 </div>
