@@ -892,6 +892,47 @@
             flex-wrap: wrap;
         }
 
+
+        .act-timer-card {
+            background: var(--charcoal);
+            border: 1px solid var(--border);
+            border-top: 2px solid var(--border);
+            padding: 14px 16px;
+            transition: border-color 0.3s;
+        }
+        .act-timer-card.active  { border-top-color: var(--gold); }
+        .act-timer-card.done    { border-top-color: var(--green); opacity: 0.7; }
+        .act-timer-label {
+            font-family: 'Special Elite', monospace;
+            font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+            color: var(--fog); margin-bottom: 8px;
+        }
+        .act-timer-target {
+            font-size: 12px; color: var(--fog); margin-bottom: 10px;
+        }
+        .act-timer-target span { color: var(--gold); }
+        .act-clue-rows { display: flex; flex-direction: column; gap: 4px; }
+        .act-clue-row {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 12px; color: var(--fog);
+        }
+        .act-clue-row.found { color: var(--mist); }
+        .act-clue-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--border); flex-shrink: 0;
+            transition: background 0.3s;
+        }
+        .act-clue-row.found .act-clue-dot { background: var(--green); }
+        .act-timer-footer {
+            margin-top: 10px; padding-top: 10px;
+            border-top: 1px solid var(--border);
+            font-family: 'Special Elite', monospace;
+            font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+        }
+        .act-timer-footer.pending { color: var(--fog); }
+        .act-timer-footer.waiting { color: #3a8fd4; }
+        .act-timer-footer.sent    { color: var(--green); }
+
     </style>
 </head>
 <body>
@@ -1180,6 +1221,15 @@
             </div>
         </div>
 
+        <!-- Pace Tracker -->
+        <div id="paceTracker" class="panel" style="display:none;margin-bottom:20px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <div style="font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;color:var(--fog);text-transform:uppercase;">Game Clock</div>
+                <div id="gameClock" style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--gold);letter-spacing:2px;">0:00:00</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;" id="actTimers"></div>
+        </div>
+
         <!-- Game start button -->
         <div id="gameStartPanel" class="panel" style="display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:20px;">
             <div>
@@ -1288,12 +1338,14 @@ async function bootstrap() {
     try { renderChecklist(); } catch(e) { console.error('renderChecklist:', e); }
     try { renderCharacters(); } catch(e) { console.error('renderCharacters:', e); }
     try { renderRunGame(); } catch(e) { console.error('renderRunGame:', e); }
+    try { loadGameStartTime(); } catch(e) { console.error('loadGameStartTime:', e); }
     try { renderGuests(); } catch(e) { console.error('renderGuests:', e); }
     try { refreshHealth(); } catch(e) { console.error('refreshHealth:', e); }
     try { initBigScreenLink(); } catch(e) { console.error('initBigScreenLink:', e); }
 
     // Live listeners
     db.ref('games/' + gameId + '/state/activeItems').on('value', snap => {
+        if (gameStartTime) setTimeout(renderActTimers, 100);
         activeItems = snap.val() || [];
         renderRunGame();
         refreshHealth();
@@ -1897,6 +1949,131 @@ async function lockGameAssignments() {
 }
 
 // ── RUN GAME TAB ──────────────────────────────────────────────
+
+    // ── PACE TRACKER ──────────────────────────────────────────
+    const ACT_TARGETS = {
+        act1: { label: 'Act 1 — The Gathering',  targetMin: 35, clues: ['newspaper','letterhead','bradfordLetter','incorporation','forgedDocs','bankStatement'] },
+        act2: { label: 'Act 2 — The Secret Heir', targetMin: 75, clues: ['ledger','margaretsLetter','birthCertificate','margaretDeath','will'] },
+        act3: { label: 'Act 3 — The Killer',      targetMin: 110, clues: ['coroner','travelJournal','backgroundCheck'] },
+    };
+    const DJ_AUTO = {
+        act1: { id: 'djCountyClerk', label: 'DJ: County Clerk' },
+        act2: { id: 'djCoroner',     label: 'DJ: Coroner Report' },
+        act3: { id: 'djPinkerton',   label: 'DJ: Pinkerton' },
+    };
+    const DJ_DELAY_MS = 5 * 60 * 1000; // 5 minutes
+
+    let gameStartTime   = null;
+    let clockInterval   = null;
+    let djTimers        = {};
+    let allFoundTimes   = {}; // actKey → timestamp all clues found
+
+    function startPaceTracker() {
+        gameStartTime = Date.now();
+        db.ref('games/' + gameId + '/state/gameStartTime').set(gameStartTime);
+        document.getElementById('paceTracker').style.display = 'block';
+        clockInterval = setInterval(tickClock, 1000);
+        tickClock();
+        renderActTimers();
+    }
+
+    function tickClock() {
+        if (!gameStartTime) return;
+        const elapsed = Date.now() - gameStartTime;
+        const h = Math.floor(elapsed / 3600000);
+        const m = Math.floor((elapsed % 3600000) / 60000);
+        const s = Math.floor((elapsed % 60000) / 1000);
+        document.getElementById('gameClock').textContent =
+            h + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    }
+
+    function renderActTimers() {
+        const container = document.getElementById('actTimers');
+        if (!container) return;
+
+        container.innerHTML = Object.entries(ACT_TARGETS).map(([actKey, act]) => {
+            const found    = act.clues.filter(id => activeItems.includes(id));
+            const allFound = found.length === act.clues.length;
+            const dj       = DJ_AUTO[actKey];
+            const djSent   = dj && activeItems.includes(dj.id);
+
+            // Determine card state
+            const isDone   = allFound;
+            const isActive = found.length > 0 && !allFound;
+            const stateClass = isDone ? 'done' : isActive ? 'active' : '';
+
+            // Elapsed for comparison
+            const elapsed = gameStartTime ? (Date.now() - gameStartTime) / 60000 : 0;
+
+            const rows = act.clues.map(id => {
+                const clueFound = activeItems.includes(id);
+                const caption   = (typeof CLUE_CAPTIONS !== 'undefined' && CLUE_CAPTIONS[id]) || id;
+                return `<div class="act-clue-row ${clueFound ? 'found' : ''}">
+                    <div class="act-clue-dot"></div>
+                    <span>${caption}</span>
+                </div>`;
+            }).join('');
+
+            // DJ footer
+            let djFooter = '';
+            if (dj) {
+                if (djSent) {
+                    djFooter = `<div class="act-timer-footer sent">✓ ${dj.label} sent</div>`;
+                } else if (allFound && allFoundTimes[actKey]) {
+                    const waitSec = Math.max(0, Math.round((DJ_DELAY_MS - (Date.now() - allFoundTimes[actKey])) / 1000));
+                    djFooter = waitSec > 0
+                        ? `<div class="act-timer-footer waiting">📱 ${dj.label} in ${waitSec}s</div>`
+                        : `<div class="act-timer-footer waiting">📱 ${dj.label} sending…</div>`;
+                } else {
+                    djFooter = `<div class="act-timer-footer pending">📱 ${dj.label} — pending</div>`;
+                }
+            }
+
+            return `<div class="act-timer-card ${stateClass}">
+                <div class="act-timer-label">${act.label.split('—')[0].trim()}</div>
+                <div class="act-timer-target">Target: <span>${act.targetMin}:00</span></div>
+                <div class="act-clue-rows">${rows}</div>
+                ${djFooter}
+            </div>`;
+        }).join('');
+    }
+
+    // Check if all clues for an act just became found → start DJ timer
+    function checkDJTriggers(prevItems, newItems) {
+        Object.entries(ACT_TARGETS).forEach(([actKey, act]) => {
+            const dj = DJ_AUTO[actKey];
+            if (!dj || newItems.includes(dj.id)) return; // already sent
+            const allFound = act.clues.every(id => newItems.includes(id));
+            const wasFound = act.clues.every(id => prevItems.includes(id));
+            if (allFound && !wasFound) {
+                // All clues just found — start 5-min timer
+                allFoundTimes[actKey] = Date.now();
+                if (djTimers[actKey]) clearTimeout(djTimers[actKey]);
+                djTimers[actKey] = setTimeout(async () => {
+                    await toggleRevelation(dj.id);
+                    showToast('📱 ' + dj.label + ' sent to DJ automatically', 'success');
+                    renderActTimers();
+                }, DJ_DELAY_MS);
+                showToast('⏱ All ' + act.label.split('—')[0].trim() + ' clues found — DJ text in 5 min', 'info');
+            }
+        });
+    }
+
+    // Load existing start time from Firebase on reconnect
+    function loadGameStartTime() {
+        db.ref('games/' + gameId + '/state/gameStartTime').once('value').then(snap => {
+            const t = snap.val();
+            if (t) {
+                gameStartTime = t;
+                document.getElementById('paceTracker').style.display = 'block';
+                if (!clockInterval) clockInterval = setInterval(tickClock, 1000);
+                tickClock();
+                renderActTimers();
+            }
+        });
+    }
+
+
 function renderRunGame() {
     if (typeof revelationsDatabase === 'undefined') return;
 
@@ -1989,11 +2166,21 @@ function renderLeaderboard() {
 }
 
 async function toggleRevelation(itemId) {
+    const prev = [...activeItems];
     const current = [...activeItems];
     const idx = current.indexOf(itemId);
     if (idx === -1) current.push(itemId);
     else current.splice(idx, 1);
     await db.ref('games/' + gameId + '/state/activeItems').set(current);
+
+    // Start pace tracker on game begin
+    if (itemId === 'willsDeath' && current.includes('willsDeath') && !gameStartTime) {
+        startPaceTracker();
+    }
+    // Check DJ auto-triggers
+    checkDJTriggers(prev, current);
+    // Refresh act timers
+    if (gameStartTime) renderActTimers();
 }
 
 
