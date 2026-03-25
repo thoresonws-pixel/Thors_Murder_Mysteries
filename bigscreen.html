@@ -470,6 +470,26 @@
         text-transform: uppercase;
         z-index: 10;
     }
+
+        /* ── CONFESSION AUDIO ────────────────────────────────── */
+        #screen-audio { background: radial-gradient(ellipse at center, #0a0510 0%, #06040a 100%); flex-direction:column; }
+        .audio-card { display:flex; flex-direction:column; align-items:center; padding:60px 80px; text-align:center; }
+        .audio-eyebrow { font-family:"Special Elite",monospace; font-size:10px; letter-spacing:6px; text-transform:uppercase; color:rgba(201,162,39,0.35); margin-bottom:20px; }
+        .audio-icon { font-size:64px; margin-bottom:24px; }
+        .audio-title { font-family:"Playfair Display",serif; font-size:48px; font-weight:700; color:#f5f0e6; margin-bottom:8px; }
+        .audio-subtitle { font-family:"Cormorant Garamond",serif; font-size:22px; font-style:italic; color:rgba(201,162,39,0.5); margin-bottom:24px; }
+        .audio-rule { width:60px; height:1px; background:rgba(201,162,39,0.2); margin-bottom:32px; }
+        .audio-waveform { display:flex; align-items:center; gap:6px; height:60px; margin-bottom:24px; }
+        .wave-bar { width:4px; background:#c9a227; border-radius:2px; opacity:0.6; animation:wavePulse 1.2s ease-in-out infinite; }
+        .wave-bar:nth-child(1){animation-delay:0.0s} .wave-bar:nth-child(2){animation-delay:0.1s} .wave-bar:nth-child(3){animation-delay:0.2s}
+        .wave-bar:nth-child(4){animation-delay:0.3s} .wave-bar:nth-child(5){animation-delay:0.4s} .wave-bar:nth-child(6){animation-delay:0.5s}
+        .wave-bar:nth-child(7){animation-delay:0.4s} .wave-bar:nth-child(8){animation-delay:0.3s} .wave-bar:nth-child(9){animation-delay:0.2s}
+        .wave-bar:nth-child(10){animation-delay:0.1s} .wave-bar:nth-child(11){animation-delay:0.0s} .wave-bar:nth-child(12){animation-delay:0.1s}
+        @keyframes wavePulse { 0%,100% { height:8px; opacity:0.3; } 50% { height:48px; opacity:0.9; } }
+        .audio-waveform.paused .wave-bar { animation:none; height:8px; opacity:0.2; }
+        .audio-status { font-family:"Special Elite",monospace; font-size:12px; letter-spacing:4px; text-transform:uppercase; color:rgba(201,162,39,0.4); margin-bottom:20px; }
+        .audio-progress-track { width:400px; height:2px; background:rgba(255,255,255,0.08); }
+        .audio-progress-bar { height:100%; background:#c9a227; width:0%; transition:width 0.5s linear; }
 </style>
 </head>
 <body>
@@ -658,8 +678,19 @@
                 setTimeout(() => switchScreen('detective', {}), 30000);
             }
 
-            // Queue spotlight for each new item (skip willsDeath)
-            added.filter(id => id !== 'willsDeath').forEach(id => {
+            // Play confession audio when transcript is revealed
+            const audioMap = {
+                transcriptAct1: { src: 'audio/confession_act1.mp3', title: 'Confession Recording', subtitle: 'Act One — William Thoreson Sr.' },
+                transcriptAct2: { src: 'audio/confession_act2.mp3', title: 'Confession Recording', subtitle: 'Act Two — William Thoreson Sr.' },
+                transcriptAct3: { src: 'audio/confession_act3.mp3', title: 'Confession Recording', subtitle: 'Act Three — William Thoreson Sr.' },
+            };
+            added.forEach(id => {
+                if (audioMap[id]) playConfession(audioMap[id]);
+            });
+
+            // Queue spotlight for each new item (skip willsDeath and transcripts — audio handles those)
+            const skipIds = ['willsDeath', 'transcriptAct1', 'transcriptAct2', 'transcriptAct3'];
+            added.filter(id => !skipIds.includes(id)).forEach(id => {
                 const item = findItem(id);
                 if (item) queueSpotlight(item);
             });
@@ -849,6 +880,43 @@
             // Small gap between spotlights
             setTimeout(processSpotlightQueue, 600);
         }, duration);
+    }
+
+    // ── CONFESSION AUDIO ──────────────────────────────────────
+    let priorMode = 'detective';
+
+    function playConfession(config) {
+        priorMode = currentMode;
+        const audio = document.getElementById('confessionAudio');
+        document.getElementById('audioTitle').textContent    = config.title;
+        document.getElementById('audioSubtitle').textContent = config.subtitle;
+        document.getElementById('audioStatus').textContent   = 'Playing…';
+        document.getElementById('audioProgressBar').style.width = '0%';
+
+        audio.src = config.src;
+        switchScreen('audio', { force: true });
+
+        audio.play().catch(() => {
+            document.getElementById('audioStatus').textContent = 'Tap to play';
+            document.getElementById('audioWaveform').classList.add('paused');
+            document.getElementById('screen-audio').addEventListener('click', () => {
+                audio.play();
+            }, { once: true });
+        });
+
+        audio.ontimeupdate = () => {
+            if (audio.duration) {
+                const pct = (audio.currentTime / audio.duration) * 100;
+                document.getElementById('audioProgressBar').style.width = pct + '%';
+            }
+        };
+
+        audio.onended = () => {
+            document.getElementById('audioStatus').textContent = 'Recording ended';
+            document.getElementById('audioWaveform').classList.add('paused');
+            // Return to detective board after 4 seconds
+            setTimeout(() => switchScreen('detective', { force: true }), 4000);
+        };
     }
 
     // ── SLIDESHOW ─────────────────────────────────────────────
