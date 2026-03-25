@@ -2038,6 +2038,8 @@ async function lockGameAssignments() {
         await db.ref('games/' + gameId + '/state/activeItems').set([]);
         await db.ref('games/' + gameId + '/state/currentPhase').remove();
         await db.ref('games/' + gameId + '/state/codeChallenge').remove();
+        await db.ref('games/' + gameId + '/state/cocktailQuiz').remove();
+        if (cocktailQuizTimer) { clearTimeout(cocktailQuizTimer); cocktailQuizTimer = null; }
 
         // Clear cocktail quests and facts from all players
         const playersSnap = await db.ref('games/' + gameId + '/players').once('value');
@@ -2576,6 +2578,8 @@ ${inviteUrl}
         </div>`;
     }
 
+    let cocktailQuizTimer = null;
+
     async function startCocktailHour() {
         const btn = document.getElementById('cocktailBtn');
         const isCocktailActive = currentPhaseId === 'cocktail';
@@ -2593,6 +2597,33 @@ ${inviteUrl}
         btn.style.opacity = '0.7';
         btn.style.cursor = 'default';
         showToast('🥂 Cocktail hour started — quests distributed to all players', 'success');
+
+        // Fire quiz on all phones 5 minutes before end (at 40 min mark)
+        // For now: fire quiz automatically after 40 minutes
+        const COCKTAIL_DURATION_MS = 45 * 60 * 1000;
+        const QUIZ_BEFORE_END_MS   =  5 * 60 * 1000;
+        const quizDelay = COCKTAIL_DURATION_MS - QUIZ_BEFORE_END_MS;
+        cocktailQuizTimer = setTimeout(async () => {
+            await db.ref('games/' + gameId + '/state/cocktailQuiz').set({ active: true, firedAt: Date.now() });
+            showToast('📋 Quiz fired on all player phones — 5 min left in cocktail hour', 'success');
+        }, quizDelay);
+
+        // Also add a manual fire button to the cocktail panel
+        const panel = document.getElementById('cocktailPanel');
+        if (panel) {
+            const quizBtn = document.createElement('button');
+            quizBtn.className = 'btn-ghost';
+            quizBtn.style.cssText = 'font-size:11px;padding:6px 14px;margin-left:10px;';
+            quizBtn.textContent = '📋 Fire Quiz Now';
+            quizBtn.onclick = async () => {
+                if (cocktailQuizTimer) clearTimeout(cocktailQuizTimer);
+                await db.ref('games/' + gameId + '/state/cocktailQuiz').set({ active: true, firedAt: Date.now() });
+                showToast('📋 Quiz fired on all player phones', 'success');
+                quizBtn.disabled = true;
+                quizBtn.textContent = '✓ Quiz Sent';
+            };
+            panel.querySelector('div').appendChild(quizBtn);
+        }
     }
 
     async function advancePhase(phaseId) {

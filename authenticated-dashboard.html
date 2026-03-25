@@ -1609,6 +1609,12 @@
                     });
             }
 
+            // Listen for cocktail quiz activation
+            gameRef('cocktailQuiz').on('value', snap => {
+                const quiz = snap.val();
+                if (quiz && quiz.active) showCocktailQuiz();
+            });
+
             // Listen for code challenge activation
             gameRef('codeChallenge').on('value', snap => {
                 const challenge = snap.val();
