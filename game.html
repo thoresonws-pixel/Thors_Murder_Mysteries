@@ -1229,7 +1229,7 @@
                 <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);margin-bottom:4px;">🥂 Start Cocktail Hour</div>
                 <div style="font-size:14px;color:var(--fog);">Distributes quests &amp; facts to players. William is still alive.</div>
             </div>
-            <button id="cocktailBtn" onclick="startCocktailHour()" class="btn-gold" style="background:var(--accent-dk);border:1px solid var(--gold);">▶ Cocktail Hour</button>
+            <button id="cocktailBtn" onclick="startCocktailHour()" class="btn-gold">▶ Cocktail Hour</button>
         </div>
 
         <!-- Game start button -->
@@ -2026,18 +2026,44 @@ async function lockGameAssignments() {
     }
 
     async function resetGame() {
-        if (!confirm('Reset game clock and all revealed clues? This cannot be undone.')) return;
+        if (!confirm('Reset everything — clock, clues, cocktail hour, and player quests? This cannot be undone.')) return;
         if (clockInterval) { clearInterval(clockInterval); clockInterval = null; }
         gameStartTime = null;
         allFoundTimes = {};
         Object.values(djTimers).forEach(t => clearTimeout(t));
         djTimers = {};
+
+        // Clear all game state
         await db.ref('games/' + gameId + '/state/gameStartTime').remove();
         await db.ref('games/' + gameId + '/state/activeItems').set([]);
+        await db.ref('games/' + gameId + '/state/currentPhase').remove();
+        await db.ref('games/' + gameId + '/state/codeChallenge').remove();
+
+        // Clear cocktail quests and facts from all players
+        const playersSnap = await db.ref('games/' + gameId + '/players').once('value');
+        const playerUpdates = {};
+        playersSnap.forEach(child => {
+            playerUpdates['games/' + gameId + '/players/' + child.key + '/cocktailQuests'] = null;
+            playerUpdates['games/' + gameId + '/players/' + child.key + '/cocktailFacts'] = null;
+        });
+        if (Object.keys(playerUpdates).length > 0) await db.ref().update(playerUpdates);
+
+        // Reset cocktail button
+        const cBtn = document.getElementById('cocktailBtn');
+        if (cBtn) {
+            cBtn.textContent = '▶ Cocktail Hour';
+            cBtn.style.background = '';
+            cBtn.style.opacity = '1';
+            cBtn.style.cursor = 'pointer';
+            cBtn.disabled = false;
+        }
+        const cPanel = document.getElementById('cocktailPanel');
+        if (cPanel) cPanel.style.display = 'flex';
+
         document.getElementById('gameClock').style.display = 'none';
         document.getElementById('gameClock').textContent = '0:00:00';
         document.getElementById('resetBtn').style.display = 'none';
-        showToast('Game reset.', 'success');
+        showToast('Game fully reset.', 'success');
     }
 
 
