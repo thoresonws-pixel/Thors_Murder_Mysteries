@@ -3,717 +3,527 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="0; url=home.html">
-    <script>window.location.replace('home.html');</script>
-    <title>The Thoreson Estate Dinner</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#080810">
+    <meta name="description" content="Thor's Murder Mysteries — Immersive murder mystery dinner experiences in Dallas, Texas. Real characters. Real suspects. One killer among you.">
+    <title>Thor's Murder Mysteries</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Special+Elite&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --ink:#080810;--deep:#0d0d1a;--panel:#13131f;
+            --gold:#c9a227;--gold-lt:#e8c55a;--gold-dk:#8a6d14;
+            --cream:#f5f0e6;--fog:#8b8b9e;--mist:#c9c9d8;
         }
-        body {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            color: #e8e8e8;
-        }
-        
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(26, 26, 46, 0.95);
-            border-bottom: 1px solid #c9a227;
-            padding: 15px 0;
-            z-index: 1000;
-        }
-        nav ul {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 40px;
-            list-style: none;
-        }
-        nav a {
-            color: #c9a227;
-            text-decoration: none;
-            font-size: 18px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            transition: all 0.3s;
-        }
-        nav a:hover {
-            color: #fff;
-            text-shadow: 0 0 10px #c9a227;
-        }
-        .nav-login {
-            font-family: "Cormorant Garamond", Georgia, serif;
-            font-size: 14px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 7px 18px;
-            background: transparent;
-            color: #c9a227;
-            border: 1px solid #c9a227;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-        .nav-login:hover {
-            background: #c9a227;
-            color: #1a1a2e;
-            text-shadow: none;
-        }
-        
-        /* Sections */
-        section {
-            min-height: 100vh;
-            padding: 100px 20px 60px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        /* Invitation Section */
-        #invitation {
-            justify-content: center;
-        }
-        .invitation-card {
-            width: 100%;
-            max-width: 550px;
-            background: linear-gradient(145deg, #f5f0e6 0%, #e8e0d0 50%, #d4c9b5 100%);
-            border: 3px solid #8b7355;
-            box-shadow: 
-                0 0 0 1px #a08060,
-                0 0 0 6px #2a2520,
-                0 0 0 8px #8b7355,
-                0 20px 60px rgba(0,0,0,0.5);
-            padding: 40px 35px;
-            position: relative;
-            overflow: hidden;
-        }
-        .invitation-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 0 L100 50 L50 100 L0 50 Z' fill='none' stroke='%23c9a22720' stroke-width='0.5'/%3E%3C/svg%3E");
-            opacity: 0.3;
-            pointer-events: none;
-        }
-        .corner {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            border: 2px solid #8b7355;
-        }
-        .corner-tl { top: 15px; left: 15px; border-right: none; border-bottom: none; }
-        .corner-tr { top: 15px; right: 15px; border-left: none; border-bottom: none; }
-        .corner-bl { bottom: 15px; left: 15px; border-right: none; border-top: none; }
-        .corner-br { bottom: 15px; right: 15px; border-left: none; border-top: none; }
-        .invite-content {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 25px;
-        }
-        .ornament {
-            font-size: 28px;
-            color: #8b7355;
-        }
-        .estate-name {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 32px;
-            font-weight: 700;
-            color: #2a2520;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-        }
-        .estate-sub {
-            font-size: 14px;
-            color: #8b7355;
-            letter-spacing: 6px;
-            text-transform: uppercase;
-            margin-top: -15px;
-        }
-        .divider {
-            width: 150px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #8b7355, transparent);
-        }
-        .summons {
-            font-size: 16px;
-            color: #5a4a3a;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-        .message {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 20px;
-            font-style: italic;
-            color: #3a3028;
-            line-height: 1.8;
-        }
-        .announcement {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 18px;
-            color: #2a2520;
-            font-weight: 600;
-        }
-        .detail-label {
-            font-size: 11px;
-            color: #8b7355;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-        .detail-line {
-            font-size: 18px;
-            color: #3a3028;
-            letter-spacing: 1px;
-        }
-        .address {
-            font-size: 15px;
-            color: #5a4a3a;
-            line-height: 1.5;
-        }
-        .attire {
-            font-size: 15px;
-            font-style: italic;
-            color: #6a5a4a;
-            letter-spacing: 1px;
-        }
-        .host-label {
-            font-size: 11px;
-            color: #8b7355;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-        }
-        .host-name {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 24px;
-            font-style: italic;
-            color: #2a2520;
-        }
-        .bottom-ornament {
-            font-size: 20px;
-            color: #8b7355;
-            letter-spacing: 10px;
-        }
-        
-        /* Section Titles */
-        .section-title {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 36px;
-            color: #c9a227;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        .section-subtitle {
-            font-size: 16px;
-            color: #8b7355;
-            letter-spacing: 3px;
-            margin-bottom: 40px;
-            text-align: center;
-        }
-        
-        
-        
-        
-        /* Cocktail Menu Section */
-        #cocktails {
-            background: rgba(0,0,0,0.1);
-        }
-        .menu-container {
-            width: 100%;
-            max-width: 450px;
-            background: linear-gradient(145deg, #f5f0e6 0%, #e8e0d0 50%, #d4c9b5 100%);
-            border: 2px solid #8b7355;
-            box-shadow: 
-                0 0 0 1px #a08060,
-                0 0 0 4px #2a2520,
-                0 0 0 6px #8b7355,
-                0 15px 40px rgba(0,0,0,0.4);
-            padding: 40px;
-            text-align: center;
-        }
-        .menu-section {
-            margin-bottom: 10px;
-        }
-        .menu-header {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: #2a2520;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-        }
-        .menu-item {
-            margin-bottom: 18px;
-        }
-        .drink-name {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 20px;
-            font-weight: 600;
-            color: #2a2520;
-            margin-bottom: 4px;
-        }
-        .drink-desc {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 16px;
-            font-style: italic;
-            color: #5a4a3a;
-            letter-spacing: 1px;
-        }
-        .menu-divider {
-            font-size: 18px;
-            color: #8b7355;
-            margin: 25px 0;
-        }
-        
-        /* Guest List Section */
-        .guest-container {
-            width: 100%;
-            max-width: 620px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .guest-card {
-            background: linear-gradient(145deg, #f5f0e6 0%, #e8e0d0 100%);
-            border: 1px solid #8b7355;
-            overflow: hidden;
-        }
-        .guest-card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 20px;
-            cursor: pointer;
-            user-select: none;
-            transition: background 0.2s;
-        }
-        .guest-card-header:hover { background: rgba(139,115,85,0.12); }
-        .guest-card-left { display: flex; flex-direction: column; gap: 2px; }
-        .guest-card-name {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 20px;
-            color: #2a2520;
-            font-style: italic;
-        }
-        .guest-card-role {
-            font-family: Arial, sans-serif;
-            font-size: 10px;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: #8b7355;
-        }
-        .guest-card-chevron {
-            color: #8b7355;
-            font-size: 11px;
-            transition: transform 0.25s;
-            flex-shrink: 0;
-            margin-left: 12px;
-        }
-        .guest-card.open .guest-card-chevron { transform: rotate(180deg); }
-        .guest-card-body {
-            display: none;
-            padding: 0 20px 16px 20px;
-            border-top: 1px solid rgba(139,115,85,0.3);
-        }
-        .guest-card.open .guest-card-body { display: block; }
-        .guest-card-desc {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 17px;
-            font-style: italic;
-            color: #5a4a3a;
-            line-height: 1.7;
-            padding-top: 12px;
-        }
-        .loading {
-            text-align: center;
-            color: #5a4a3a;
-            font-style: italic;
-            padding: 30px;
-            font-size: 18px;
-        }
-        
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 40px 20px;
-            color: #5a4a3a;
-            font-size: 14px;
-            letter-spacing: 2px;
-        }
-        
-        /* Responsive */
-        @media (max-width: 600px) {
-            nav ul {
-                gap: 15px;
-            }
-            nav a {
-                font-size: 12px;
-                letter-spacing: 1px;
-            }
-            section {
-                padding: 80px 15px 40px;
-            }
-            .invitation-card {
-                padding: 25px 20px;
-            }
-            .corner {
-                width: 40px;
-                height: 40px;
-            }
-            .corner-tl, .corner-tr, .corner-bl, .corner-br {
-                top: 10px;
-                left: 10px;
-            }
-            .corner-tr, .corner-br {
-                left: auto;
-                right: 10px;
-            }
-            .corner-bl, .corner-br {
-                top: auto;
-                bottom: 10px;
-            }
-            .estate-name {
-                font-size: 22px;
-                letter-spacing: 2px;
-            }
-            .summons {
-                font-size: 12px;
-                letter-spacing: 2px;
-            }
-            .message {
-                font-size: 16px;
-            }
-            .announcement {
-                font-size: 16px;
-            }
-            .detail-line {
-                font-size: 16px;
-            }
-            .address {
-                font-size: 14px;
-            }
-            .host-name {
-                font-size: 20px;
-            }
-            .section-title {
-                font-size: 24px;
-                letter-spacing: 2px;
-            }
-            .section-subtitle {
-                font-size: 14px;
-            }
-            
-            .form-label {
-                font-size: 14px;
-            }
-            .form-input, .form-textarea {
-                font-size: 16px;
-                padding: 10px 12px;
-            }
-            .radio-text {
-                font-size: 15px;
-            }
-            .form-button {
-                font-size: 14px;
-                padding: 12px 20px;
-            }
-            .menu-container {
-                padding: 30px 25px;
-            }
-            .menu-header {
-                font-size: 18px;
-            }
-            .drink-name {
-                font-size: 18px;
-            }
-            .drink-desc {
-                font-size: 14px;
-            }
-            .guest-container {
-                padding: 20px 25px;
-            }
-            .guest-name {
-                font-size: 18px;
-            }
-        }
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:'Cormorant Garamond',Georgia,serif;background:var(--ink);color:var(--cream);overflow-x:hidden}
+        body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:.35}
 
-        /* Guest Cards */
-        .guest-container {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .guest-card {
-            background: linear-gradient(145deg, #f5f0e6 0%, #e8e0d0 100%);
-            border: 1px solid #8b7355;
-            overflow: hidden;
-        }
-        .guest-card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 20px;
-            cursor: pointer;
-            user-select: none;
-            transition: background 0.2s;
-        }
-        .guest-card-header:hover {
-            background: rgba(139,115,85,0.12);
-        }
-        .guest-card-left {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .guest-bullet { color: #8b7355; font-size: 11px; }
-        .guest-card-name {
-            font-family: "Cormorant Garamond", Georgia, serif;
-            font-size: 20px;
-            color: #2a2520;
-            font-style: italic;
-        }
-        .guest-card-role {
-            font-family: Arial, sans-serif;
-            font-size: 10px;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: #8b7355;
-            margin-top: 1px;
-        }
-        .guest-card-chevron {
-            color: #8b7355;
-            font-size: 12px;
-            transition: transform 0.25s;
-        }
-        .guest-card.open .guest-card-chevron { transform: rotate(180deg); }
-        .guest-card-body {
-            display: none;
-            padding: 0 20px 16px 48px;
-            border-top: 1px solid rgba(139,115,85,0.3);
-        }
-        .guest-card.open .guest-card-body { display: block; }
-        .guest-card-desc {
-            font-family: "Cormorant Garamond", Georgia, serif;
-            font-size: 17px;
-            font-style: italic;
-            color: #5a4a3a;
-            line-height: 1.7;
-            padding-top: 12px;
-        }
+        /* NAV */
+        nav{position:fixed;top:0;left:0;right:0;z-index:900;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:linear-gradient(to bottom,rgba(8,8,16,.95),transparent);backdrop-filter:blur(4px);transition:background .3s}
+        nav.scrolled{background:rgba(8,8,16,.97);border-bottom:1px solid rgba(201,162,39,.12)}
+        .nav-brand{font-family:'Special Elite',monospace;font-size:13px;letter-spacing:4px;text-transform:uppercase;color:var(--gold)}
+        .nav-links{display:flex;align-items:center;gap:36px;list-style:none}
+        .nav-links a{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--mist);text-decoration:none;transition:color .2s}
+        .nav-links a:hover{color:var(--gold)}
+        .nav-cta{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--ink);background:var(--gold);padding:10px 22px;text-decoration:none;transition:background .2s}
+        .nav-cta:hover{background:var(--gold-lt)}
+        @media(max-width:900px){.nav-links,.nav-cta{display:none}nav{padding:18px 24px}}
+
+        /* HERO */
+        #hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:120px 24px 80px}
+        .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(139,26,26,.12) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 50% 80%,rgba(201,162,39,.06) 0%,transparent 60%),linear-gradient(180deg,#080810 0%,#0f0a14 50%,#080810 100%)}
+        .hero-lines{position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 80px,rgba(201,162,39,.025) 80px,rgba(201,162,39,.025) 81px),repeating-linear-gradient(90deg,transparent,transparent 80px,rgba(201,162,39,.015) 80px,rgba(201,162,39,.015) 81px)}
+        .hero-content{position:relative;z-index:2;max-width:900px}
+        .hero-eyebrow{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:28px;opacity:0;animation:fadeUp 1s ease .2s forwards}
+        .hero-title{font-family:'Playfair Display',serif;font-size:clamp(52px,8vw,112px);font-weight:900;line-height:.92;color:var(--cream);margin-bottom:32px;opacity:0;animation:fadeUp 1s ease .4s forwards}
+        .hero-title em{font-style:italic;color:var(--gold)}
+        .hero-sub{font-size:clamp(18px,2.5vw,24px);font-style:italic;color:var(--mist);line-height:1.65;max-width:620px;margin:0 auto 48px;opacity:0;animation:fadeUp 1s ease .6s forwards}
+        .hero-btns{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;opacity:0;animation:fadeUp 1s ease .8s forwards}
+        .hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fadeUp 1s ease 1.2s forwards}
+        .hero-scroll span{font-family:'Special Elite',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--fog)}
+        .scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollPulse 2s ease-in-out infinite}
+
+        /* BUTTONS */
+        .btn-gold{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--ink);background:var(--gold);padding:16px 36px;text-decoration:none;border:none;cursor:pointer;transition:background .2s,transform .1s;display:inline-block}
+        .btn-gold:hover{background:var(--gold-lt);transform:translateY(-1px)}
+        .btn-outline{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);background:transparent;padding:15px 36px;text-decoration:none;border:1px solid rgba(201,162,39,.4);cursor:pointer;transition:border-color .2s,color .2s;display:inline-block}
+        .btn-outline:hover{border-color:var(--gold);color:var(--gold-lt)}
+
+        /* SECTIONS */
+        section{position:relative;padding:100px 48px}
+        .section-inner{max-width:1200px;margin:0 auto}
+        .section-eyebrow{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:16px}
+        .section-eyebrow::after{content:'';flex:1;max-width:60px;height:1px;background:var(--gold-dk)}
+        .section-title{font-family:'Playfair Display',serif;font-size:clamp(36px,5vw,64px);font-weight:700;line-height:1.05;color:var(--cream);margin-bottom:24px}
+        .section-title em{font-style:italic;color:var(--gold)}
+        .section-body{font-size:19px;line-height:1.75;color:var(--mist);max-width:680px}
+        @media(max-width:900px){section{padding:72px 24px}}
+
+        /* HOW IT WORKS */
+        #how{background:var(--deep)}
+        .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2px;margin-top:64px}
+        .step{background:var(--panel);padding:40px 32px;position:relative;overflow:hidden;transition:background .3s}
+        .step:hover{background:#171724}
+        .step::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .3s}
+        .step:hover::before{opacity:1}
+        .step-num{font-family:'Playfair Display',serif;font-size:72px;font-weight:900;color:rgba(201,162,39,.08);line-height:1;margin-bottom:16px}
+        .step-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--cream);margin-bottom:12px}
+        .step-body{font-size:16px;line-height:1.7;color:var(--fog)}
+
+        /* STORIES */
+        #stories{background:var(--ink)}
+        .stories-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:2px;margin-top:64px}
+        .story-card{background:var(--panel);overflow:hidden;transition:transform .3s}
+        .story-card:hover{transform:translateY(-4px)}
+        .story-img{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#1a0a0a,#0d0d1a);display:flex;align-items:center;justify-content:center;font-size:64px;position:relative;overflow:hidden}
+        .story-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,var(--panel) 0%,transparent 60%)}
+        .story-era{position:absolute;top:16px;left:16px;font-family:'Special Elite',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);background:rgba(8,8,16,.8);padding:4px 10px;z-index:1}
+        .story-body{padding:28px 28px 32px}
+        .story-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--cream);margin-bottom:8px}
+        .story-loc{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:14px}
+        .story-desc{font-size:16px;line-height:1.65;color:var(--fog);margin-bottom:20px}
+        .tag{display:inline-block;font-family:'Special Elite',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--fog);border:1px solid rgba(255,255,255,.1);padding:3px 10px;margin:2px 2px 2px 0}
+        .tag-avail{color:#3fb950;border-color:rgba(63,185,80,.3)}
+        .tag-soon{color:var(--fog);border-color:rgba(139,139,158,.3)}
+
+        /* PHOTOS */
+        #photos{background:var(--deep)}
+        .photo-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:64px}
+        .photo-cell{background:var(--panel);overflow:hidden;position:relative}
+        .photo-cell:nth-child(1){grid-column:span 5;min-height:300px}
+        .photo-cell:nth-child(2){grid-column:span 4;min-height:300px}
+        .photo-cell:nth-child(3){grid-column:span 3;min-height:300px}
+        .photo-cell:nth-child(4){grid-column:span 3;min-height:240px}
+        .photo-cell:nth-child(5){grid-column:span 5;min-height:240px}
+        .photo-cell:nth-child(6){grid-column:span 4;min-height:240px}
+        .photo-cell img{width:100%;height:100%;object-fit:cover;display:block;filter:sepia(20%) contrast(1.05);transition:filter .3s,transform .4s}
+        .photo-cell:hover img{filter:sepia(0%) contrast(1.1);transform:scale(1.04)}
+        .photo-ph{width:100%;min-height:inherit;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f0f1e,#1a1525);color:rgba(201,162,39,.12);font-family:'Playfair Display',serif;font-size:13px;letter-spacing:2px;text-transform:uppercase}
+        @media(max-width:900px){.photo-cell:nth-child(n){grid-column:span 6;min-height:160px}.photo-cell:nth-child(1),.photo-cell:nth-child(2){grid-column:span 12;min-height:200px}}
+        @media(max-width:600px){.photo-cell:nth-child(n){grid-column:span 12}}
+
+        /* PRICING */
+        #pricing{background:var(--ink)}
+        .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2px;margin-top:64px}
+        .price-card{background:var(--panel);padding:44px 36px;position:relative}
+        .price-card.featured{background:#14101a;border-top:2px solid var(--gold)}
+        .price-card.featured::before{content:'Most Popular';position:absolute;top:-1px;left:50%;transform:translateX(-50%) translateY(-50%);font-family:'Special Elite',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--ink);background:var(--gold);padding:4px 14px;white-space:nowrap}
+        .price-tier{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+        .price-name{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--cream);margin-bottom:8px}
+        .price-amt{font-family:'Playfair Display',serif;font-size:48px;font-weight:900;color:var(--cream);line-height:1;margin-bottom:4px}
+        .price-amt sup{font-size:24px;vertical-align:super}
+        .price-amt span{font-size:16px;font-weight:400;color:var(--fog)}
+        .price-desc{font-size:15px;color:var(--fog);margin-bottom:28px;line-height:1.6}
+        .price-features{list-style:none;margin-bottom:36px}
+        .price-features li{font-size:15px;color:var(--mist);padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:10px}
+        .price-features li::before{content:'✦';color:var(--gold);font-size:10px;flex-shrink:0}
+
+        /* TESTIMONIALS */
+        #testimonials{background:var(--deep)}
+        .testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2px;margin-top:64px}
+        .testimonial{background:var(--panel);padding:36px 32px;position:relative}
+        .testimonial::before{content:'\201C';position:absolute;top:24px;right:28px;font-family:'Playfair Display',serif;font-size:80px;color:rgba(201,162,39,.08);line-height:1}
+        .t-stars{color:var(--gold);font-size:14px;letter-spacing:2px;margin-bottom:16px}
+        .t-text{font-size:17px;font-style:italic;line-height:1.75;color:var(--mist);margin-bottom:24px}
+        .t-author{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+        .t-event{font-size:13px;color:var(--fog);margin-top:2px}
+
+        /* JOIN */
+        #join{background:var(--ink);text-align:center;padding:80px 48px}
+        .join-inner{max-width:540px;margin:0 auto}
+        .ornament-div{display:flex;align-items:center;gap:16px;margin:0 0 16px;color:var(--gold-dk);font-size:12px;letter-spacing:4px;justify-content:center}
+        .ornament-div::before,.ornament-div::after{content:'';flex:1;max-width:80px;height:1px;background:var(--gold-dk)}
+        .code-wrap{display:flex;gap:0;margin:40px 0 20px}
+        .code-input{flex:1;background:var(--panel);border:1px solid rgba(201,162,39,.2);border-right:none;color:var(--cream);font-family:'Special Elite',monospace;font-size:20px;letter-spacing:6px;text-transform:uppercase;padding:16px 20px;outline:none}
+        .code-input::placeholder{color:rgba(201,162,39,.2);letter-spacing:4px}
+        .code-input:focus{border-color:rgba(201,162,39,.5)}
+        .code-btn{background:var(--gold);color:var(--ink);border:none;padding:16px 28px;font-family:'Special Elite',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:background .2s;white-space:nowrap}
+        .code-btn:hover{background:var(--gold-lt)}
+        .join-alt{font-size:15px;color:var(--fog)}
+        .join-alt a{color:var(--gold);text-decoration:none}
+
+        /* BOOK */
+        #book{background:var(--deep)}
+        .book-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;margin-top:64px}
+        @media(max-width:900px){.book-grid{grid-template-columns:1fr;gap:48px}}
+        .book-form{display:flex;flex-direction:column;gap:16px}
+        .form-row{display:flex;gap:16px}
+        .form-row .form-group{flex:1}
+        @media(max-width:600px){.form-row{flex-direction:column}}
+        .form-group{display:flex;flex-direction:column;gap:8px}
+        .form-group label{font-family:'Special Elite',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--fog)}
+        .form-group input,.form-group select,.form-group textarea{background:var(--panel);border:1px solid rgba(255,255,255,.08);color:var(--cream);font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;padding:12px 16px;outline:none;transition:border-color .2s;width:100%}
+        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:rgba(201,162,39,.4)}
+        .form-group textarea{resize:vertical;min-height:120px}
+        .form-group select{appearance:none;cursor:pointer}
+        .form-submit{background:var(--gold);color:var(--ink);border:none;padding:16px 36px;font-family:'Special Elite',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:background .2s;width:100%;margin-top:8px}
+        .form-submit:hover{background:var(--gold-lt)}
+        .form-success{display:none;text-align:center;padding:40px;background:rgba(63,185,80,.04);border:1px solid rgba(63,185,80,.2)}
+        .form-success p{font-size:18px;color:var(--mist);line-height:1.7}
+        .book-fact{padding:28px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+        .book-fact:first-child{border-top:1px solid rgba(255,255,255,.06)}
+        .book-fact-label{font-family:'Special Elite',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+        .book-fact-value{font-size:17px;color:var(--mist);line-height:1.6}
+
+        /* FOOTER */
+        footer{background:var(--ink);border-top:1px solid rgba(201,162,39,.1);padding:48px}
+        .footer-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px}
+        .footer-brand{font-family:'Special Elite',monospace;font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--gold)}
+        .footer-tagline{font-size:14px;font-style:italic;color:var(--fog);margin-top:4px}
+        .footer-links{display:flex;gap:32px;flex-wrap:wrap}
+        .footer-links a{font-family:'Special Elite',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--fog);text-decoration:none;transition:color .2s}
+        .footer-links a:hover{color:var(--gold)}
+        .footer-copy{font-size:13px;color:rgba(139,139,158,.4)}
+        @media(max-width:600px){footer{padding:36px 24px}.footer-inner{flex-direction:column;text-align:center}}
+
+        /* ANIMATIONS */
+        @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes scrollPulse{0%,100%{opacity:.4;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.2)}}
+        .reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease}
+        .reveal.visible{opacity:1;transform:translateY(0)}
+        .stagger-1{transition-delay:.1s}.stagger-2{transition-delay:.22s}.stagger-3{transition-delay:.34s}.stagger-4{transition-delay:.46s}
     </style>
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href="#invitation">Invitation</a></li>
-            <li><a href="#cocktails">Cocktails</a></li>
-            <li><a href="#guests">Guests</a></li>
-            <li><a href="signin.html" class="nav-login">Player Login</a></li>
-        </ul>
-    </nav>
 
-    <!-- INVITATION SECTION -->
-    <section id="invitation">
-        <div class="invitation-card">
-            <div class="corner corner-tl"></div>
-            <div class="corner corner-tr"></div>
-            <div class="corner corner-bl"></div>
-            <div class="corner corner-br"></div>
-            
-            <div class="invite-content">
-                <div class="ornament">✦</div>
-                
-                <div>
-                    <div class="estate-name">The Thoreson Estate</div>
-                </div>
-                
-                <div class="divider"></div>
-                
-                <div class="summons">You Are Cordially Summoned</div>
-                
-                <div class="message">
-                    to a dinner party at the estate.<br>
-                    Mr. Thoreson has an announcement to make<br>
-                    that shall change everything.
-                </div>
-                
-                <div class="announcement">Your presence is required.</div>
-                
-                <div class="divider"></div>
-                
-                <div>
-                    <div class="detail-label">Date</div>
-                    <div class="detail-line">Saturday, the Twenty-First of March</div>
-                    <div class="detail-line">Nineteen Thirty-Five</div>
-                </div>
-                
-                <div>
-                    <div class="detail-label">Time</div>
-                    <div class="detail-line">Cocktails at Half Past Five</div>
-                    <div class="detail-line">Arrive No Later Than Six O'Clock</div>
-                    <div class="detail-line">Dinner Promptly at Half Past Six</div>
-                </div>
-                
-                <div>
-                    <div class="detail-label">Location</div>
-                    <div class="address">16920 Old Pond Drive<br>Dallas, Texas 75248</div>
-                </div>
-                
-                <div class="attire">1930s formal attire requested</div>
-                
-                <div class="divider"></div>
-                
-                <div>
-                    <div class="host-label">Your Host</div>
-                    <div class="host-name">Mr. William Thoreson</div>
-                </div>
-                
-                <div class="bottom-ornament">✦ ✦ ✦</div>
+<nav id="navbar">
+    <div class="nav-brand">Thor's Murder Mysteries</div>
+    <ul class="nav-links">
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#stories">Stories</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="#book">Contact</a></li>
+    </ul>
+    <a href="#join" class="nav-cta">Join a Game</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-lines"></div>
+    <div class="hero-content">
+        <div class="hero-eyebrow">Dallas, Texas &nbsp;✦&nbsp; Immersive Experiences</div>
+        <h1 class="hero-title">Someone<br>at the Table<br><em>is the Killer</em></h1>
+        <p class="hero-sub">A fully immersive murder mystery dinner experience. Real characters, real suspects, real intrigue — and one of your guests is hiding a secret.</p>
+        <div class="hero-btns">
+            <a href="#book" class="btn-gold">Book Your Evening</a>
+            <a href="#stories" class="btn-outline">See the Stories</a>
+        </div>
+    </div>
+    <div class="hero-scroll">
+        <div class="scroll-line"></div>
+        <span>Scroll</span>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+    <div class="section-inner">
+        <div class="reveal">
+            <div class="section-eyebrow">The Experience</div>
+            <h2 class="section-title">An Evening Unlike<br><em>Any Other</em></h2>
+            <p class="section-body">Part dinner party, part escape room, part theatre. Every guest plays a character. Every clue matters. And someone at your table has blood on their hands.</p>
+        </div>
+        <div class="steps">
+            <div class="step reveal stagger-1">
+                <div class="step-num">01</div>
+                <div class="step-title">You're Invited</div>
+                <div class="step-body">Guests receive their character assignment, backstory, and the evening's details via our app. The mystery begins before you arrive.</div>
+            </div>
+            <div class="step reveal stagger-2">
+                <div class="step-num">02</div>
+                <div class="step-title">Cocktail Hour</div>
+                <div class="step-body">Arrive in character. Mingle, gather intel, complete social missions. The host is very much alive — for now. Secrets are already circling the room.</div>
+            </div>
+            <div class="step reveal stagger-3">
+                <div class="step-num">03</div>
+                <div class="step-title">The Murder</div>
+                <div class="step-body">The host is found dead. The investigation opens. Evidence surfaces through documents, QR codes, locked boxes, and your fellow guests' secrets.</div>
+            </div>
+            <div class="step reveal stagger-4">
+                <div class="step-num">04</div>
+                <div class="step-title">The Reveal</div>
+                <div class="step-body">Three acts of escalating tension. The killer plays their role until the final accusation. When the truth comes out — it's unforgettable.</div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-
-    <!-- COCKTAIL MENU SECTION -->
-    <section id="cocktails">
-        <h2 class="section-title">Cocktail Menu</h2>
-        <p class="section-subtitle">Libations for the evening</p>
-        
-        <div class="menu-container">
-            <div class="menu-section">
-                <div class="menu-header">Spirits</div>
-                
-                <div class="menu-item">
-                    <div class="drink-name">Old Fashioned</div>
-                    <div class="drink-desc">Whiskey, Sugar, Bitters, Orange Peel</div>
-                </div>
-                
-                <div class="menu-item">
-                    <div class="drink-name">Gin Rickey</div>
-                    <div class="drink-desc">Gin, Lime, Soda Water</div>
-                </div>
-                
-                <div class="menu-item">
-                    <div class="drink-name">Bee's Knees</div>
-                    <div class="drink-desc">Gin, Honey, Lime</div>
-                </div>
-                
-                <div class="menu-item">
-                    <div class="drink-name">Cuba Libre</div>
-                    <div class="drink-desc">Rum, Cola, Lime</div>
+<!-- STORIES -->
+<section id="stories">
+    <div class="section-inner">
+        <div class="reveal">
+            <div class="section-eyebrow">The Mysteries</div>
+            <h2 class="section-title">Choose Your<br><em>Story</em></h2>
+            <p class="section-body">Each mystery is a fully original world with its own era, characters, and secrets. No two evenings are the same — even if you've played before.</p>
+        </div>
+        <div class="stories-grid">
+            <div class="story-card reveal stagger-1">
+                <div class="story-img">🕯️<div class="story-era">Dallas · 1935</div></div>
+                <div class="story-body">
+                    <div class="story-title">The Thoreson Estate Dinner</div>
+                    <div class="story-loc">✦ Dallas, Texas</div>
+                    <p class="story-desc">William Thoreson has an announcement to make. By the time dinner is served, he'll be dead — and everyone at the table had a reason to want him gone.</p>
+                    <div><span class="tag">8–22 players</span><span class="tag">3 hours</span><span class="tag">Formal attire</span></div>
+                    <div style="margin-top:14px"><span class="tag tag-avail">✓ Available Now</span></div>
                 </div>
             </div>
-            
-            <div class="menu-divider">✦</div>
-            
-            <div class="menu-section">
-                <div class="menu-header">Temperance</div>
-                
-                <div class="menu-item">
-                    <div class="drink-name">Shirley Temple</div>
-                    <div class="drink-desc">Ginger Ale, Grenadine, Cherry</div>
+            <div class="story-card reveal stagger-2">
+                <div class="story-img">🎭<div class="story-era">New Orleans · 1924</div></div>
+                <div class="story-body">
+                    <div class="story-title">The Devereaux Masquerade</div>
+                    <div class="story-loc">✦ New Orleans, Louisiana</div>
+                    <p class="story-desc">A masquerade ball at the Devereaux estate. Behind every mask, a secret. Behind every secret, a motive. The missing heir is the least of your problems.</p>
+                    <div><span class="tag">8–18 players</span><span class="tag">3 hours</span><span class="tag">Masquerade attire</span></div>
+                    <div style="margin-top:14px"><span class="tag tag-soon">Coming Soon</span></div>
                 </div>
-                
-                <div class="menu-item">
-                    <div class="drink-name">Virgin Cuba Libre</div>
-                    <div class="drink-desc">Cola, Lime</div>
-                </div>
-                
-                <div class="menu-item">
-                    <div class="drink-name">Mineral Water</div>
-                    <div class="drink-desc">Sparkling, with Lemon or Lime</div>
+            </div>
+            <div class="story-card reveal stagger-3">
+                <div class="story-img">🚂<div class="story-era">Chicago · 1947</div></div>
+                <div class="story-body">
+                    <div class="story-title">Last Train to Wicker Park</div>
+                    <div class="story-loc">✦ Chicago, Illinois</div>
+                    <p class="story-desc">A body in the dining car. The train doesn't stop until Milwaukee. Nobody leaves until the killer is found — and everyone aboard is lying.</p>
+                    <div><span class="tag">6–14 players</span><span class="tag">2.5 hours</span><span class="tag">1940s attire</span></div>
+                    <div style="margin-top:14px"><span class="tag tag-soon">Coming Soon</span></div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- GUEST LIST SECTION -->
-    <section id="guests">
-        <h2 class="section-title">Expected Guests</h2>
-        <p class="section-subtitle">Those who have answered the summons</p>
-        <div class="guest-container" id="guestContainer">
-            <div class="loading">Loading guest list&hellip;</div>
+<!-- PHOTOS -->
+<section id="photos">
+    <div class="section-inner">
+        <div class="reveal">
+            <div class="section-eyebrow">From the Estate</div>
+            <h2 class="section-title">The Evening of<br><em>March 21st</em></h2>
+            <p class="section-body">The inaugural Thoreson Estate Dinner. Twenty-two guests. One killer. An evening nobody forgot.</p>
         </div>
-    </section>
+        <div class="photo-grid reveal">
+            <div class="photo-cell"><div class="photo-ph">The Estate</div></div>
+            <div class="photo-cell"><div class="photo-ph">The Guests</div></div>
+            <div class="photo-cell"><div class="photo-ph">The Evidence</div></div>
+            <div class="photo-cell"><div class="photo-ph">The Reveal</div></div>
+            <div class="photo-cell"><div class="photo-ph">The Accusation</div></div>
+            <div class="photo-cell"><div class="photo-ph">The Killer</div></div>
+        </div>
+        <p style="text-align:center;margin-top:32px;font-size:15px;color:var(--fog);font-style:italic;" class="reveal">Photos from your evening are available in the app after the event.</p>
+    </div>
+</section>
 
-    <footer>
-        The Thoreson Estate — 1935
-    </footer>
+<!-- PRICING -->
+<section id="pricing">
+    <div class="section-inner">
+        <div class="reveal">
+            <div class="section-eyebrow">Packages</div>
+            <h2 class="section-title">Book Your<br><em>Evening</em></h2>
+            <p class="section-body">Every package includes the full mystery, character assignments, our custom app, and an evening your guests will talk about for years.</p>
+        </div>
+        <div class="pricing-grid">
+            <div class="price-card reveal stagger-1">
+                <div class="price-tier">Estate Experience</div>
+                <div class="price-name">The Gathering</div>
+                <div class="price-amt"><sup>$</sup>115<span> / person</span></div>
+                <div class="price-desc">The complete experience at your home or venue.</div>
+                <ul class="price-features">
+                    <li>Up to 22 guests</li>
+                    <li>Full mystery evening (3 hrs)</li>
+                    <li>Character assignments + app</li>
+                    <li>Physical props & documents</li>
+                    <li>GM hosted & run</li>
+                    <li>Evening photo wall</li>
+                </ul>
+                <a href="#book" class="btn-outline" style="width:100%;text-align:center;">Book Now</a>
+            </div>
+            <div class="price-card featured reveal stagger-2">
+                <div class="price-tier">Private Affair</div>
+                <div class="price-name">The Inner Circle</div>
+                <div class="price-amt"><sup>$</sup>135<span> / person</span></div>
+                <div class="price-desc">A more intimate experience with additional customization.</div>
+                <ul class="price-features">
+                    <li>Up to 14 guests</li>
+                    <li>Full mystery evening (3 hrs)</li>
+                    <li>Customized character details</li>
+                    <li>Physical props & documents</li>
+                    <li>GM hosted & run</li>
+                    <li>Evening photo wall</li>
+                    <li>Pre-event character briefing</li>
+                </ul>
+                <a href="#book" class="btn-gold" style="width:100%;text-align:center;">Book Now</a>
+            </div>
+            <div class="price-card reveal stagger-3">
+                <div class="price-tier">Corporate</div>
+                <div class="price-name">The Company</div>
+                <div class="price-amt"><sup>$</sup>2,500<span> flat</span></div>
+                <div class="price-desc">Team building with a twist. Corporate events and client entertainment.</div>
+                <ul class="price-features">
+                    <li>Up to 30 guests</li>
+                    <li>Full mystery evening (3 hrs)</li>
+                    <li>Corporate branding options</li>
+                    <li>Physical props & documents</li>
+                    <li>GM hosted & run</li>
+                    <li>Evening photo wall</li>
+                    <li>Post-event debrief</li>
+                </ul>
+                <a href="#book" class="btn-outline" style="width:100%;text-align:center;">Book Now</a>
+            </div>
+        </div>
+    </div>
+</section>
 
-    <script>
-        // Guest list — built from characters.js publicDesc
-        const guests = [
-            // Family
-            { name: "William 'Scott' Thoreson Jr.", role: "Your Host", desc: "Eldest son of William Thoreson Sr. and the family's attorney. A man of integrity who has dedicated his career to managing the family's legal affairs." },
-            { name: "Frederick Thoreson", role: "The Younger Brother", desc: "Younger son of William Thoreson Sr. The easygoing one. Here for the food and the drinks." },
-            { name: "Charlotte Waverly", role: "Scott's Wife", desc: "Scott's wife. Warm, practical, and the one keeping things running tonight." },
-            { name: "Eleanor Thoreson (Linda)", role: "The Grieving Widow", desc: "William Thoreson's wife of many years. Dignified in grief, as she has always been dignified in everything. Knows more than she has said." },
-            { name: "Rupert Thoreson (Bill)", role: "Will's Identical Twin", desc: "William Thoreson's identical twin brother. An amateur photographer who has spent the evening behind a camera. Quietly devastated by the loss of his brother." },
-            // Mixed
-            { name: "Charles Sterling", role: "Retired Banker", desc: "A retired Dallas banker and old friend of the Thoreson family. Traditional, principled, and sharp as ever." },
-            { name: "Lillian Ashford", role: "Family Friend", desc: "A dear friend of the Thoreson family for over thirty years. Warm, sharp-tongued, and the best-dressed woman in any room she enters." },
-            { name: "Raymond Hammond", role: "Business Manager", desc: "Business Manager at Thoreson Toys for fifteen years. Handles operations, vendor relationships, and day-to-day management." },
-            { name: "Victoria Grant", role: "Importer's Wife", desc: "Her husband runs a successful import business with ties to Thoreson Toys. Sophisticated, socially savvy, and sharper than people expect." },
-            { name: "Vivienne Ashford", role: "The Worldly Cousin", desc: "Scott and Frederick's cousin on their mother's side. Recently returned from years living in Paris. Cultured, worldly, and fluent in French." },
-            { name: "Patricia Chamberlain", role: "The Guardian", desc: "An independent woman of means and strong will. Guardian to two young men. Protective, perceptive, and doesn't suffer fools." },
-            { name: "Elizabeth Monroe", role: "The Socialite", desc: "A fixture of Dallas society and the life of every party she has ever attended. Knows everyone, remembers everything, and makes it all look effortless." },
-            { name: "Walter Lippman", role: "Journalist", desc: "A journalist for the Dallas Herald, covering business and society. Known for thorough, honest reporting." },
-            { name: "Thomas Bradford", role: "Competitor", desc: "Runs Bradford & Sons, a competing toy manufacturer. Charming, ambitious, and very interested in Thoreson Toys' secrets." },
-            { name: "Marcus Brennan", role: "Investor", desc: "A successful Dallas businessman with a significant stake in Thoreson Toys. Analytical, measured, and protective of his money." },
-            { name: "Dorothy Wells", role: "Society Elder", desc: "One of the most well-connected women in Dallas society. Knows what's happening in every corner of the city." },
-            { name: "David Richardson", role: "Private Investigator", desc: "A cousin on the Thoreson side and a licensed private investigator. Invited to tonight's dinner — now using his connections to help the family get answers." },
-            { name: "Theodore 'Teddy' Winslow", role: "Vivienne's Guest", desc: "Vivienne's boyfriend and an accounting student at SMU. Quiet until someone puts numbers in front of him." },
-            { name: "Victoria Ashworth", role: "Investor", desc: "A sharp businesswoman and Thoreson Toys investor. Active in Dallas society with a keen eye for detail." },
-            { name: "Sophie Vanderpool", role: "Journalist's Assistant", desc: "Walter Lippman's assistant at the Dallas Herald. Smart, energetic, and eager to prove herself." },
-            { name: "James Sterling", role: "Banker's Son", desc: "Son of Charles Sterling, the retired banker. Young, ambitious, and seeing the Thoreson family with fresh eyes." },
-            { name: "Miranda Longfellow", role: "Legal Assistant", desc: "Scott Thoreson's legal assistant. Professional, competent, and discreet. Has worked for the family for nearly ten years." },
-            { name: "William Chamberlain", role: "Ward (age 17)", desc: "A young man under the guardianship of Patricia Chamberlain. Intelligent, thoughtful, and quietly ambitious." },
-            { name: "Henry Caldwell", role: "Late Arrival", desc: "Arrived late to the evening. Knows Scott through mutual friends. Seems to be taking all of this remarkably in stride." },
-            { name: "Robert Chamberlain", role: "Ward (age 15)", desc: "The younger of Patricia Chamberlain's two wards. Loyal, protective, and more emotionally attuned than people give him credit for." },
-        ];
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+    <div class="section-inner">
+        <div class="reveal">
+            <div class="section-eyebrow">From the Guests</div>
+            <h2 class="section-title">What People<br><em>Are Saying</em></h2>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial reveal stagger-1">
+                <div class="t-stars">★★★★★</div>
+                <p class="t-text">"I've been to a lot of dinner parties. I have never been to anything like this. The moment Will's body was found the entire room went electric. I was completely in character for three hours without even realizing it."</p>
+                <div class="t-author">Leanna T.</div>
+                <div class="t-event">The Thoreson Estate Dinner · March 2026</div>
+            </div>
+            <div class="testimonial reveal stagger-2">
+                <div class="t-stars">★★★★★</div>
+                <p class="t-text">"The app made everything seamless — clues arriving on your phone, memories unlocking as the story developed. It felt like a real investigation. And when the killer was revealed... nobody saw it coming."</p>
+                <div class="t-author">Marc V.</div>
+                <div class="t-event">The Thoreson Estate Dinner · March 2026</div>
+            </div>
+            <div class="testimonial reveal stagger-3">
+                <div class="t-stars">★★★★★</div>
+                <p class="t-text">"As someone deeply skeptical about murder mystery dinners — I was completely wrong. The characters are so well written that playing them feels natural. I want to do it again immediately."</p>
+                <div class="t-author">Clara W.</div>
+                <div class="t-event">The Thoreson Estate Dinner · March 2026</div>
+            </div>
+        </div>
+    </div>
+</section>
 
-        function buildGuestList() {
-            const container = document.getElementById('guestContainer');
-            container.innerHTML = guests.map((g, i) => `
-                <div class="guest-card" id="gc${i}">
-                    <div class="guest-card-header" onclick="toggleCard(${i})">
-                        <div class="guest-card-left">
-                            <div class="guest-card-name">${g.name}</div>
-                            <div class="guest-card-role">${g.role}</div>
-                        </div>
-                        <div class="guest-card-chevron">&#9660;</div>
+<!-- JOIN -->
+<section id="join">
+    <div class="section-inner">
+        <div class="join-inner reveal">
+            <div class="ornament-div">✦</div>
+            <div class="section-eyebrow" style="justify-content:center">Already Invited?</div>
+            <h2 class="section-title" style="text-align:center">Enter Your<br><em>Party Code</em></h2>
+            <p class="section-body" style="margin:0 auto;text-align:center">Received an invitation link? Enter your party code to join the evening.</p>
+            <div class="code-wrap">
+                <input type="text" class="code-input" id="partyCodeInput" placeholder="XXXX-XXXX" maxlength="12" autocomplete="off" autocapitalize="characters" oninput="this.value=this.value.toUpperCase()">
+                <button class="code-btn" onclick="joinWithCode()">Enter →</button>
+            </div>
+            <p class="join-alt">Already have an account? <a href="home.html">Sign in here</a></p>
+        </div>
+    </div>
+</section>
+
+<!-- BOOK -->
+<section id="book">
+    <div class="section-inner">
+        <div class="reveal">
+            <div class="section-eyebrow">Get in Touch</div>
+            <h2 class="section-title">Book Your<br><em>Mystery Evening</em></h2>
+        </div>
+        <div class="book-grid">
+            <div class="book-form reveal">
+                <div id="bookingForm">
+                    <div class="form-row">
+                        <div class="form-group"><label>First Name</label><input type="text" id="fname" placeholder="William"></div>
+                        <div class="form-group"><label>Last Name</label><input type="text" id="lname" placeholder="Thoreson"></div>
                     </div>
-                    <div class="guest-card-body">
-                        <div class="guest-card-desc">${g.desc}</div>
+                    <div class="form-group"><label>Email Address</label><input type="email" id="email" placeholder="you@example.com"></div>
+                    <div class="form-group"><label>Phone Number</label><input type="tel" id="phone" placeholder="(214) 555-0100"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Guest Count</label><input type="number" id="guestCount" placeholder="12" min="6" max="30"></div>
+                        <div class="form-group"><label>Preferred Date</label><input type="date" id="eventDate"></div>
                     </div>
-                </div>`).join('');
-        }
+                    <div class="form-group">
+                        <label>Package</label>
+                        <select id="package">
+                            <option value="">Select a package…</option>
+                            <option>Estate Experience — $115/person</option>
+                            <option>Private Affair — $135/person</option>
+                            <option>Corporate — $2,500 flat</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Tell us about your event</label><textarea id="message" placeholder="Venue, occasion, any special requests…"></textarea></div>
+                    <button class="form-submit" onclick="submitBooking()">Send Inquiry ✦</button>
+                </div>
+                <div class="form-success" id="formSuccess">
+                    <div style="font-size:32px;margin-bottom:16px">✦</div>
+                    <p>Thank you. Your inquiry has been received.<br>We'll be in touch within 24 hours to discuss your evening.</p>
+                </div>
+            </div>
+            <div class="reveal stagger-2">
+                <div class="book-fact"><div class="book-fact-label">Location</div><div class="book-fact-value">Dallas, Texas and surrounding areas. We come to you — your home, an Airbnb, or a venue of your choosing.</div></div>
+                <div class="book-fact"><div class="book-fact-label">Group Size</div><div class="book-fact-value">6 to 30 guests depending on the story. The sweet spot is 12–18 for the best dynamic.</div></div>
+                <div class="book-fact"><div class="book-fact-label">Duration</div><div class="book-fact-value">A full evening — cocktail hour, three acts of investigation, and the final revelation. Plan for 3–4 hours.</div></div>
+                <div class="book-fact"><div class="book-fact-label">What We Bring</div><div class="book-fact-value">All props, documents, the custom app experience, and a GM to run the entire evening. You bring the guests.</div></div>
+                <div class="book-fact"><div class="book-fact-label">Response Time</div><div class="book-fact-value">We respond to all inquiries within 24 hours. Bookings fill up — reach out early.</div></div>
+                <div class="book-fact"><div class="book-fact-label">Contact</div><div class="book-fact-value"><a href="mailto:hello@thorsmystery.com" style="color:var(--gold);text-decoration:none">hello@thorsmystery.com</a></div></div>
+            </div>
+        </div>
+    </div>
+</section>
 
-        function toggleCard(i) {
-            document.getElementById('gc' + i).classList.toggle('open');
-        }
+<footer>
+    <div class="footer-inner">
+        <div>
+            <div class="footer-brand">Thor's Murder Mysteries</div>
+            <div class="footer-tagline">Someone at the table is the killer.</div>
+        </div>
+        <div class="footer-links">
+            <a href="#how">How It Works</a>
+            <a href="#stories">Stories</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#book">Contact</a>
+            <a href="home.html">Player Login</a>
+            <a href="admin.html">GM Console</a>
+        </div>
+        <div class="footer-copy">© 2026 Thor's Murder Mysteries · Dallas, TX</div>
+    </div>
+</footer>
 
-        document.addEventListener('DOMContentLoaded', buildGuestList);
-    </script>
+<script>
+    window.addEventListener('scroll', () => {
+        document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    function joinWithCode() {
+        const code = document.getElementById('partyCodeInput').value.trim().toUpperCase();
+        if (!code) return;
+        window.location.href = 'invite.html?code=' + code;
+    }
+    document.getElementById('partyCodeInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') joinWithCode();
+    });
+
+    function submitBooking() {
+        const fname = document.getElementById('fname').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const guests = document.getElementById('guestCount').value;
+        const pkg = document.getElementById('package').value;
+        if (!fname || !email || !phone || !guests || !pkg) { alert('Please fill in all required fields.'); return; }
+        const subject = encodeURIComponent('Booking Inquiry — ' + fname + ' — ' + guests + ' guests');
+        const body = encodeURIComponent(
+            'Name: ' + fname + ' ' + document.getElementById('lname').value + '\n' +
+            'Email: ' + email + '\nPhone: ' + phone + '\n' +
+            'Guests: ' + guests + '\nDate: ' + (document.getElementById('eventDate').value || 'TBD') + '\n' +
+            'Package: ' + pkg + '\n\nMessage:\n' + document.getElementById('message').value
+        );
+        window.location.href = 'mailto:hello@thorsmystery.com?subject=' + subject + '&body=' + body;
+        document.getElementById('bookingForm').style.display = 'none';
+        document.getElementById('formSuccess').style.display = 'block';
+    }
+</script>
 </body>
 </html>
