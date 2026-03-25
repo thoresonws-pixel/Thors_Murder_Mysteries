@@ -1910,6 +1910,17 @@ function renderRunGame() {
             started ? 'var(--green)' : 'var(--border)';
     }
 
+    const DJ_TEXTS = {
+        act1: { id: 'djCountyClerk', label: 'Send to DJ: County Clerk Report' },
+        act2: { id: 'djCoroner',     label: 'Send to DJ: Coroner Report' },
+        act3: { id: 'djPinkerton',   label: 'Send to DJ: Pinkerton Report' },
+    };
+    const CONFESSIONS = {
+        act1: { id: 'transcriptAct1', label: 'Play Confession — Act 1' },
+        act2: { id: 'transcriptAct2', label: 'Play Confession — Act 2' },
+        act3: { id: 'transcriptAct3', label: 'Play Confession — Act 3' },
+    };
+
     const grid = document.getElementById('actGrid');
     grid.innerHTML = Object.entries(revelationsDatabase).map(([actKey, act]) => {
         let html = `<div class="act-col"><div class="act-col-title">${act.label}</div>`;
@@ -1926,6 +1937,35 @@ function renderRunGame() {
                 </span>
             </button>`;
         });
+
+        // DJ text button
+        const dj = DJ_TEXTS[actKey];
+        if (dj) {
+            const djSent = activeItems.includes(dj.id);
+            html += `
+            <button class="rev-btn ${djSent ? 'on' : 'off'}" onclick="toggleRevelation('${dj.id}')">
+                <span class="rev-label">📱 ${dj.label}</span>
+                <span class="rev-meta">
+                    <span class="rev-type" style="background:#3a8fd4;color:white;">DJ</span>
+                    <span style="font-size:12px;opacity:0.8;">${djSent ? '✕' : '✓'}</span>
+                </span>
+            </button>`;
+        }
+
+        // Confession audio button
+        const conf = CONFESSIONS[actKey];
+        if (conf) {
+            const confOn = activeItems.includes(conf.id);
+            html += `
+            <button class="rev-btn ${confOn ? 'on' : 'off'}" onclick="toggleRevelation('${conf.id}')">
+                <span class="rev-label">🎙 ${conf.label}</span>
+                <span class="rev-meta">
+                    <span class="rev-type type-story">AUDIO</span>
+                    <span style="font-size:12px;opacity:0.8;">${confOn ? '✕' : '✓'}</span>
+                </span>
+            </button>`;
+        }
+
         html += '</div>';
         return html;
     }).join('');
