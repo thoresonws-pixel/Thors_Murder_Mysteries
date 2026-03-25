@@ -490,6 +490,61 @@
         .audio-status { font-family:"Special Elite",monospace; font-size:12px; letter-spacing:4px; text-transform:uppercase; color:rgba(201,162,39,0.4); margin-bottom:20px; }
         .audio-progress-track { width:400px; height:2px; background:rgba(255,255,255,0.08); }
         .audio-progress-bar { height:100%; background:#c9a227; width:0%; transition:width 0.5s linear; }
+
+        /* ── AUDIO LAYOUT WITH TRANSCRIPT ───────────────────── */
+        .audio-layout {
+            display: flex;
+            align-items: stretch;
+            width: 100%;
+            height: 100%;
+            padding: 48px;
+            gap: 0;
+        }
+        .audio-player-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 380px;
+            padding-right: 40px;
+            text-align: center;
+        }
+        .audio-col-divider {
+            width: 1px;
+            background: linear-gradient(to bottom, transparent, rgba(201,162,39,0.15) 20%, rgba(201,162,39,0.15) 80%, transparent);
+            flex-shrink: 0;
+        }
+        .audio-transcript-col {
+            flex: 1;
+            padding-left: 48px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .transcript-label {
+            font-family: 'Special Elite', monospace;
+            font-size: 9px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: rgba(201,162,39,0.35);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(201,162,39,0.08);
+        }
+        .transcript-text {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 19px;
+            line-height: 1.85;
+            color: rgba(196,196,212,0.75);
+            overflow-y: auto;
+            flex: 1;
+            padding-right: 8px;
+        }
+        .transcript-text::-webkit-scrollbar { width: 2px; }
+        .transcript-text::-webkit-scrollbar-track { background: transparent; }
+        .transcript-text::-webkit-scrollbar-thumb { background: rgba(201,162,39,0.2); }
+        .transcript-static { color: rgba(139,139,158,0.4); font-style:italic; }
+
 </style>
 </head>
 <body>
@@ -680,9 +735,9 @@
 
             // Play confession audio when transcript is revealed
             const audioMap = {
-                transcriptAct1: { src: 'audio/confession_act1.mp3', title: 'Confession Recording', subtitle: 'Act One — William Thoreson Sr.' },
-                transcriptAct2: { src: 'audio/confession_act2.mp3', title: 'Confession Recording', subtitle: 'Act Two — William Thoreson Sr.' },
-                transcriptAct3: { src: 'audio/confession_act3.mp3', title: 'Confession Recording', subtitle: 'Act Three — William Thoreson Sr.' },
+                transcriptAct1: { src: 'audio/confession_act1.mp3', title: 'Confession Recording', subtitle: 'Act One — William Thoreson Sr.', transcriptId: 'transcriptAct1' },
+                transcriptAct2: { src: 'audio/confession_act2.mp3', title: 'Confession Recording', subtitle: 'Act Two — William Thoreson Sr.', transcriptId: 'transcriptAct2' },
+                transcriptAct3: { src: 'audio/confession_act3.mp3', title: 'Confession Recording', subtitle: 'Act Three — William Thoreson Sr.', transcriptId: 'transcriptAct3' },
             };
             added.forEach(id => {
                 if (audioMap[id]) playConfession(audioMap[id]);
@@ -893,6 +948,20 @@
         document.getElementById('audioStatus').textContent   = 'Playing…';
         document.getElementById('audioProgressBar').style.width = '0%';
 
+        // Pull transcript from revelationsDatabase
+        const transcriptEl = document.getElementById('audioTranscript');
+        const item = findItem(config.transcriptId);
+        if (item && item.summary) {
+            const formatted = item.summary
+                .replace(/\[static\]/g, '<span class="transcript-static">[static]</span>')
+                .replace(/\n/g, '<br>');
+            transcriptEl.innerHTML = formatted;
+            // Auto-scroll slowly during playback
+            transcriptEl.scrollTop = 0;
+        } else {
+            transcriptEl.innerHTML = '<span class="transcript-static">Transcript unavailable.</span>';
+        }
+
         audio.src = config.src;
         switchScreen('audio', { force: true });
 
@@ -908,6 +977,11 @@
             if (audio.duration) {
                 const pct = (audio.currentTime / audio.duration) * 100;
                 document.getElementById('audioProgressBar').style.width = pct + '%';
+                // Gently scroll transcript in sync with progress
+                const t = document.getElementById('audioTranscript');
+                if (t.scrollHeight > t.clientHeight) {
+                    t.scrollTop = (pct / 100) * (t.scrollHeight - t.clientHeight);
+                }
             }
         };
 
