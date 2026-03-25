@@ -35,6 +35,13 @@ var characterDatabase = {
         name: "Miranda Longfellow",
         nameVariants: { female: "Miranda Longfellow", male: "Milo Longfellow" },
         picker: { role: "Legal Manager, Thoreson Estate", involvement: "heavy", isKiller: false },
+        cocktailProfile: {
+            from:         "Galveston, Texas. Moved to Dallas in 1920 when she changed her name.",
+            career:       "Legal manager for the Thoreson estate. Handles all filings, contracts, and correspondence.",
+            hobby:        "Reads extensively — history and law, mostly. Has a small but carefully chosen library.",
+            family:       "Unmarried. No children. No family she mentions.",
+            knowsWilliam: "Has worked for the Thoreson family for nearly ten years. William trusted her with everything."
+        },
         publicDesc: "The Thoreson estate's legal manager for nearly ten years. Professional, precise, and discreet. Has been present for every significant family moment — and most of the significant paperwork.",
         hiddenSkills: [],
         backstory: "You have managed the legal affairs of the Thoreson estate for nearly ten years. You know where every document is kept, every filing, every secret William thought was safely locked away. You are good at stillness. At watching. At being present without being noticed.",
@@ -57,6 +64,13 @@ var characterDatabase = {
         name: "Scott Thoreson Jr.",
         nameVariants: { female: "Scottie Thoreson Jr.", male: "Scott Thoreson Jr." },
         picker: { role: "Eldest Son, Managing the Family Business", involvement: "heavy", isKiller: false },
+        cocktailProfile: {
+            from:         "Born and raised in Dallas.",
+            career:       "Attorney. Studied law at SMU, built his own practice, now focuses almost entirely on Thoreson family matters.",
+            hobby:        "Woodworking. Keeps a small workshop behind the house.",
+            family:       "Married to Clara for six years. No children yet.",
+            knowsWilliam: "His father. Closest thing to a business partner William ever had."
+        },
         publicDesc: "William Thoreson's eldest child. Has spent years learning the family business from the inside — operations, relationships, the day-to-day of keeping Thoreson Toys running.",
         hiddenSkills: [],
         backstory: "You are William's eldest child and have spent years managing the family business under your father's guidance. You know the company, the investors, the employees. Three weeks ago your father called to say he was planning to make something right — something from a long time ago. You did not push for details. You wish now that you had.",
@@ -84,6 +98,13 @@ var characterDatabase = {
         name: "Walter Lippman",
         nameVariants: { female: "Winifred Lippman", male: "Walter Lippman" },
         picker: { role: "Journalist, Dallas Herald", involvement: "heavy", isKiller: false },
+        cocktailProfile: {
+            from:         "Dallas, Texas. Has lived here his entire life under a name that is not his birth name.",
+            career:       "Journalist at the Dallas Herald. Covers business and society.",
+            hobby:        "Photography. Has a good eye for things other people overlook.",
+            family:       "Unmarried.",
+            knowsWilliam: "William personally invited him tonight. Said the evening concerned him specifically."
+        },
         publicDesc: "A journalist for the Dallas Herald covering business and society. Known for thorough, honest reporting. Personally invited by William Thoreson Sr.",
         hiddenSkills: [],
         note: "You came tonight knowing Will wanted to tell you something personal. Let that discovery happen in the room.",
@@ -111,6 +132,13 @@ var characterDatabase = {
         name: "David Richardson",
         nameVariants: { female: "Diana Richardson", male: "David Richardson" },
         picker: { role: "Private Investigator", involvement: "heavy", isKiller: false },
+        cocktailProfile: {
+            from:         "Fort Worth originally. Settled in Dallas twelve years ago.",
+            career:       "Licensed private investigator. Takes cases across Dallas — missing persons, fraud, the occasional domestic matter.",
+            hobby:        "Jazz. Goes to the clubs on Commerce Street most weekends.",
+            family:       "Divorced. One daughter, lives with her mother.",
+            knowsWilliam: "A cousin on the Thoreson side. Saw William at family gatherings over the years."
+        },
         publicDesc: "A licensed private investigator and a cousin on the Thoreson side. The moment William died, the calls started.",
         hiddenSkills: [],
         note: "You are the evidence pipeline. Make each report a moment — step away, take the call, react before you share.",
@@ -137,6 +165,13 @@ var characterDatabase = {
         name: "Patricia Chamberlain",
         nameVariants: { female: "Patricia Chamberlain", male: "Patrick Chamberlain" },
         picker: { role: "Family Friend", involvement: "moderate", isKiller: false },
+        cocktailProfile: {
+            from:         "Memphis, Tennessee. Moved to Dallas after her marriage in 1908.",
+            career:       "No formal occupation. Significant family money from Memphis. Active in Dallas charitable circles.",
+            hobby:        "Gardening. Has a well-known rose garden.",
+            family:       "Widowed. Husband Edward passed in 1929. Two adult children in Memphis.",
+            knowsWilliam: "Met through charity work in the early 1910s. A family acquaintance of twenty-odd years."
+        },
         publicDesc: "A longtime family friend and person of means. Perceptive, composed, and doesn't suffer fools. William specifically asked her to come tonight.",
         hiddenSkills: [],
         backstory: "You have known the Thoreson family for years through charitable connections. William specifically asked you to come tonight — which you thought was simply a kind gesture until William turned up dead. Now you are wondering why he wanted you here.",
@@ -161,6 +196,13 @@ var characterDatabase = {
         name: "Dorothy Wells",
         nameVariants: { female: "Dorothy Wells", male: "Douglas Wells" },
         picker: { role: "Dallas Society Elder", involvement: "moderate", isKiller: false },
+        cocktailProfile: {
+            from:         "Born in Dallas in 1854. Has never lived anywhere else.",
+            career:       "Retired schoolteacher. Taught at Dallas public schools for over thirty years.",
+            hobby:        "Correspondence. Writes letters to people all over the country, every week.",
+            family:       "Widowed. Husband George passed in 1921. Three children, seven grandchildren.",
+            knowsWilliam: "Has known William Thoreson since he was a young man with ambition and a partner nobody talks about anymore."
+        },
         publicDesc: "One of the most well-connected people in Dallas. Has been watching this city for longer than most guests have been alive.",
         hiddenSkills: [],
         backstory: "You are eighty-one years old and you have outlived most of the people you loved. You remember Dallas when it was a smaller city — when William Thoreson was a young man with ambition and a partner named Hartley that nobody talks about anymore. You have always believed the truth is better than comfortable silence.",
@@ -190,6 +232,13 @@ var characterDatabase = {
         name: "Vivienne Ashford",
         nameVariants: { female: "Vivienne Ashford", male: "Vincent Ashford" },
         picker: { role: "The Cousin, Just Back from Abroad", involvement: "moderate", isKiller: false },
+        cocktailProfile: {
+            from:         "Born in Dallas. Spent her thirties and early forties living in Paris and London. Returned eight months ago.",
+            career:       "Translator and language tutor. Fluent in French, Italian, and some German.",
+            hobby:        "Painting. Has a small collection of her own work she calls embarrassing and refuses to show anyone.",
+            family:       "Unmarried. No children.",
+            knowsWilliam: "Her uncle on her mother's side. Grew up spending holidays at the Thoreson home."
+        },
         publicDesc: "{{scott_thoreson}}'s cousin on the mother's side. Recently returned from years living abroad. Sees this family with the slight detachment of someone who has lived somewhere else.",
         hiddenSkills: [],
         backstory: "You are {{scott_thoreson}}'s cousin — spent years living abroad and came home eight months ago. You see this family with the slight detachment of someone who has lived somewhere else, which means you see it more clearly. The Thoresons have always been a family defined by what they don't say. Uncle Will in particular carried something heavy.",
@@ -214,6 +263,13 @@ var characterDatabase = {
         name: "Raymond Hammond",
         nameVariants: { female: "Rachel Hammond", male: "Raymond Hammond" },
         picker: { role: "Business Manager, Thoreson Toys", involvement: "moderate", isKiller: false },
+        cocktailProfile: {
+            from:         "Shreveport, Louisiana. Moved to Dallas in 1918.",
+            career:       "Business Manager at Thoreson Toys for fifteen years. Handles operations, staffing, suppliers — everything except the financial ledgers, which William kept personally.",
+            hobby:        "Chess. Plays in a weekly club on Elm Street.",
+            family:       "Married to Helen for twelve years. Two children, ages ten and seven.",
+            knowsWilliam: "Hired by William in 1920. Worked closely with him for fifteen years — or thought he did."
+        },
         publicDesc: "Business Manager at Thoreson Toys for fifteen years. Handles the operational side of the company. Knows where every body is buried — figuratively speaking.",
         hiddenSkills: [],
         backstory: "You have run the operational side of Thoreson Toys for fifteen years. You know the company better than almost anyone. William kept the financial ledgers personally — locked away — and in fifteen years you were never given full access. You assumed it was how William operated. Now you are not so sure.",
@@ -242,6 +298,13 @@ var characterDatabase = {
         name: "Charles Sterling",
         nameVariants: { female: "Charlotte Sterling", male: "Charles Sterling" },
         picker: { role: "Retired Banker", involvement: "moderate", isKiller: false },
+        cocktailProfile: {
+            from:         "Richmond, Virginia. Moved to Dallas in 1898.",
+            career:       "Retired banker. Forty years at First National Bank of Dallas. Ended his career as Vice President of Commercial Lending.",
+            hobby:        "Amateur photography. Has a darkroom at home.",
+            family:       "Widowed. Spouse passed in 1928. One child who lives in Houston.",
+            knowsWilliam: "Met when William walked into the bank in 1902 looking for a business loan. Closest friend of over thirty years."
+        },
         publicDesc: "An old friend of William's and a retired Dallas banker. Known, trusted, and one of the few people William ever truly confided in.",
         hiddenSkills: [],
         backstory: "You and William Thoreson have been friends for over thirty years. You were there in the early days of the company — not as an investor, just as a friend who watched William build something remarkable. You retired from banking five years ago after a long career at one of Dallas's oldest institutions. William specifically asked you to come tonight. He said it was important. That was unusual enough that you cleared your calendar immediately.",
@@ -269,6 +332,13 @@ var characterDatabase = {
         name: "Marcus Brennan",
         nameVariants: { female: "Margaret Brennan", male: "Marcus Brennan" },
         picker: { role: "Investor", involvement: "moderate", isKiller: false },
+        cocktailProfile: {
+            from:         "Dallas, born and raised.",
+            career:       "Businessman and investor. Interests in real estate, manufacturing, and — until recently — Thoreson Toys.",
+            hobby:        "Golf. Plays at Dallas Country Club most Saturday mornings.",
+            family:       "Married to Ruth for fourteen years. Three children.",
+            knowsWilliam: "Became an investor in Thoreson Toys four years ago after William made a personal pitch. The returns were excellent until they weren't."
+        },
         publicDesc: "A Dallas businessman with a significant stake in Thoreson Toys. Analytical, measured, and not someone who loses money quietly.",
         hiddenSkills: [],
         backstory: "You have been invested in Thoreson Toys for four years. The returns were excellent until six months ago when a European deal collapsed and real money disappeared. You have been pursuing answers ever since. William kept putting you off. You came tonight expecting a confrontation. Instead you walked into a murder.",
@@ -295,6 +365,13 @@ var characterDatabase = {
         name: "Victoria Ashworth",
         nameVariants: { female: "Victoria Ashworth", male: "Victor Ashworth" },
         picker: { role: "Investor", involvement: "moderate", isKiller: false },
+        cocktailProfile: {
+            from:         "Born in Austin. Moved to Dallas in 1919.",
+            career:       "Independent businessperson. Manages her own investment portfolio across several Dallas companies.",
+            hobby:        "Bridge. Hosts a weekly game and considers it serious business.",
+            family:       "Unmarried.",
+            knowsWilliam: "Has been a Thoreson Toys shareholder for six years. Knew William through the investor circle."
+        },
         publicDesc: "A sharp businessperson and Thoreson Toys investor. Active in Dallas society with a keen eye for detail.",
         hiddenSkills: [],
         backstory: "You have been a Thoreson Toys shareholder for six years. You and {{marcus_brennan}} have coordinated on investments for years — {{marcus_brennan}} handles the numbers, you handle the people. Between the two of you very little gets past unnoticed. Or so you believed until six months ago.",
@@ -322,6 +399,13 @@ var characterDatabase = {
         name: "Elizabeth Monroe",
         nameVariants: { female: "Elizabeth Monroe", male: "Elliot Monroe" },
         picker: { role: "Dallas Socialite", involvement: "light", isKiller: false },
+        cocktailProfile: {
+            from:         "Born in New Orleans. Has lived in Dallas for thirty years.",
+            career:       "No formal occupation. Old money from New Orleans. Active presence in Dallas society.",
+            hobby:        "Hosting. Considers the dinner party an art form.",
+            family:       "Married to Harold for twenty-eight years. No children.",
+            knowsWilliam: "Social acquaintance of many years. Moved in the same circles as the Thoresons throughout Dallas society."
+        },
         publicDesc: "A fixture of Dallas society. Knows everyone, remembers everything, and makes it all look effortless.",
         hiddenSkills: [],
         note: "OPTIONAL CHARACTER — cut first if guest count is low. Mystery functions without this role.",
