@@ -1361,9 +1361,34 @@
 
         const solvedRevs  = ACT_REVELATIONS.filter(r => activeItems.includes(r.id));
         const currentRev  = ACT_REVELATIONS.find(r => !activeItems.includes(r.id));
-        const currentClues = currentRev
-            ? currentRev.clues.filter(id => activeItems.includes(id))
+
+        // A revelation moves to the solved corner only when the NEXT act's
+        // first clue has been discovered — not the moment it's revealed.
+        // So: last revealed revelation stays in center until next act starts.
+        const lastSolved = solvedRevs[solvedRevs.length - 1] || null;
+        const nextActClues = currentRev ? currentRev.clues : [];
+        const nextActStarted = nextActClues.some(id => activeItems.includes(id));
+
+        // Revelations fully archived (pushed to corner)
+        const archivedRevs = lastSolved && nextActStarted
+            ? solvedRevs
+            : solvedRevs.slice(0, -1); // keep last solved in center
+
+        // The revelation currently showing in center (if any)
+        const centerRev = lastSolved && !nextActStarted ? lastSolved : null;
+
+        // Current act clues to show on board
+        const currentClues = centerRev
+            ? [] // act was solved, waiting for next act clues — show nothing new
+            : currentRev
+                ? currentRev.clues.filter(id => activeItems.includes(id))
+                : [];
+
+        // If center rev is showing, also show its clues for the strings
+        const centerRevClues = centerRev
+            ? centerRev.clues.filter(id => activeItems.includes(id))
             : [];
+
         const standalones = STANDALONE_CLUES.filter(id => activeItems.includes(id));
 
         const hasAnything = currentClues.length > 0 || standalones.length > 0 || solvedRevs.length > 0;
@@ -1382,7 +1407,7 @@
         // ── SOLVED REVELATIONS — stacked top-left ────────────────────────────
         // Remove old solved cards first
         board.querySelectorAll('[data-rev-solved]').forEach(c => c.remove());
-        solvedRevs.forEach((rev, i) => {
+        archivedRevs.forEach((rev, i) => {
             // Also remove any active card for this rev
             const old = board.querySelector('[data-rev-active="' + rev.id + '"]');
             if (old) old.remove();
@@ -1416,7 +1441,7 @@
         });
 
         // ── CLUES — current act + standalones ────────────────────────────────
-        const displayClues = [...currentClues, ...standalones];
+        const displayClues = [...currentClues, ...centerRevClues, ...standalones];
         const newItems_local = activeItems.filter(id => !_prevActive.includes(id));
 
         // Remove polaroids no longer relevant
@@ -1444,8 +1469,43 @@
             board.appendChild(card);
         });
 
-        // ── NO center card or strings until revelation is actually revealed ──
-        // (Nothing shown in the center until the GM unlocks the story beat)
+        // ── CENTER REVELATION CARD + STRINGS ────────────────────────────────
+        // Show when a revelation is unlocked but next act hasn't started yet
+        board.querySelectorAll('[data-rev-active]').forEach(c => c.remove());
+        if (centerRev) {
+            const revCard = document.createElement('div');
+            revCard.className = 'rev-card rev-card-center';
+            revCard.dataset.revActive = centerRev.id;
+            revCard.innerHTML = `<div class="rev-card-pin"></div><div class="rev-card-label">${centerRev.label}</div><div class="rev-card-title">${centerRev.title}</div>`;
+            const cx = W / 2 - 90, cy = H / 2 - 44;
+            revCard.style.cssText = `left:${cx}px; top:${cy}px; width:180px; z-index:4;`;
+            board.appendChild(revCard);
+
+            // Draw red strings from clues → center card
+            const rRect = revCard.getBoundingClientRect();
+            const bRect = board.getBoundingClientRect();
+            const rx = rRect.left - bRect.left + rRect.width / 2;
+            const ry = rRect.top  - bRect.top  + rRect.height / 2;
+
+            centerRevClues.forEach(id => {
+                const clueCard = board.querySelector('[data-id="' + id + '"]');
+                if (!clueCard) return;
+                const cr = clueCard.getBoundingClientRect();
+                const cx2 = cr.left - bRect.left + cr.width / 2;
+                const cy2 = cr.top  - bRect.top  + cr.height / 2;
+                const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+                line.setAttribute('x1',cx2); line.setAttribute('y1',cy2);
+                line.setAttribute('x2',rx);  line.setAttribute('y2',ry);
+                line.setAttribute('stroke','rgba(139,26,26,0.6)');
+                line.setAttribute('stroke-width','1.5');
+                line.setAttribute('stroke-dasharray','5 4');
+                svgEl.appendChild(line);
+                const dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+                dot.setAttribute('cx',cx2); dot.setAttribute('cy',cy2);
+                dot.setAttribute('r','3'); dot.setAttribute('fill','rgba(139,26,26,0.6)');
+                svgEl.appendChild(dot);
+            });
+        }
     }
 
     // ── LEADERBOARD CORNER ────────────────────────────────────
