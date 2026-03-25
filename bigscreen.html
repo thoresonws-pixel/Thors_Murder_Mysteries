@@ -1109,19 +1109,25 @@
             // opening and detective handled by willsDeath / manualBigScreen
         });
 
-        // Listen to activeItems — when willsDeath added, switch to opening card
+        // Listen to activeItems — when willsDeath added, switch to opening (once only)
+        let openingShown = false;
         db.ref('games/' + gameId + '/state/activeItems').on('value', snap => {
             const items = snap.val() || [];
             const wasAdded = items.includes('willsDeath') && !activeItems.includes('willsDeath');
-            
+
             // Find newly added items for spotlight
             const added = items.filter(id => !activeItems.includes(id));
             activeItems = items;
             renderDetectiveBoard();
 
-            if (wasAdded) {
+            if (wasAdded && !openingShown) {
+                openingShown = true;
                 switchScreen('opening', {});
                 setTimeout(cinStart, 500);
+                setTimeout(() => {
+                    cinStop();
+                    switchScreen('detective', { force: true });
+                }, 10500);
             }
 
             // Play confession audio when transcript is revealed
