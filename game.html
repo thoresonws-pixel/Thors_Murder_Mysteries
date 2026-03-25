@@ -1223,11 +1223,20 @@
             </div>
         </div>
 
+        <!-- Cocktail Hour button -->
+        <div id="cocktailPanel" class="panel" style="display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:12px;">
+            <div>
+                <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);margin-bottom:4px;">🥂 Start Cocktail Hour</div>
+                <div style="font-size:14px;color:var(--fog);">Distributes quests &amp; facts to players. William is still alive.</div>
+            </div>
+            <button id="cocktailBtn" onclick="startCocktailHour()" class="btn-gold" style="background:var(--accent-dk);border:1px solid var(--gold);">▶ Cocktail Hour</button>
+        </div>
+
         <!-- Game start button -->
         <div id="gameStartPanel" class="panel" style="display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:20px;">
             <div>
-                <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);margin-bottom:4px;">🕯 Start the Game</div>
-                <div style="font-size:14px;color:var(--fog);">Reveals Will's death to all players and opens the investigation.</div>
+                <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);margin-bottom:4px;">🕯 Begin the Investigation</div>
+                <div style="font-size:14px;color:var(--fog);">Announces William's death to all players and opens the investigation.</div>
             </div>
             <button id="gameStartBtn" onclick="toggleRevelation('willsDeath')" class="btn-gold">▶ Begin</button>
         </div>
@@ -2125,6 +2134,22 @@ function renderRunGame() {
     }).join('');
 
     renderLeaderboard();
+
+    // Update cocktail button state
+    const cBtn = document.getElementById('cocktailBtn');
+    if (cBtn) {
+        if (currentPhaseId === 'cocktail') {
+            cBtn.textContent = '✓ Cocktail Hour Active';
+            cBtn.style.background = 'var(--green)';
+            cBtn.style.opacity = '0.7';
+            cBtn.style.cursor = 'default';
+            cBtn.disabled = true;
+        } else if (activeItems.includes('willsDeath')) {
+            // Game already started — hide cocktail panel
+            const panel = document.getElementById('cocktailPanel');
+            if (panel) panel.style.display = 'none';
+        }
+    }
 }
 
 function renderLeaderboard() {
@@ -2523,6 +2548,25 @@ ${inviteUrl}
                 }).join('')}
             </div>
         </div>`;
+    }
+
+    async function startCocktailHour() {
+        const btn = document.getElementById('cocktailBtn');
+        const isCocktailActive = currentPhaseId === 'cocktail';
+
+        if (isCocktailActive) {
+            showToast('Cocktail hour already active.', 'info');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Starting…';
+        await advancePhase('cocktail');
+        btn.textContent = '✓ Cocktail Hour Active';
+        btn.style.background = 'var(--green)';
+        btn.style.opacity = '0.7';
+        btn.style.cursor = 'default';
+        showToast('🥂 Cocktail hour started — quests distributed to all players', 'success');
     }
 
     async function advancePhase(phaseId) {
