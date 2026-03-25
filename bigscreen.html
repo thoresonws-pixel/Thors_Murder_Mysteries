@@ -783,6 +783,108 @@
             white-space: nowrap;
         }
 
+
+        /* ── CINEMATIC OPENING ───────────────────────────────── */
+        #screen-opening {
+            background: #06040a;
+            flex-direction: column;
+            align-items: stretch;
+            padding: 0;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .cin-bg {
+            position: absolute; inset: 0; pointer-events: none;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% 40%, rgba(139,26,26,0.07) 0%, transparent 70%),
+                radial-gradient(ellipse at center, #0a0610 0%, #06040a 100%);
+        }
+
+        /* Fixed header */
+        .cin-header {
+            position: relative; z-index: 2; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 56px 14px;
+            border-bottom: 1px solid rgba(201,162,39,0.1);
+            background: rgba(0,0,0,0.4);
+        }
+        .cin-header-l, .cin-header-r { flex: 1; }
+        .cin-header-r { text-align: right; }
+        .cin-header-c { text-align: center; }
+        .cin-dateline, .cin-caseno {
+            font-family: 'Special Elite', monospace;
+            font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
+        }
+        .cin-dateline { color: rgba(201,162,39,0.4); }
+        .cin-caseno   { color: rgba(201,162,39,0.2); margin-top: 2px; }
+        .cin-pub  { font-family: 'Special Elite', monospace; font-size: 9px; letter-spacing: 6px; text-transform: uppercase; color: rgba(201,162,39,0.25); margin-bottom: 4px; }
+        .cin-headline { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: #f5f0e6; letter-spacing: 2px; }
+        .cin-by   { font-family: 'Special Elite', monospace; font-size: 9px; letter-spacing: 2px; color: rgba(201,162,39,0.3); text-transform: uppercase; }
+        .cin-live { font-family: 'Special Elite', monospace; font-size: 9px; letter-spacing: 2px; color: rgba(139,26,26,0.6); text-transform: uppercase; margin-top: 4px; animation: pulse 2s ease-in-out infinite; }
+
+        /* Stage — where text appears */
+        .cin-stage {
+            position: relative; z-index: 2;
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 40px 120px;
+            text-align: center;
+        }
+
+        .cin-section-label {
+            font-family: 'Special Elite', monospace;
+            font-size: 9px; letter-spacing: 5px; text-transform: uppercase;
+            color: rgba(201,162,39,0.3);
+            margin-bottom: 24px;
+            min-height: 16px;
+        }
+
+        .cin-text {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            color: #f5f0e6;
+            line-height: 1.75;
+            max-width: 960px;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .cin-text.size-normal  { font-size: 26px; }
+        .cin-text.size-large   { font-size: 36px; font-style: italic; }
+        .cin-text.size-key     { font-size: 48px; font-weight: 700; font-style: italic; color: #f5f0e6; }
+        .cin-text.size-closing { font-size: 72px; font-weight: 700; letter-spacing: 8px; text-transform: uppercase; color: #c9a227; }
+
+        .cin-text.cin-entering {
+            opacity: 0; transform: translateY(16px);
+        }
+
+        /* Footer */
+        .cin-footer {
+            position: relative; z-index: 2; flex-shrink: 0;
+            padding: 12px 56px 16px;
+            border-top: 1px solid rgba(201,162,39,0.06);
+            display: flex; align-items: center; gap: 20px;
+        }
+        .cin-dots { display: flex; gap: 6px; flex-shrink: 0; }
+        .cin-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: rgba(201,162,39,0.15);
+            transition: background 0.3s;
+        }
+        .cin-dot.active { background: rgba(201,162,39,0.7); }
+        .cin-dot.done   { background: rgba(201,162,39,0.3); }
+        .cin-tap {
+            font-family: 'Special Elite', monospace;
+            font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+            color: rgba(201,162,39,0.2); flex-shrink: 0;
+        }
+        .cin-timer-track {
+            flex: 1; height: 1px; background: rgba(255,255,255,0.06);
+        }
+        .cin-timer-bar {
+            height: 100%; background: rgba(201,162,39,0.4); width: 100%;
+            transform-origin: left; transition: transform linear;
+        }
+
 </style>
 </head>
 <body>
@@ -1020,10 +1122,8 @@
             renderDetectiveBoard();
 
             if (wasAdded) {
-                // Switch to opening card first
                 switchScreen('opening', {});
-                // After 30 seconds auto-advance to detective board
-                setTimeout(() => switchScreen('detective', {}), 30000);
+                setTimeout(cinStart, 500);
             }
 
             // Play confession audio when transcript is revealed
@@ -1228,6 +1328,158 @@
             // Small gap between spotlights
             setTimeout(processSpotlightQueue, 600);
         }, duration);
+    }
+
+
+    // ── CINEMATIC OPENING ─────────────────────────────────────
+    const CIN_SECTIONS = [
+        {
+            label: '',
+            text: '"Thank you all for coming tonight."',
+            size: 'large',
+            duration: 5000
+        },
+        {
+            label: 'The Announcement',
+            text: '"As many of you know, my father invited you here for a dinner party. He said he had an announcement to make — something that would 'change everything.'"',
+            size: 'normal',
+            duration: 9000
+        },
+        {
+            label: '',
+            text: '"Most of you know my father. William Thoreson. He built this family from nothing — came to Dallas in 1899 with very little and spent the next thirty years turning it into something. Thoreson Toys. Started in a workshop on Commerce Street in 1902. By 1920, one of the most successful toy manufacturers in the Southwest. By 1930, his name was on buildings."',
+            size: 'normal',
+            duration: 14000
+        },
+        {
+            label: '',
+            text: '"He was a self-made man. That's how he told it. That's how everyone told it."',
+            size: 'large',
+            duration: 7000
+        },
+        {
+            label: '',
+            text: '"My father... William Thoreson... is dead."',
+            size: 'key',
+            duration: 8000
+        },
+        {
+            label: '',
+            text: '"He was found earlier this evening. I don't know how. I don't know why. The authorities have been contacted, but due to the storm, we're on our own for now."',
+            size: 'normal',
+            duration: 10000
+        },
+        {
+            label: '',
+            text: '"No one leaves until we understand what happened."',
+            size: 'key',
+            duration: 7000
+        },
+        {
+            label: '',
+            text: '"I'm Scott Thoreson — his eldest son. I've handled this family's legal affairs for years. I never imagined I'd be investigating my own father's death. But here we are. And I need your help."',
+            size: 'normal',
+            duration: 11000
+        },
+        {
+            label: 'The Rules',
+            text: '"We'll investigate in phases. After each phase, I'll call everyone back together to share what we've found. Some rooms are open now — others will open as the evening progresses. You'll see blue tape on certain items. Those are personal belongings. Please respect them."',
+            size: 'normal',
+            duration: 14000
+        },
+        {
+            label: '',
+            text: '"Some of you have particular expertise. If you find something you can't make sense of, look for someone who can. Some documents require specific skills to interpret. If you find a QR code, scan it in the app — but you'll need the right skill to unlock it."',
+            size: 'normal',
+            duration: 13000
+        },
+        {
+            label: '',
+            text: '"The goal is simple: find out what happened to my father. Let's start with what we know about him — his business, his dealings, anything that might explain why someone in this room wanted him dead."',
+            size: 'normal',
+            duration: 12000
+        },
+        {
+            label: '',
+            text: '"The Living Room, Dining Room, Parlor, Kitchen, Breakfast Nook, and my father's Office are all open."',
+            size: 'large',
+            duration: 8000
+        },
+        {
+            label: '',
+            text: 'BEGIN.',
+            size: 'closing',
+            duration: 6000
+        },
+    ];
+
+    let cinIndex = 0;
+    let cinTimer = null;
+    let cinRunning = false;
+
+    function cinStart() {
+        cinIndex = 0;
+        cinRunning = true;
+        // Build dots
+        const dots = document.getElementById('cinDots');
+        dots.innerHTML = CIN_SECTIONS.map((_, i) => `<div class="cin-dot" id="cin-dot-${i}"></div>`).join('');
+        cinShow(0);
+    }
+
+    function cinShow(idx) {
+        if (!cinRunning) return;
+        if (idx >= CIN_SECTIONS.length) {
+            // Done — advance to detective board
+            setTimeout(() => switchScreen('detective', { force: true }), 1500);
+            return;
+        }
+
+        const s = CIN_SECTIONS[idx];
+
+        // Update dots
+        document.querySelectorAll('.cin-dot').forEach((d, i) => {
+            d.className = 'cin-dot' + (i < idx ? ' done' : i === idx ? ' active' : '');
+        });
+
+        // Label
+        document.getElementById('cinLabel').textContent = s.label || '';
+
+        // Animate text in
+        const textEl = document.getElementById('cinText');
+        textEl.className = 'cin-text cin-entering';
+        textEl.textContent = s.text;
+
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            textEl.className = 'cin-text size-' + s.size;
+        }));
+
+        // Timer bar
+        const bar = document.getElementById('cinTimerBar');
+        bar.style.transition = 'none';
+        bar.style.transform = 'scaleX(1)';
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            bar.style.transition = `transform ${s.duration}ms linear`;
+            bar.style.transform = 'scaleX(0)';
+        }));
+
+        // Auto-advance
+        if (cinTimer) clearTimeout(cinTimer);
+        cinTimer = setTimeout(() => {
+            cinIndex++;
+            cinShow(cinIndex);
+        }, s.duration);
+    }
+
+    function cinNext() {
+        if (!cinRunning) return;
+        if (cinTimer) clearTimeout(cinTimer);
+        cinIndex++;
+        cinShow(cinIndex);
+    }
+
+    function cinStop() {
+        cinRunning = false;
+        if (cinTimer) { clearTimeout(cinTimer); cinTimer = null; }
     }
 
     // ── CONFESSION AUDIO ──────────────────────────────────────
