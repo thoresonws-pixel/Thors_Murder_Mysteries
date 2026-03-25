@@ -1216,18 +1216,11 @@
         <div class="section-head">
             <div class="section-title">Revelation Controls</div>
             <div style="display:flex;gap:10px;align-items:center;">
+                <div id="gameClock" style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--gold);letter-spacing:2px;display:none;">0:00:00</div>
+                <button onclick="resetGame()" class="btn-ghost" style="font-size:10px;padding:5px 12px;display:none;" id="resetBtn">↺ Reset</button>
                 <div id="gameStartStatus" style="font-family:'Special Elite',monospace;font-size:11px;letter-spacing:2px;color:var(--fog);"></div>
                 <a id="bigScreenLink" href="#" target="_blank" class="btn-gold" style="text-decoration:none;font-size:11px;padding:7px 16px;">📺 Big Screen ↗</a>
             </div>
-        </div>
-
-        <!-- Pace Tracker -->
-        <div id="paceTracker" class="panel" style="display:none;margin-bottom:20px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-                <div style="font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;color:var(--fog);text-transform:uppercase;">Game Clock</div>
-                <div id="gameClock" style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--gold);letter-spacing:2px;">0:00:00</div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;" id="actTimers"></div>
         </div>
 
         <!-- Game start button -->
@@ -1345,7 +1338,6 @@ async function bootstrap() {
 
     // Live listeners
     db.ref('games/' + gameId + '/state/activeItems').on('value', snap => {
-        if (gameStartTime) setTimeout(renderActTimers, 100);
         activeItems = snap.val() || [];
         renderRunGame();
         refreshHealth();
@@ -1971,10 +1963,11 @@ async function lockGameAssignments() {
     function startPaceTracker() {
         gameStartTime = Date.now();
         db.ref('games/' + gameId + '/state/gameStartTime').set(gameStartTime);
-        document.getElementById('paceTracker').style.display = 'block';
-        clockInterval = setInterval(tickClock, 1000);
+        document.getElementById('gameClock').style.display = 'block';
+        document.getElementById('resetBtn').style.display = 'block';
+        if (clockInterval) clearInterval(clockInterval);
+        clockInterval = setInterval(() => { tickClock(); renderRunGame(); }, 1000);
         tickClock();
-        renderActTimers();
     }
 
     function tickClock() {
@@ -1987,56 +1980,7 @@ async function lockGameAssignments() {
             h + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
     }
 
-    function renderActTimers() {
-        const container = document.getElementById('actTimers');
-        if (!container) return;
 
-        container.innerHTML = Object.entries(ACT_TARGETS).map(([actKey, act]) => {
-            const found    = act.clues.filter(id => activeItems.includes(id));
-            const allFound = found.length === act.clues.length;
-            const dj       = DJ_AUTO[actKey];
-            const djSent   = dj && activeItems.includes(dj.id);
-
-            // Determine card state
-            const isDone   = allFound;
-            const isActive = found.length > 0 && !allFound;
-            const stateClass = isDone ? 'done' : isActive ? 'active' : '';
-
-            // Elapsed for comparison
-            const elapsed = gameStartTime ? (Date.now() - gameStartTime) / 60000 : 0;
-
-            const rows = act.clues.map(id => {
-                const clueFound = activeItems.includes(id);
-                const caption   = (typeof CLUE_CAPTIONS !== 'undefined' && CLUE_CAPTIONS[id]) || id;
-                return `<div class="act-clue-row ${clueFound ? 'found' : ''}">
-                    <div class="act-clue-dot"></div>
-                    <span>${caption}</span>
-                </div>`;
-            }).join('');
-
-            // DJ footer
-            let djFooter = '';
-            if (dj) {
-                if (djSent) {
-                    djFooter = `<div class="act-timer-footer sent">✓ ${dj.label} sent</div>`;
-                } else if (allFound && allFoundTimes[actKey]) {
-                    const waitSec = Math.max(0, Math.round((DJ_DELAY_MS - (Date.now() - allFoundTimes[actKey])) / 1000));
-                    djFooter = waitSec > 0
-                        ? `<div class="act-timer-footer waiting">📱 ${dj.label} in ${waitSec}s</div>`
-                        : `<div class="act-timer-footer waiting">📱 ${dj.label} sending…</div>`;
-                } else {
-                    djFooter = `<div class="act-timer-footer pending">📱 ${dj.label} — pending</div>`;
-                }
-            }
-
-            return `<div class="act-timer-card ${stateClass}">
-                <div class="act-timer-label">${act.label.split('—')[0].trim()}</div>
-                <div class="act-timer-target">Target: <span>${act.targetMin}:00</span></div>
-                <div class="act-clue-rows">${rows}</div>
-                ${djFooter}
-            </div>`;
-        }).join('');
-    }
 
     // Check if all clues for an act just became found → start DJ timer
     function checkDJTriggers(prevItems, newItems) {
@@ -2052,8 +1996,7 @@ async function lockGameAssignments() {
                 djTimers[actKey] = setTimeout(async () => {
                     await toggleRevelation(dj.id);
                     showToast('📱 ' + dj.label + ' sent to DJ automatically', 'success');
-                    renderActTimers();
-                }, DJ_DELAY_MS);
+                        }, DJ_DELAY_MS);
                 showToast('⏱ All ' + act.label.split('—')[0].trim() + ' clues found — DJ text in 5 min', 'info');
             }
         });
@@ -2065,12 +2008,27 @@ async function lockGameAssignments() {
             const t = snap.val();
             if (t) {
                 gameStartTime = t;
-                document.getElementById('paceTracker').style.display = 'block';
-                if (!clockInterval) clockInterval = setInterval(tickClock, 1000);
+                document.getElementById('gameClock').style.display = 'block';
+                document.getElementById('resetBtn').style.display = 'block';
+                if (!clockInterval) clockInterval = setInterval(() => { tickClock(); renderRunGame(); }, 1000);
                 tickClock();
-                renderActTimers();
             }
         });
+    }
+
+    async function resetGame() {
+        if (!confirm('Reset game clock and all revealed clues? This cannot be undone.')) return;
+        if (clockInterval) { clearInterval(clockInterval); clockInterval = null; }
+        gameStartTime = null;
+        allFoundTimes = {};
+        Object.values(djTimers).forEach(t => clearTimeout(t));
+        djTimers = {};
+        await db.ref('games/' + gameId + '/state/gameStartTime').remove();
+        await db.ref('games/' + gameId + '/state/activeItems').set([]);
+        document.getElementById('gameClock').style.display = 'none';
+        document.getElementById('gameClock').textContent = '0:00:00';
+        document.getElementById('resetBtn').style.display = 'none';
+        showToast('Game reset.', 'success');
     }
 
 
@@ -2100,7 +2058,26 @@ function renderRunGame() {
 
     const grid = document.getElementById('actGrid');
     grid.innerHTML = Object.entries(revelationsDatabase).map(([actKey, act]) => {
-        let html = `<div class="act-col"><div class="act-col-title">${act.label}</div>`;
+        const target     = ACT_TARGETS[actKey];
+        const allFound   = target && target.clues.every(id => activeItems.includes(id));
+        const dj         = DJ_AUTO[actKey];
+        const djSent     = dj && activeItems.includes(dj.id);
+        const conf       = CONFESSIONS[actKey];
+        const confOn     = conf && activeItems.includes(conf.id);
+
+        // DJ countdown
+        let djCountdown = '';
+        if (dj && !djSent && allFound && allFoundTimes[actKey]) {
+            const waitSec = Math.max(0, Math.round((DJ_DELAY_MS - (Date.now() - allFoundTimes[actKey])) / 1000));
+            const mm = String(Math.floor(waitSec/60)).padStart(2,'0');
+            const ss = String(waitSec % 60).padStart(2,'0');
+            djCountdown = waitSec > 0 ? ` (${mm}:${ss})` : ' (sending…)';
+        }
+
+        // Target time label
+        const targetLabel = target ? `<div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:2px;color:var(--fog);margin-bottom:12px;">Target: <span style="color:var(--gold);">${target.targetMin}:00</span></div>` : '';
+
+        let html = `<div class="act-col"><div class="act-col-title">${act.label}</div>${targetLabel}`;
         act.items.forEach(item => {
             const isOn = activeItems.includes(item.id);
             const typeClass = 'type-' + (item.type || 'clue');
@@ -2116,12 +2093,10 @@ function renderRunGame() {
         });
 
         // DJ text button
-        const dj = DJ_TEXTS[actKey];
         if (dj) {
-            const djSent = activeItems.includes(dj.id);
             html += `
             <button class="rev-btn ${djSent ? 'on' : 'off'}" onclick="toggleRevelation('${dj.id}')">
-                <span class="rev-label">📱 ${dj.label}</span>
+                <span class="rev-label">📱 ${dj.label}${djCountdown}</span>
                 <span class="rev-meta">
                     <span class="rev-type" style="background:#3a8fd4;color:white;">DJ</span>
                     <span style="font-size:12px;opacity:0.8;">${djSent ? '✕' : '✓'}</span>
@@ -2130,9 +2105,7 @@ function renderRunGame() {
         }
 
         // Confession audio button
-        const conf = CONFESSIONS[actKey];
         if (conf) {
-            const confOn = activeItems.includes(conf.id);
             html += `
             <button class="rev-btn ${confOn ? 'on' : 'off'}" onclick="toggleRevelation('${conf.id}')">
                 <span class="rev-label">🎙 ${conf.label}</span>
