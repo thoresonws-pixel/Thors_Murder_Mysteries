@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thor's Murder Mysteries — Immersive murder mystery dinner experiences brought to your home or venue. Dallas, TX.">
+    <meta name="theme-color" content="#080810">
+    <title>Thor's Murder Mysteries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* ── RESET & ROOT ─────────────────────────────────────── */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --ink:      #080810;
+            --deep:     #0d0d1a;
+            --charcoal: #141420;
+            --surface:  #1a1a2e;
+            --gold:     #c9a227;
+            --gold-lt:  #e8c55a;
+            --gold-dk:  #8a6d14;
+            --crimson:  #8b1a1a;
+            --crimson-lt: #c0392b;
+            --fog:      #8b8b9e;
+            --mist:     #c4c4d4;
+            --white:    #f5f0e8;
+            --parchment:#f5f0e6;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'EB Garamond', Georgia, serif;
+            background: var(--ink);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* ── NOISE TEXTURE OVERLAY ───────────────────────────── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.4;
+        }
+
+        /* ── NAVIGATION ──────────────────────────────────────── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 0 40px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(to bottom, rgba(8,8,16,0.95), transparent);
+            backdrop-filter: blur(4px);
+            border-bottom: 1px solid rgba(201,162,39,0.1);
+        }
+
+        .nav-brand {
+            font-family: 'Cinzel', serif;
+            font-size: 15px;
+            letter-spacing: 4px;
+            color: var(--gold);
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: 'Cinzel', serif;
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--fog);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--gold); }
+
+        .nav-cta {
+            font-family: 'Cinzel', serif;
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--ink) !important;
+            background: var(--gold);
+            padding: 8px 18px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .nav-cta:hover { background: var(--gold-lt) !important; color: var(--ink) !important; }
+
+        @media (max-width: 768px) {
+            nav { padding: 0 20px; }
+            .nav-links { display: none; }
+        }
+
+        /* ── HERO ─────────────────────────────────────────────── */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 24px 80px;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% 40%, rgba(139,26,26,0.12) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 40% at 20% 80%, rgba(201,162,39,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 60% at 80% 20%, rgba(13,13,26,0.8) 0%, transparent 80%),
+                linear-gradient(160deg, #0a0a14 0%, #0d0d1a 40%, #080810 100%);
+        }
+
+        /* Candlelight vignette rings */
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(201,162,39,0.04) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: flicker 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes flicker {
+            0%   { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 820px;
+        }
+
+        .hero-eyebrow {
+            font-family: 'Cinzel', serif;
+            font-size: 10px;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 28px;
+            opacity: 0;
+            animation: fadeUp 1s ease 0.2s forwards;
+        }
+
+        .hero-title {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: clamp(36px, 7vw, 80px);
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1.1;
+            margin-bottom: 12px;
+            opacity: 0;
+            animation: fadeUp 1s ease 0.4s forwards;
+        }
+
+        .hero-title span {
+            color: var(--gold);
+            display: block;
+        }
+
+        .hero-rule {
+            width: 80px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            margin: 28px auto;
+            opacity: 0;
+            animation: fadeUp 1s ease 0.6s forwards;
+        }
+
+        .hero-sub {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(18px, 3vw, 26px);
+            font-style: italic;
+            color: var(--mist);
+            line-height: 1.6;
+            margin-bottom: 48px;
+            opacity: 0;
+            animation: fadeUp 1s ease 0.8s forwards;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeUp 1s ease 1s forwards;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-gold {
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: var(--gold);
+            color: var(--ink);
+            padding: 16px 36px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .btn-gold:hover { background: var(--gold-lt); transform: translateY(-1px); }
+
+        .btn-ghost {
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: transparent;
+            color: var(--gold);
+            padding: 15px 36px;
+            border: 1px solid rgba(201,162,39,0.4);
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+        .btn-ghost:hover { border-color: var(--gold); background: rgba(201,162,39,0.05); transform: translateY(-1px); }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            animation: fadeUp 1s ease 1.4s forwards;
+        }
+        .scroll-hint span {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--fog);
+        }
+        .scroll-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--gold), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* ── SECTIONS COMMON ─────────────────────────────────── */
+        section { position: relative; }
+
+        .section-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 100px 40px;
+        }
+
+        @media (max-width: 768px) {
+            .section-inner { padding: 70px 24px; }
+        }
+
+        .section-eyebrow {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(28px, 4vw, 46px);
+            font-weight: 600;
+            color: var(--white);
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .section-rule {
+            width: 50px;
+            height: 1px;
+            background: var(--gold);
+            margin-bottom: 24px;
+        }
+
+        .section-lead {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            color: var(--mist);
+            line-height: 1.7;
+            max-width: 600px;
+        }
+
+        /* ── HOW IT WORKS ────────────────────────────────────── */
+        .how-section {
+            background: linear-gradient(to bottom, var(--ink), var(--deep));
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2px;
+            margin-top: 60px;
+        }
+
+        .step {
+            background: var(--charcoal);
+            padding: 40px 32px;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.3s;
+        }
+        .step:hover { background: var(--surface); }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(to right, var(--gold-dk), var(--gold), var(--gold-dk));
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        .step:hover::before { transform: scaleX(1); }
+
+        .step-number {
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: var(--gold-dk);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .step-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .step-title {
+            font-family: 'Cinzel', serif;
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: var(--white);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .step-body {
+            font-size: 16px;
+            color: var(--fog);
+            line-height: 1.7;
+        }
+
+        /* ── STORIES ─────────────────────────────────────────── */
+        .stories-section {
+            background: var(--deep);
+        }
+
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2px;
+            margin-top: 60px;
+        }
+
+        .story-card {
+            position: relative;
+            padding: 48px 36px;
+            overflow: hidden;
+            cursor: default;
+            transition: transform 0.3s;
+        }
+        .story-card:hover { transform: translateY(-4px); }
+
+        .story-card-bg {
+            position: absolute;
+            inset: 0;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+        .story-card:hover .story-card-bg { opacity: 0.8; }
+
+        .story-card-border {
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: border-color 0.3s;
+        }
+        .story-card:hover .story-card-border { border-color: rgba(201,162,39,0.3); }
+
+        .story-content { position: relative; z-index: 2; }
+
+        .story-badge {
+            font-size: 36px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .story-status {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .story-status.active   { color: #3fb950; background: rgba(63,185,80,0.12); border: 1px solid rgba(63,185,80,0.3); }
+        .story-status.soon     { color: var(--fog); background: rgba(139,139,158,0.1); border: 1px solid rgba(139,139,158,0.2); }
+
+        .story-name {
+            font-family: 'Cinzel', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .story-desc {
+            font-size: 16px;
+            font-style: italic;
+            color: var(--mist);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .story-meta {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--fog);
+            text-transform: uppercase;
+        }
+
+        /* ── EXPERIENCE ──────────────────────────────────────── */
+        .experience-section {
+            background: linear-gradient(135deg, var(--deep) 0%, #0a0810 100%);
+        }
+
+        .experience-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .experience-grid { grid-template-columns: 1fr; gap: 40px; }
+        }
+
+        .experience-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .experience-item {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .experience-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .experience-item-title {
+            font-family: 'Cinzel', serif;
+            font-size: 13px;
+            letter-spacing: 1px;
+            color: var(--gold);
+            margin-bottom: 6px;
+        }
+
+        .experience-item-body {
+            font-size: 16px;
+            color: var(--fog);
+            line-height: 1.6;
+        }
+
+        .experience-stat-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px;
+        }
+
+        .stat-card {
+            background: var(--charcoal);
+            padding: 36px 28px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Cinzel', serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--fog);
+        }
+
+        /* ── PRICING ─────────────────────────────────────────── */
+        .pricing-section {
+            background: var(--ink);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2px;
+            margin-top: 60px;
+        }
+
+        .price-card {
+            background: var(--charcoal);
+            padding: 48px 36px;
+            position: relative;
+            transition: background 0.3s;
+        }
+        .price-card:hover { background: var(--surface); }
+        .price-card.featured {
+            background: var(--surface);
+            border-top: 2px solid var(--gold);
+        }
+
+        .price-badge {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--ink);
+            background: var(--gold);
+            padding: 4px 12px;
+            position: absolute;
+            top: -1px;
+            left: 36px;
+            display: none;
+        }
+        .price-card.featured .price-badge { display: block; }
+
+        .price-tier {
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .price-amount {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 56px;
+            font-weight: 300;
+            color: var(--white);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        .price-amount sup {
+            font-size: 24px;
+            vertical-align: super;
+        }
+
+        .price-per {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--fog);
+            text-transform: uppercase;
+            margin-bottom: 28px;
+        }
+
+        .price-rule {
+            width: 30px;
+            height: 1px;
+            background: var(--gold-dk);
+            margin-bottom: 24px;
+        }
+
+        .price-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 36px;
+        }
+
+        .price-features li {
+            font-size: 16px;
+            color: var(--mist);
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .price-features li::before {
+            content: '✦';
+            color: var(--gold-dk);
+            font-size: 10px;
+            margin-top: 5px;
+            flex-shrink: 0;
+        }
+
+        /* ── TESTIMONIALS ────────────────────────────────────── */
+        .testimonials-section {
+            background: linear-gradient(to bottom, var(--deep), var(--ink));
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2px;
+            margin-top: 60px;
+        }
+
+        .testimonial {
+            background: var(--charcoal);
+            padding: 40px 36px;
+            position: relative;
+        }
+
+        .testimonial::before {
+            content: '\201C';
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 120px;
+            color: rgba(201,162,39,0.08);
+            position: absolute;
+            top: 10px;
+            left: 24px;
+            line-height: 1;
+        }
+
+        .testimonial-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 19px;
+            font-style: italic;
+            color: var(--mist);
+            line-height: 1.7;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimonial-author {
+            font-family: 'Cinzel', serif;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold);
+        }
+
+        .testimonial-event {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--fog);
+            margin-top: 4px;
+        }
+
+        /* ── BOOK / CONTACT ──────────────────────────────────── */
+        .contact-section {
+            background: var(--charcoal);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(201,162,39,0.2);
+            color: var(--white);
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 16px;
+            padding: 12px 16px;
+            outline: none;
+            transition: border-color 0.2s;
+            appearance: none;
+        }
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus { border-color: var(--gold); }
+        .form-input::placeholder,
+        .form-textarea::placeholder { color: var(--fog); }
+        .form-textarea { resize: vertical; min-height: 120px; }
+        .form-select option { background: var(--charcoal); color: var(--white); }
+
+        .form-success {
+            display: none;
+            background: rgba(63,185,80,0.1);
+            border: 1px solid rgba(63,185,80,0.3);
+            color: #3fb950;
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 16px 20px;
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            padding-top: 60px;
+        }
+
+        .contact-detail-label {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold-dk);
+            margin-bottom: 6px;
+        }
+
+        .contact-detail-value {
+            font-size: 18px;
+            color: var(--mist);
+        }
+
+        /* ── JOIN SECTION ────────────────────────────────────── */
+        .join-section {
+            background: linear-gradient(135deg, #080810 0%, #0d0a14 50%, #080810 100%);
+            text-align: center;
+        }
+
+        .join-section .section-inner {
+            padding: 80px 40px;
+        }
+
+        .join-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 40px;
+            align-items: center;
+            margin-top: 48px;
+        }
+
+        @media (max-width: 768px) {
+            .join-grid { grid-template-columns: 1fr; }
+            .join-divider { display: none; }
+        }
+
+        .join-divider {
+            width: 1px;
+            height: 80px;
+            background: linear-gradient(to bottom, transparent, var(--gold-dk), transparent);
+        }
+
+        .join-option {
+            padding: 40px;
+            background: var(--charcoal);
+            text-align: center;
+        }
+
+        .join-option-icon {
+            font-size: 36px;
+            margin-bottom: 16px;
+        }
+
+        .join-option-title {
+            font-family: 'Cinzel', serif;
+            font-size: 13px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--white);
+            margin-bottom: 10px;
+        }
+
+        .join-option-body {
+            font-size: 15px;
+            color: var(--fog);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        /* ── FOOTER ──────────────────────────────────────────── */
+        footer {
+            background: #050508;
+            padding: 48px 40px;
+            text-align: center;
+            border-top: 1px solid rgba(201,162,39,0.1);
+        }
+
+        .footer-brand {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 18px;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .footer-tagline {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 15px;
+            font-style: italic;
+            color: var(--fog);
+            margin-bottom: 24px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .footer-links a {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--fog);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: var(--gold); }
+
+        .footer-copy {
+            font-size: 13px;
+            color: rgba(139,139,158,0.4);
+        }
+
+        /* ── DIVIDERS ────────────────────────────────────────── */
+        .ornament-divider {
+            text-align: center;
+            color: var(--gold-dk);
+            font-size: 14px;
+            letter-spacing: 8px;
+            padding: 20px 0;
+            opacity: 0.5;
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- ── NAVIGATION ─────────────────────────────────────────── -->
+<nav>
+    <a href="/" class="nav-brand">Thor's Murder Mysteries</a>
+    <ul class="nav-links">
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#stories">Stories</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#contact">Book an Event</a></li>
+        <li><a href="home.html" class="nav-cta">Player Login</a></li>
+    </ul>
+</nav>
+
+<!-- ── HERO ───────────────────────────────────────────────── -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+        <div class="hero-eyebrow">Dallas, Texas &nbsp;✦&nbsp; Immersive Experiences</div>
+        <h1 class="hero-title">
+            Thor's Murder
+            <span>Mysteries</span>
+        </h1>
+        <div class="hero-rule"></div>
+        <p class="hero-sub">
+            An evening of intrigue, cocktails, and deception.<br>
+            Someone at your table is a killer — can you find them?
+        </p>
+        <div class="hero-actions">
+            <a href="#contact" class="btn-gold">Book an Event</a>
+            <a href="#stories" class="btn-ghost">See the Stories</a>
+        </div>
+    </div>
+    <div class="scroll-hint">
+        <span>Scroll</span>
+        <div class="scroll-line"></div>
+    </div>
+</section>
+
+<!-- ── HOW IT WORKS ───────────────────────────────────────── -->
+<section class="how-section" id="how-it-works">
+    <div class="section-inner">
+        <div class="section-eyebrow">The Experience</div>
+        <h2 class="section-title">How the Evening Unfolds</h2>
+        <div class="section-rule"></div>
+        <p class="section-lead">
+            Every guest arrives as a character. Every character has a secret. 
+            Over cocktails and dinner, the truth comes out — one revelation at a time.
+        </p>
+
+        <div class="steps-grid">
+            <div class="step">
+                <span class="step-number">01</span>
+                <span class="step-icon">📜</span>
+                <div class="step-title">The Invitation</div>
+                <p class="step-body">Guests receive a period-accurate invitation with their character backstory before the event. By the time they arrive, they're already in character.</p>
+            </div>
+            <div class="step">
+                <span class="step-number">02</span>
+                <span class="step-icon">🥂</span>
+                <div class="step-title">Cocktail Hour</div>
+                <p class="step-body">A fully stocked bar, period cocktails, and social missions to complete. Meet the suspects, plant seeds of suspicion, and find your footing in 1935.</p>
+            </div>
+            <div class="step">
+                <span class="step-number">03</span>
+                <span class="step-icon">💀</span>
+                <div class="step-title">The Murder</div>
+                <p class="step-body">Someone is dead. The investigation begins. QR-coded clues, skill-gated evidence, and real-time reveals push the story forward — act by act.</p>
+            </div>
+            <div class="step">
+                <span class="step-number">04</span>
+                <span class="step-icon">🔍</span>
+                <div class="step-title">The Investigation</div>
+                <p class="step-body">Each character has a unique skill — Legal, Medical, Botany, and more — that unlocks evidence only they can interpret. Collaboration is essential.</p>
+            </div>
+            <div class="step">
+                <span class="step-number">05</span>
+                <span class="step-icon">⚖️</span>
+                <div class="step-title">The Accusation</div>
+                <p class="step-body">Three acts of revelation. One killer. When the confession is read aloud, the room will never be the same.</p>
+            </div>
+            <div class="step">
+                <span class="step-number">06</span>
+                <span class="step-icon">📱</span>
+                <div class="step-title">The App</div>
+                <p class="step-body">Our custom platform delivers character sheets, clues, memories, and story beats to every player's phone in real time. No printed packets. No confusion.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── STORIES ─────────────────────────────────────────────── -->
+<section class="stories-section" id="stories">
+    <div class="section-inner">
+        <div class="section-eyebrow">The Mysteries</div>
+        <h2 class="section-title">Choose Your Story</h2>
+        <div class="section-rule"></div>
+        <p class="section-lead">Each mystery is a fully original world — different era, different cast, same obsessive attention to detail.</p>
+
+        <div class="stories-grid">
+
+            <div class="story-card">
+                <div class="story-card-bg" style="background: linear-gradient(135deg, #1a2a4a, #0a0f1a);"></div>
+                <div class="story-card-border"></div>
+                <div class="story-content">
+                    <span class="story-badge">🕯</span>
+                    <span class="story-status active">Available Now</span>
+                    <div class="story-name">The Thoreson Estate Dinner</div>
+                    <p class="story-desc">A 1935 Dallas murder mystery. William Thoreson Sr. is dead — and everyone at the table had a reason.</p>
+                    <div class="story-meta">8–13 Players &nbsp;✦&nbsp; ~3 Hours &nbsp;✦&nbsp; Dallas, 1935</div>
+                </div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-card-bg" style="background: linear-gradient(135deg, #1a0a2a, #0a0510);"></div>
+                <div class="story-card-border"></div>
+                <div class="story-content">
+                    <span class="story-badge">🎭</span>
+                    <span class="story-status soon">Coming Soon</span>
+                    <div class="story-name">The Devereaux Masquerade</div>
+                    <p class="story-desc">New Orleans, 1924. A masquerade ball. A missing heir. A body behind the curtain.</p>
+                    <div class="story-meta">9–14 Players &nbsp;✦&nbsp; ~3 Hours &nbsp;✦&nbsp; New Orleans, 1924</div>
+                </div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-card-bg" style="background: linear-gradient(135deg, #0a1a0a, #050f05);"></div>
+                <div class="story-card-border"></div>
+                <div class="story-content">
+                    <span class="story-badge">🚂</span>
+                    <span class="story-status soon">Coming Soon</span>
+                    <div class="story-name">Last Train to Wicker Park</div>
+                    <p class="story-desc">Chicago, 1947. Nobody gets off until the killer is found.</p>
+                    <div class="story-meta">7–11 Players &nbsp;✦&nbsp; ~3 Hours &nbsp;✦&nbsp; Chicago, 1947</div>
+                </div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-card-bg" style="background: linear-gradient(135deg, #1a1400, #0f0d00);"></div>
+                <div class="story-card-border"></div>
+                <div class="story-content">
+                    <span class="story-badge">⚡</span>
+                    <span class="story-status soon">Coming Soon</span>
+                    <div class="story-name">Thor's Asgard</div>
+                    <p class="story-desc">Asgard, age of the gods. Someone has murdered one of the Aesir — and every god in the hall had a reason.</p>
+                    <div class="story-meta">6–10 Players &nbsp;✦&nbsp; ~3 Hours &nbsp;✦&nbsp; Asgard</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ── EXPERIENCE STATS ───────────────────────────────────── -->
+<section class="experience-section">
+    <div class="section-inner">
+        <div class="section-eyebrow">Why Thor's</div>
+        <h2 class="section-title">This Isn't a Kit.<br>It's a Production.</h2>
+        <div class="section-rule"></div>
+
+        <div class="experience-grid">
+            <ul class="experience-list">
+                <li class="experience-item">
+                    <span class="experience-icon">📱</span>
+                    <div>
+                        <div class="experience-item-title">Custom Platform</div>
+                        <p class="experience-item-body">Every player's phone becomes their character sheet, clue tracker, and evidence board. Real-time, GM-controlled, no paper.</p>
+                    </div>
+                </li>
+                <li class="experience-item">
+                    <span class="experience-icon">🔐</span>
+                    <div>
+                        <div class="experience-item-title">Skill Gating</div>
+                        <p class="experience-item-body">Evidence is locked behind character skills. The Medical examiner reads the autopsy. The Botanist identifies the poison. Everyone has a role.</p>
+                    </div>
+                </li>
+                <li class="experience-item">
+                    <span class="experience-icon">🎭</span>
+                    <div>
+                        <div class="experience-item-title">Dynamic Killer</div>
+                        <p class="experience-item-body">The killer role is assigned fresh every game. Run the same story twice — entirely different outcome, entirely different suspense.</p>
+                    </div>
+                </li>
+                <li class="experience-item">
+                    <span class="experience-icon">🏠</span>
+                    <div>
+                        <div class="experience-item-title">We Come to You</div>
+                        <p class="experience-item-body">Your home, your Airbnb, your venue. We bring the experience — props, app, GM facilitation, and all the drama.</p>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="experience-stat-block">
+                <div class="stat-card">
+                    <div class="stat-number">22</div>
+                    <div class="stat-label">Max Players</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3h</div>
+                    <div class="stat-label">Full Experience</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Stories Available</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Replayable</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── PRICING ─────────────────────────────────────────────── -->
+<section class="pricing-section" id="pricing">
+    <div class="section-inner">
+        <div class="section-eyebrow">Investment</div>
+        <h2 class="section-title">Pricing</h2>
+        <div class="section-rule"></div>
+        <p class="section-lead">All experiences include full GM facilitation, props, app access, and cocktail hour setup.</p>
+
+        <div class="pricing-grid">
+
+            <div class="price-card">
+                <div class="price-tier">Estate Experience</div>
+                <div class="price-amount"><sup>$</sup>115</div>
+                <div class="price-per">Per Person &nbsp;·&nbsp; 8–13 Guests</div>
+                <div class="price-rule"></div>
+                <ul class="price-features">
+                    <li>Full mystery experience at your home</li>
+                    <li>GM facilitation throughout</li>
+                    <li>Physical prop set</li>
+                    <li>Custom character app access</li>
+                    <li>Period cocktail menu</li>
+                    <li>Photo wall & digital album</li>
+                </ul>
+                <a href="#contact" class="btn-ghost" style="width:100%;text-align:center;">Enquire</a>
+            </div>
+
+            <div class="price-card featured">
+                <div class="price-badge">Most Popular</div>
+                <div class="price-tier">Private Affair</div>
+                <div class="price-amount"><sup>$</sup>135</div>
+                <div class="price-per">Per Person &nbsp;·&nbsp; 14–22 Guests</div>
+                <div class="price-rule"></div>
+                <ul class="price-features">
+                    <li>Everything in Estate Experience</li>
+                    <li>Larger cast — more suspects</li>
+                    <li>Venue coordination assistance</li>
+                    <li>Additional prop set</li>
+                    <li>Priority story selection</li>
+                    <li>Post-event survey & recap</li>
+                </ul>
+                <a href="#contact" class="btn-gold" style="width:100%;text-align:center;">Book This</a>
+            </div>
+
+            <div class="price-card">
+                <div class="price-tier">Corporate Event</div>
+                <div class="price-amount" style="font-size:36px;">Custom</div>
+                <div class="price-per">Flat Rate &nbsp;·&nbsp; Team Events</div>
+                <div class="price-rule"></div>
+                <ul class="price-features">
+                    <li>Custom story theming available</li>
+                    <li>Flexible guest count</li>
+                    <li>Venue sourcing assistance</li>
+                    <li>Branded experience options</li>
+                    <li>Team-building structure</li>
+                    <li>Full event coordination</li>
+                </ul>
+                <a href="#contact" class="btn-ghost" style="width:100%;text-align:center;">Get a Quote</a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ── TESTIMONIALS ───────────────────────────────────────── -->
+<section class="testimonials-section" id="testimonials">
+    <div class="section-inner">
+        <div class="section-eyebrow">From the Guests</div>
+        <h2 class="section-title">What People Are Saying</h2>
+        <div class="section-rule"></div>
+
+        <div class="testimonials-grid">
+
+            <div class="testimonial">
+                <p class="testimonial-text">I didn't know I was the killer until the moment it was revealed. Neither did anyone else. I won. The whole room was furious in the best possible way.</p>
+                <div class="testimonial-author">Leanna T.</div>
+                <div class="testimonial-event">The Thoreson Estate Dinner — March 2026</div>
+            </div>
+
+            <div class="testimonial">
+                <p class="testimonial-text">We've done box kits. We've done escape rooms. This is completely different. Every person has a genuine role. Nobody's just along for the ride.</p>
+                <div class="testimonial-author">Marc & Maisy</div>
+                <div class="testimonial-event">The Thoreson Estate Dinner — March 2026</div>
+            </div>
+
+            <div class="testimonial">
+                <p class="testimonial-text">The app made everything seamless. Clues came to my phone. The story unfolded in real time. At one point the whole room went completely silent. I'll never forget it.</p>
+                <div class="testimonial-author">DJ R.</div>
+                <div class="testimonial-event">The Thoreson Estate Dinner — March 2026</div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ── BOOK / CONTACT ─────────────────────────────────────── -->
+<section class="contact-section" id="contact">
+    <div class="section-inner">
+        <div class="contact-grid">
+            <div>
+                <div class="section-eyebrow">Reserve Your Evening</div>
+                <h2 class="section-title">Book an Event</h2>
+                <div class="section-rule"></div>
+                <p class="section-lead" style="margin-bottom:40px;">Tell us about your group and we'll reach out within 24 hours to confirm availability and details.</p>
+
+                <form id="bookingForm" onsubmit="submitBooking(event)">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                        <div class="form-group">
+                            <label class="form-label">Your Name</label>
+                            <input class="form-input" type="text" placeholder="First Last" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input class="form-input" type="email" placeholder="you@example.com" required>
+                        </div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input class="form-input" type="tel" placeholder="(214) 555-0100">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Guest Count</label>
+                            <input class="form-input" type="number" placeholder="8–22" min="8" max="30">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Preferred Story</label>
+                        <select class="form-select">
+                            <option value="">No preference</option>
+                            <option>The Thoreson Estate Dinner (Available Now)</option>
+                            <option>The Devereaux Masquerade (Coming Soon)</option>
+                            <option>Last Train to Wicker Park (Coming Soon)</option>
+                            <option>Thor's Asgard (Coming Soon)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Preferred Date Range</label>
+                        <input class="form-input" type="text" placeholder="e.g. April–May 2026, flexible">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Anything Else</label>
+                        <textarea class="form-textarea" placeholder="Venue details, special occasions, questions…"></textarea>
+                    </div>
+                    <button type="submit" class="btn-gold" style="width:100%;">Send Enquiry</button>
+                    <div class="form-success" id="formSuccess">✦ &nbsp; We'll be in touch within 24 hours &nbsp; ✦</div>
+                </form>
+            </div>
+
+            <div class="contact-info">
+                <div>
+                    <div class="contact-detail-label">Location</div>
+                    <div class="contact-detail-value">Dallas, Texas<br><span style="font-size:15px;color:var(--fog);">We travel to your venue or home</span></div>
+                </div>
+                <div>
+                    <div class="contact-detail-label">Email</div>
+                    <div class="contact-detail-value">hello@thorsmystery.com</div>
+                </div>
+                <div>
+                    <div class="contact-detail-label">Response Time</div>
+                    <div class="contact-detail-value">Within 24 hours</div>
+                </div>
+                <div>
+                    <div class="contact-detail-label">Availability</div>
+                    <div class="contact-detail-value">Fridays & Saturdays<br><span style="font-size:15px;color:var(--fog);">Select weeknights available</span></div>
+                </div>
+                <div style="margin-top:16px;">
+                    <div class="ornament-divider">✦ &nbsp; ✦ &nbsp; ✦</div>
+                    <p style="font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:var(--fog);line-height:1.7;margin-top:16px;">
+                        "The evening was planned for three hours.<br>We stayed five."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── JOIN / LOGIN ───────────────────────────────────────── -->
+<section class="join-section">
+    <div class="section-inner">
+        <div class="section-eyebrow">Already Registered?</div>
+        <h2 class="section-title">Join the Evening</h2>
+        <div class="section-rule" style="margin:0 auto 0;"></div>
+
+        <div class="join-grid" style="margin-top:48px;">
+            <div class="join-option">
+                <div class="join-option-icon">🔑</div>
+                <div class="join-option-title">Have a Party Code?</div>
+                <p class="join-option-body">Enter the code from your invitation to join your game and access your character.</p>
+                <a href="join.html" class="btn-gold">Enter Code</a>
+            </div>
+            <div class="join-divider"></div>
+            <div class="join-option">
+                <div class="join-option-icon">👤</div>
+                <div class="join-option-title">Returning Player?</div>
+                <p class="join-option-body">Sign in to access your games, character history, and photo wall.</p>
+                <a href="home.html" class="btn-ghost">Sign In</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────── -->
+<footer>
+    <div class="footer-brand">Thor's Murder Mysteries</div>
+    <div class="footer-tagline">Someone at your table is a killer.</div>
+    <div class="footer-links">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#stories">Stories</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#contact">Book an Event</a>
+        <a href="home.html">Player Login</a>
+        <a href="admin.html">GM Console</a>
+    </div>
+    <div class="footer-copy">© 2026 Thor's Murder Mysteries · Dallas, TX · thorsmystery.com</div>
+</footer>
+
+<script>
+    // ── BOOKING FORM ──────────────────────────────────────────
+    function submitBooking(e) {
+        e.preventDefault();
+        // TODO: wire to email service / Firebase when ready
+        document.getElementById('formSuccess').style.display = 'block';
+        e.target.querySelector('button[type=submit]').textContent = '✓ Sent';
+        e.target.querySelector('button[type=submit]').disabled = true;
+    }
+
+    // ── SCROLL REVEAL ─────────────────────────────────────────
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.step, .story-card, .price-card, .testimonial, .stat-card').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+</script>
+
+</body>
+</html>
