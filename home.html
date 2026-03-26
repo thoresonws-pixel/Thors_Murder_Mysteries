@@ -307,92 +307,103 @@
 <div id="mainContent" style="display:none;">
     <div class="main">
         <div class="page-title" id="welcomeTitle">Welcome back</div>
-        <div class="page-sub">Your evenings of intrigue</div>
 
-        <!-- Join a party -->
-        <div>
-            <div style="margin-bottom:10px;">
+        <!-- Tabs -->
+        <div style="display:flex;border-bottom:1px solid rgba(201,162,39,0.15);margin-bottom:32px;margin-top:8px;">
+            <button id="tab-games-btn" onclick="switchHomeTab('games')"
+                style="font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;background:none;border:none;color:#c9a227;padding:12px 24px 12px 0;cursor:pointer;border-bottom:2px solid #c9a227;margin-bottom:-1px;">
+                Your Games
+            </button>
+            <button id="tab-account-btn" onclick="switchHomeTab('account')"
+                style="font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;background:none;border:none;color:rgba(139,139,158,0.5);padding:12px 24px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;">
+                Account
+            </button>
+        </div>
+
+        <!-- Games Tab -->
+        <div id="tab-games">
+            <div style="margin-bottom:24px;">
                 <input type="text" class="join-input" id="partyCodeInput"
                     placeholder="Enter party code" maxlength="12"
                     oninput="this.value=this.value.toUpperCase()">
                 <button class="btn-join" onclick="joinParty()" id="joinBtn">Join Party</button>
+                <div class="join-error" id="joinError"></div>
             </div>
-            <div class="join-error" id="joinError"></div>
-        </div>
-
-        <!-- Game cards -->
-        <div class="section-title" style="margin-top:40px;">Your Parties</div>
-        <div class="games-grid" id="gamesGrid">
-            <div class="empty-state">
-                <div class="empty-icon">🕯</div>
-                <div class="empty-title">No parties yet</div>
-                <div class="empty-sub">Enter a party code above to join your first mystery evening</div>
+            <div class="section-title">Your Parties</div>
+            <div class="games-grid" id="gamesGrid">
+                <div class="empty-state">
+                    <div class="empty-icon">🕯</div>
+                    <div class="empty-title">No parties yet</div>
+                    <div class="empty-sub">Enter a party code above to join your first mystery evening</div>
+                </div>
             </div>
         </div>
 
-        <!-- Account Settings -->
-        <div class="section-title" style="margin-top:48px;">Account</div>
-        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(201,162,39,0.12);padding:28px 28px 24px;margin-bottom:40px;">
+        <!-- Account Tab -->
+        <div id="tab-account" style="display:none;">
+            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(201,162,39,0.12);padding:28px 28px 24px;margin-bottom:40px;">
 
-            <!-- Contact Info -->
-            <div style="margin-bottom:28px;">
-                <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,162,39,0.5);margin-bottom:12px;">Contact Information</div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                    <div>
-                        <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(201,162,39,0.4);margin-bottom:6px;">Email</div>
-                        <input type="email" id="contactEmail" placeholder="your@email.com"
-                            style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(201,162,39,0.15);color:#f5f0e6;font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;padding:9px 12px;outline:none;"
-                            oninput="scheduleSave()">
+                <!-- Contact Info -->
+                <div style="margin-bottom:28px;">
+                    <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,162,39,0.5);margin-bottom:12px;">Contact Information</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div>
+                            <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(201,162,39,0.4);margin-bottom:6px;">Email</div>
+                            <input type="email" id="contactEmail" placeholder="your@email.com"
+                                style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(201,162,39,0.15);color:#f5f0e6;font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;padding:9px 12px;outline:none;"
+                                oninput="scheduleSave()">
+                        </div>
+                        <div>
+                            <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(201,162,39,0.4);margin-bottom:6px;">Phone</div>
+                            <input type="tel" id="contactPhone" placeholder="555-123-4567"
+                                style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(201,162,39,0.15);color:#f5f0e6;font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;padding:9px 12px;outline:none;"
+                                oninput="scheduleSave()">
+                        </div>
                     </div>
-                    <div>
-                        <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(201,162,39,0.4);margin-bottom:6px;">Phone</div>
-                        <input type="tel" id="contactPhone" placeholder="555-123-4567"
-                            style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(201,162,39,0.15);color:#f5f0e6;font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;padding:9px 12px;outline:none;"
-                            oninput="scheduleSave()">
+                </div>
+
+                <!-- Gender Preference -->
+                <div style="margin-bottom:28px;">
+                    <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,162,39,0.5);margin-bottom:12px;">Character Gender Preference</div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <button id="gpMale" onclick="setGender('male')" class="pref-btn">Male</button>
+                        <button id="gpFemale" onclick="setGender('female')" class="pref-btn">Female</button>
+                        <button id="gpAny" onclick="setGender('any')" class="pref-btn">No Preference</button>
                     </div>
                 </div>
-            </div>
 
-            <!-- Gender Preference -->
-            <div style="margin-bottom:28px;">
-                <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,162,39,0.5);margin-bottom:12px;">Character Gender Preference</div>
-                <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                    <button id="gpMale" onclick="setGender('male')" class="pref-btn">Male</button>
-                    <button id="gpFemale" onclick="setGender('female')" class="pref-btn">Female</button>
-                    <button id="gpAny" onclick="setGender('any')" class="pref-btn">No Preference</button>
+                <!-- Involvement -->
+                <div style="margin-bottom:28px;">
+                    <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,162,39,0.5);margin-bottom:6px;">Involvement Level</div>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                        <span style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:2px;color:rgba(139,139,158,0.6);">JUST HERE FOR THE FUN</span>
+                        <span style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:2px;color:rgba(139,139,158,0.6);">GIVE ME THE DRAMA</span>
+                    </div>
+                    <input type="range" id="involvSlider" min="1" max="10" value="5"
+                        style="width:100%;accent-color:#c9a227;cursor:pointer;"
+                        oninput="updateInvolvement(this.value)">
+                    <div style="text-align:center;margin-top:10px;">
+                        <span id="involvValue" style="font-family:'Playfair Display',serif;font-size:32px;color:#c9a227;font-weight:700;">5</span>
+                        <span id="involvLabel" style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:2px;color:rgba(139,139,158,0.6);display:block;margin-top:2px;">Somewhere in the middle</span>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Involvement -->
-            <div style="margin-bottom:28px;">
-                <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,162,39,0.5);margin-bottom:6px;">Involvement Level</div>
-                <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-                    <span style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:2px;color:rgba(139,139,158,0.6);">JUST HERE FOR THE FUN</span>
-                    <span style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:2px;color:rgba(139,139,158,0.6);">GIVE ME THE DRAMA</span>
+                <!-- Waiver -->
+                <div style="border-top:1px solid rgba(201,162,39,0.08);padding-top:24px;margin-bottom:4px;">
+                    <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,162,39,0.5);margin-bottom:12px;">Guest Agreement</div>
+                    <div id="waiverStatus" style="display:none;">
+                        <span style="font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:#3fb950;">✓ Agreement signed</span>
+                    </div>
+                    <div id="waiverForm">
+                        <p style="font-family:'Cormorant Garamond',serif;font-size:15px;color:rgba(196,196,212,0.6);margin-bottom:14px;line-height:1.6;">Before attending you'll need to read and sign our guest agreement covering age verification, alcohol policy, and the theatrical nature of the event.</p>
+                        <button onclick="openWaiverModal()" style="background:#c9a227;color:#06040a;border:none;font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:13px 28px;cursor:pointer;font-weight:600;">Read &amp; Sign Agreement</button>
+                    </div>
                 </div>
-                <input type="range" id="involvSlider" min="1" max="10" value="5"
-                    style="width:100%;accent-color:#c9a227;cursor:pointer;"
-                    oninput="updateInvolvement(this.value)">
-                <div style="text-align:center;margin-top:10px;">
-                    <span id="involvValue" style="font-family:'Playfair Display',serif;font-size:32px;color:#c9a227;font-weight:700;">5</span>
-                    <span id="involvLabel" style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:2px;color:rgba(139,139,158,0.6);display:block;margin-top:2px;">Somewhere in the middle</span>
-                </div>
-            </div>
 
-            <!-- Waiver -->
-            <div style="border-top:1px solid rgba(201,162,39,0.08);padding-top:24px;margin-bottom:4px;">
-                <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,162,39,0.5);margin-bottom:12px;">Guest Agreement</div>
-                <div id="waiverStatus" style="display:none;">
-                    <span style="font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:#3fb950;">✓ Agreement signed</span>
-                </div>
-                <div id="waiverForm">
-                    <p style="font-family:'Cormorant Garamond',serif;font-size:15px;color:rgba(196,196,212,0.6);margin-bottom:14px;line-height:1.6;">Before attending you'll need to read and sign our guest agreement covering age verification, alcohol policy, and the theatrical nature of the event.</p>
-                    <button onclick="openWaiverModal()" style="background:#c9a227;color:#06040a;border:none;font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:13px 28px;cursor:pointer;font-weight:600;">Read &amp; Sign Agreement</button>
-                </div>
+                <div id="accountSaved" style="display:none;font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:#3fb950;margin-top:16px;">✓ Saved</div>
             </div>
-
-            <div id="accountSaved" style="display:none;font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:#3fb950;margin-top:16px;">✓ Saved</div>
         </div>
+
     </div>
 </div>
 
@@ -629,6 +640,17 @@ async function joinParty() {
     }
 }
 
+
+// ── HOME TABS ─────────────────────────────────────────────────
+function switchHomeTab(tab) {
+    const isGames = tab === 'games';
+    document.getElementById('tab-games').style.display = isGames ? 'block' : 'none';
+    document.getElementById('tab-account').style.display = isGames ? 'none' : 'block';
+    document.getElementById('tab-games-btn').style.color = isGames ? '#c9a227' : 'rgba(139,139,158,0.5)';
+    document.getElementById('tab-games-btn').style.borderBottomColor = isGames ? '#c9a227' : 'transparent';
+    document.getElementById('tab-account-btn').style.color = isGames ? 'rgba(139,139,158,0.5)' : '#c9a227';
+    document.getElementById('tab-account-btn').style.borderBottomColor = isGames ? 'transparent' : '#c9a227';
+}
 
 // ── ACCOUNT SETTINGS ──────────────────────────────────────────
 const INVOLV_LABELS = ['','Just here for the fun','Fairly low key','Modest involvement','A little involved','Somewhere in the middle','Getting into it','Fairly dramatic','Quite theatrical','Very involved','Give me the drama'];
