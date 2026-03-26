@@ -67,7 +67,7 @@ var characterDatabase = {
     // ============================================================
     "scott_thoreson": {
         name: "Scott Thoreson Jr.",
-        nameVariants: { female: "Scott Thoreson Jr.", male: "Scott Thoreson Jr." },
+        nameVariants: { female: "Sylvia Thoreson Jr.", male: "Scott Thoreson Jr." },
         picker: { role: "Eldest Son, Managing the Family Business", involvement: "heavy", isKiller: false },
         cocktailProfile: {
             from:         "Born and raised in Dallas.",
