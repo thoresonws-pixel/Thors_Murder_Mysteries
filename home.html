@@ -273,6 +273,17 @@
         .toast.show { opacity: 1; }
         .toast.success { background: rgba(39,170,91,0.9); color: white; }
         .toast.error   { background: rgba(192,57,43,0.9); color: white; }
+
+        .pref-btn {
+            font-family: 'Special Elite', monospace;
+            font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+            background: transparent; color: rgba(196,196,212,0.5);
+            border: 1px solid rgba(201,162,39,0.15);
+            padding: 8px 20px; cursor: pointer; transition: all 0.2s;
+        }
+        .pref-btn:hover { border-color: rgba(201,162,39,0.4); color: var(--mist, #c4c4d4); }
+        .pref-btn.active { background: rgba(201,162,39,0.12); border-color: #c9a227; color: #c9a227; }
+
     </style>
 </head>
 <body>
@@ -317,6 +328,64 @@
                 <div class="empty-title">No parties yet</div>
                 <div class="empty-sub">Enter a party code above to join your first mystery evening</div>
             </div>
+        </div>
+
+        <!-- Account Settings -->
+        <div class="section-title" style="margin-top:48px;">Account</div>
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(201,162,39,0.12);padding:28px 28px 24px;margin-bottom:40px;">
+
+            <!-- Gender Preference -->
+            <div style="margin-bottom:28px;">
+                <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,162,39,0.5);margin-bottom:12px;">Character Gender Preference</div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <button id="gpMale" onclick="setGender('male')" class="pref-btn">Male</button>
+                    <button id="gpFemale" onclick="setGender('female')" class="pref-btn">Female</button>
+                    <button id="gpAny" onclick="setGender('any')" class="pref-btn">No Preference</button>
+                </div>
+            </div>
+
+            <!-- Involvement -->
+            <div style="margin-bottom:28px;">
+                <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,162,39,0.5);margin-bottom:6px;">Involvement Level</div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                    <span style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:2px;color:rgba(139,139,158,0.6);">JUST HERE FOR THE FUN</span>
+                    <span style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:2px;color:rgba(139,139,158,0.6);">GIVE ME THE DRAMA</span>
+                </div>
+                <input type="range" id="involvSlider" min="1" max="10" value="5"
+                    style="width:100%;accent-color:#c9a227;cursor:pointer;"
+                    oninput="updateInvolvement(this.value)">
+                <div style="text-align:center;margin-top:10px;">
+                    <span id="involvValue" style="font-family:'Playfair Display',serif;font-size:32px;color:#c9a227;font-weight:700;">5</span>
+                    <span id="involvLabel" style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:2px;color:rgba(139,139,158,0.6);display:block;margin-top:2px;">Somewhere in the middle</span>
+                </div>
+            </div>
+
+            <!-- Waiver -->
+            <div style="border-top:1px solid rgba(201,162,39,0.08);padding-top:24px;margin-bottom:4px;">
+                <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,162,39,0.5);margin-bottom:12px;">Guest Agreement</div>
+                <div id="waiverStatus" style="display:none;font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:#3fb950;margin-bottom:12px;">✓ Signed</div>
+                <div id="waiverForm">
+                    <div style="background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.06);padding:14px 16px;max-height:160px;overflow-y:auto;margin-bottom:14px;font-family:'Cormorant Garamond',Georgia,serif;font-size:14px;line-height:1.75;color:rgba(196,196,212,0.65);">
+                        <strong style="color:#f5f0e6;font-size:12px;letter-spacing:1px;">Age Verification</strong><br>
+                        I confirm that I am 21 years of age or older. I understand that valid photo ID will be required at the door.<br><br>
+                        <strong style="color:#f5f0e6;font-size:12px;letter-spacing:1px;">Alcohol Policy</strong><br>
+                        I understand that alcohol will be available at this event. I agree that the host reserves the right to refuse service or remove any guest who appears intoxicated or disruptive. I accept full responsibility for my own consumption.<br><br>
+                        <strong style="color:#f5f0e6;font-size:12px;letter-spacing:1px;">Nature of the Event</strong><br>
+                        I understand that Thor's Murder Mysteries is a theatrical interactive experience. I consent to participate and understand all scenarios are fictional.<br><br>
+                        <strong style="color:#f5f0e6;font-size:12px;letter-spacing:1px;">Photography</strong><br>
+                        I understand that photos may be taken during the event and shared with participants. I will notify the host before the event if I have concerns.
+                    </div>
+                    <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer;">
+                        <input type="checkbox" id="waiverCheck" style="margin-top:3px;width:16px;height:16px;accent-color:#c9a227;flex-shrink:0;cursor:pointer;">
+                        <span style="font-family:'Cormorant Garamond',serif;font-size:15px;color:rgba(196,196,212,0.8);line-height:1.5;">
+                            I confirm I am 21 or older and agree to the terms above.
+                        </span>
+                    </label>
+                    <button onclick="signWaiver()" style="margin-top:14px;background:var(--gold);color:#06040a;border:none;font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:12px 24px;cursor:pointer;">Sign Agreement</button>
+                </div>
+            </div>
+
+            <div id="accountSaved" style="display:none;font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:#3fb950;margin-top:16px;">✓ Saved</div>
         </div>
     </div>
 </div>
@@ -366,6 +435,7 @@ auth.onAuthStateChanged(async user => {
         'Welcome, ' + (user.displayName ? user.displayName.split(' ')[0] : 'back');
 
     await loadUserGames(user);
+    await loadAccountSettings();
 
     document.getElementById('loadingScreen').style.display = 'none';
     document.getElementById('mainContent').style.display = 'block';
@@ -509,6 +579,113 @@ async function joinParty() {
         btn.textContent = 'Join Party';
     }
 }
+
+
+// ── ACCOUNT SETTINGS ──────────────────────────────────────────
+const INVOLV_LABELS = ['','Just here for the fun','Fairly low key','Modest involvement','A little involved','Somewhere in the middle','Getting into it','Fairly dramatic','Quite theatrical','Very involved','Give me the drama'];
+
+let accountGender = null;
+let accountInvolv = 5;
+let saveTimer = null;
+
+async function loadAccountSettings() {
+    if (!currentUser) return;
+    const snap = await db.ref('users/' + currentUser.uid).once('value');
+    const u = snap.val() || {};
+    
+    // Load gender
+    if (u.genderPref) setGenderUI(u.genderPref);
+
+    // Load involvement
+    const inv = u.involvementScore || 5;
+    accountInvolv = inv;
+    document.getElementById('involvSlider').value = inv;
+    document.getElementById('involvValue').textContent = inv;
+    document.getElementById('involvLabel').textContent = INVOLV_LABELS[inv] || '';
+
+    // Load waiver
+    if (u.waiverSigned) {
+        document.getElementById('waiverStatus').style.display = 'block';
+        document.getElementById('waiverForm').style.display = 'none';
+    }
+}
+
+function setGender(val) {
+    setGenderUI(val);
+    accountGender = val;
+    scheduleSave();
+}
+
+function setGenderUI(val) {
+    accountGender = val;
+    ['male','female','any'].forEach(v => {
+        document.getElementById('gp' + v.charAt(0).toUpperCase() + v.slice(1))
+            .classList.toggle('active', v === val);
+    });
+}
+
+function updateInvolvement(val) {
+    accountInvolv = parseInt(val);
+    document.getElementById('involvValue').textContent = val;
+    document.getElementById('involvLabel').textContent = INVOLV_LABELS[val] || '';
+    scheduleSave();
+}
+
+function scheduleSave() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveAccount, 800);
+}
+
+async function saveAccount() {
+    if (!currentUser) return;
+    const updates = {};
+    if (accountGender) updates.genderPref = accountGender;
+    updates.involvementScore = accountInvolv;
+    await db.ref('users/' + currentUser.uid).update(updates);
+
+    // Also update questionnaire in any active games
+    const gamesSnap = await db.ref('games').once('value');
+    const allGames = gamesSnap.val() || {};
+    const gameUpdates = {};
+    Object.entries(allGames).forEach(([gid, game]) => {
+        if (game.players && game.players[currentUser.uid]) {
+            gameUpdates['games/' + gid + '/players/' + currentUser.uid + '/questionnaire/gender'] = accountGender || 'any';
+            gameUpdates['games/' + gid + '/players/' + currentUser.uid + '/questionnaire/involvementScore'] = accountInvolv;
+        }
+    });
+    if (Object.keys(gameUpdates).length) await db.ref().update(gameUpdates);
+
+    const el = document.getElementById('accountSaved');
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 2000);
+}
+
+async function signWaiver() {
+    const checked = document.getElementById('waiverCheck').checked;
+    if (!checked) {
+        alert('Please check the box to confirm your agreement.');
+        return;
+    }
+    await db.ref('users/' + currentUser.uid).update({
+        waiverSigned: true,
+        waiverSignedAt: new Date().toISOString()
+    });
+    // Update in all active games too
+    const gamesSnap = await db.ref('games').once('value');
+    const allGames = gamesSnap.val() || {};
+    const updates = {};
+    Object.entries(allGames).forEach(([gid, game]) => {
+        if (game.players && game.players[currentUser.uid]) {
+            updates['games/' + gid + '/players/' + currentUser.uid + '/waiverSigned'] = true;
+            updates['games/' + gid + '/players/' + currentUser.uid + '/waiverSignedAt'] = new Date().toISOString();
+        }
+    });
+    if (Object.keys(updates).length) await db.ref().update(updates);
+
+    document.getElementById('waiverStatus').style.display = 'block';
+    document.getElementById('waiverForm').style.display = 'none';
+}
+
 
 document.getElementById('partyCodeInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') joinParty();
