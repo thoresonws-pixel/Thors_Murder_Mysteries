@@ -1,286 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#c9a227">
-    <meta name="description" content="An interactive 1930s murder mystery dinner party experience">
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Thoreson Estate">
-    <title>Login - Thoreson Estate Dinner</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .login-container {
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .login-card {
-            background: linear-gradient(145deg, #f5f0e6 0%, #e8e0d0 50%, #d4c9b5 100%);
-            border: 3px solid #8b7355;
-            box-shadow: 
-                0 0 0 1px #a08060,
-                0 0 0 6px #2a2520,
-                0 0 0 8px #8b7355,
-                0 20px 60px rgba(0,0,0,0.5);
-            padding: 50px 40px;
-            text-align: center;
-        }
-
-        .title {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 36px;
-            color: #2a2520;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
-
-        .subtitle {
-            font-size: 14px;
-            color: #8b7355;
-            margin-bottom: 40px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            font-size: 14px;
-            color: #2a2520;
-            margin-bottom: 8px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #8b7355;
-            background: rgba(255, 255, 255, 0.9);
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 16px;
-            color: #2a2520;
-            border-radius: 3px;
-            transition: all 0.3s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #c9a227;
-            box-shadow: 0 0 10px rgba(201, 162, 39, 0.3);
-        }
-
-        .login-button {
-            width: 100%;
-            padding: 14px;
-            background: #c9a227;
-            color: #2a2520;
-            border: none;
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 16px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            cursor: pointer;
-            border-radius: 3px;
-            transition: all 0.3s;
-            margin-top: 20px;
-        }
-
-        .login-button:hover {
-            background: #e8c55a;
-            transform: scale(1.02);
-        }
-
-        .error-message {
-            color: #d32f2f;
-            font-size: 14px;
-            margin-top: 15px;
-            display: none;
-        }
-
-        .info-text {
-            font-size: 12px;
-            color: #8b7355;
-            margin-top: 30px;
-            line-height: 1.6;
-        }
-
-        .corner {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            border: 2px solid #8b7355;
-        }
-
-        .corner-tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
-        .corner-tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
-        .corner-bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
-        .corner-br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
-
-        .login-card {
-            position: relative;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Player Login — Thor's Murder Mysteries</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+    --ink:#06040a;--deep:#0a0810;--surface:#111018;
+    --border:rgba(201,162,39,0.15);--gold:#c9a227;--gold-lt:#e8c55a;
+    --fog:#8b8b9e;--mist:#c4c4d4;--white:#f5f0e8;
+    --green:#3fb950;--red:#c0392b;
+}
+html,body{height:100%;background:var(--ink);color:var(--white);font-family:'Cormorant Garamond',Georgia,serif;overflow-x:hidden}
+.bg{position:fixed;inset:0;pointer-events:none;
+    background:radial-gradient(ellipse 60% 80% at 0% 50%,rgba(139,26,26,0.06) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 80% at 100% 50%,rgba(201,162,39,0.04) 0%,transparent 60%),
+    radial-gradient(ellipse at center,#0a0810 0%,#06040a 100%)}
+.bg::after{content:'';position:fixed;top:0;bottom:0;left:50%;width:1px;
+    background:linear-gradient(to bottom,transparent,rgba(201,162,39,0.08) 15%,rgba(201,162,39,0.08) 85%,transparent)}
+.page{position:relative;min-height:100vh;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr}
+@media(max-width:720px){.page{grid-template-columns:1fr}.bg::after{display:none}}
+.brand{grid-column:1/-1;text-align:center;padding:36px 24px 28px;border-bottom:1px solid rgba(201,162,39,0.08)}
+.brand-name{font-family:'Cinzel',serif;font-size:11px;letter-spacing:6px;text-transform:uppercase;color:var(--gold);text-decoration:none;display:inline-block}
+.brand-sub{font-family:'Special Elite',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,162,39,0.3);margin-top:4px}
+.panel{padding:48px 52px 56px;display:flex;flex-direction:column;align-items:stretch;position:relative}
+@media(max-width:720px){.panel{padding:36px 28px 40px}.panel.signin{border-top:1px solid rgba(201,162,39,0.08)}}
+.panel-eyebrow{font-family:'Special Elite',monospace;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:rgba(201,162,39,0.4);margin-bottom:10px}
+.panel-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--white);margin-bottom:6px}
+.panel-sub{font-size:16px;font-style:italic;color:var(--fog);margin-bottom:32px;line-height:1.5}
+.field{margin-bottom:18px}
+label{display:block;font-family:'Special Elite',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:7px;opacity:.7}
+input[type=text],input[type=email],input[type=password]{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--white);font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;padding:12px 16px;outline:none;transition:border-color .2s;-webkit-appearance:none;border-radius:0}
+input:focus{border-color:var(--gold)}
+input::placeholder{color:rgba(139,139,158,0.5)}
+.pw-wrap{position:relative}
+.pw-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--fog);font-size:16px;padding:4px}
+.btn-primary{width:100%;background:var(--gold);color:var(--ink);border:none;font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;padding:16px;cursor:pointer;transition:background .2s;margin-top:6px}
+.btn-primary:hover{background:var(--gold-lt)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-google{width:100%;background:#fff;color:#3c4043;border:1px solid #dadce0;font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;padding:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;transition:background .15s;border-radius:0}
+.btn-google:hover{background:#f8f8f8}
+.divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--fog);font-family:'Special Elite',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(201,162,39,0.12)}
+.msg{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:12px 14px;margin-top:14px;display:none}
+.msg.error{color:#e07070;background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,0.2)}
+.msg.success{color:var(--green);background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.2)}
+.text-link{color:var(--gold);text-decoration:none;font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.6;transition:opacity .2s;cursor:pointer;background:none;border:none}
+.text-link:hover{opacity:1}
+.links-row{display:flex;justify-content:space-between;align-items:center;margin-top:16px}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(6,4,10,0.3);border-top-color:var(--ink);border-radius:50%;animation:spin .7s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mobile-label{display:none;font-family:'Special Elite',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,162,39,0.25);text-align:center;padding:20px 0 4px}
+@media(max-width:720px){.mobile-label{display:block}}
+</style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-card">
-            <div class="corner corner-tl"></div>
-            <div class="corner corner-tr"></div>
-            <div class="corner corner-bl"></div>
-            <div class="corner corner-br"></div>
+<div class="bg"></div>
+<div class="page">
 
-            <h1 class="title">The Thoreson Estate</h1>
-            <p class="subtitle">March 21, 1935</p>
-
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="username">Name</label>
-                    <input 
-                        type="text" 
-                        id="username" 
-                        name="username" 
-                        placeholder="Enter your name" 
-                        required
-                        autocomplete="off"
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="code">Access Code</label>
-                    <input 
-                        type="text" 
-                        id="code" 
-                        name="code" 
-                        placeholder="5-digit code" 
-                        required
-                        autocomplete="off"
-                        maxlength="5"
-                        inputmode="numeric"
-                    >
-                </div>
-
-                <button type="submit" class="login-button">Enter</button>
-            </form>
-
-            <div class="error-message" id="errorMessage"></div>
-
-            <p class="info-text">
-                Enter your name and the access code provided to you to view your character information.
-            </p>
-        </div>
+    <div class="brand">
+        <a href="landing.html" class="brand-name">Thor's Murder Mysteries</a>
+        <div class="brand-sub">Player Access</div>
     </div>
 
-    <script>
-        // User database — authentication only (code + role)
-        // Skills come from characters.js
-        const users = {
-            "Scott": { code: "61493", role: "master" },
-            "BrianT": { code: "42851", role: "guest" },
-            "Clara": { code: "56374", role: "guest" },
-            "Leanna": { code: "31429", role: "guest" },
-            "Marc": { code: "68915", role: "guest" },
-            "Maisy": { code: "25837", role: "guest" },
-            "Hannah": { code: "84126", role: "guest" },
-            "DJ": { code: "91564", role: "guest" },
-            "Peter": { code: "17382", role: "guest" },
-            "Arash": { code: "73649", role: "guest" },
-            "Becky": { code: "45928", role: "guest" },
-            "BrianS": { code: "52847", role: "guest" },
-            "Katie": { code: "29175", role: "guest" },
-            "Michelle": { code: "63841", role: "guest" },
-            "Jeff": { code: "34759", role: "guest" },
-            "Casey": { code: "85214", role: "guest" },
-            "Krystal": { code: "72938", role: "guest" },
-            "Lindsey": { code: "41876", role: "guest" },
-            "Bradey": { code: "96523", role: "guest" },
-            "Alexander": { code: "51783", role: "guest" },
-            "Jesse": { code: "28764", role: "guest" },
-            "Preston": { code: "39517", role: "guest" },
-            "Greeter": { code: "77291", role: "greeter" },
-            "Dylan": { code: "16583", role: "guest" },
-            // ── TEST ACCOUNTS (tonight's playtest) ─────────────────
-            "TestMiranda": { code: "51199", role: "test", character: "Leanna" },
-            "TestWalter":  { code: "47150", role: "test", character: "Marc" },
-            "TestVivienne":{ code: "27235", role: "test", character: "Hannah" },
-            "TestDavid":   { code: "55274", role: "test", character: "DJ" },
-            "TestCasey":   { code: "34346", role: "test", character: "Casey" },
-            "TestTeddy":   { code: "57003", role: "test", character: "Dylan" },
-            "TestCharles": { code: "20597", role: "test", character: "Jeff" }
-        };
+    <!-- LEFT: NEW PLAYER -->
+    <div class="panel register">
+        <div class="panel-eyebrow">First Time?</div>
+        <div class="panel-title">Create Account</div>
+        <div class="panel-sub">You'll need an account to join the evening and access your character.</div>
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        <button class="btn-google" onclick="googleSignIn()">
+            <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"/></svg>
+            Continue with Google
+        </button>
+        <div class="divider">or</div>
+        <div class="field"><label for="regName">Your Name</label><input type="text" id="regName" placeholder="First Last" autocomplete="name"></div>
+        <div class="field"><label for="regEmail">Email</label><input type="email" id="regEmail" placeholder="you@example.com" autocomplete="email"></div>
+        <div class="field"><label for="regPw">Password</label><div class="pw-wrap"><input type="password" id="regPw" placeholder="At least 6 characters" autocomplete="new-password"><button class="pw-toggle" type="button" onclick="togglePw('regPw',this)">👁</button></div></div>
+        <div class="field"><label for="regPw2">Confirm Password</label><div class="pw-wrap"><input type="password" id="regPw2" placeholder="Repeat password" autocomplete="new-password"><button class="pw-toggle" type="button" onclick="togglePw('regPw2',this)">👁</button></div></div>
+        <button class="btn-primary" id="regBtn" onclick="handleRegister()">Create Account</button>
+        <div class="msg error"   id="regError"></div>
+        <div class="msg success" id="regSuccess"></div>
+    </div>
 
-            const usernameRaw = document.getElementById('username').value.trim();
-            const code = document.getElementById('code').value.trim();
-            const errorMsg = document.getElementById('errorMessage');
+    <!-- RIGHT: RETURNING PLAYER -->
+    <div class="panel signin">
+        <div class="mobile-label">Already have an account?</div>
+        <div class="panel-eyebrow">Returning?</div>
+        <div class="panel-title">Sign In</div>
+        <div class="panel-sub">Welcome back. Your character and discoveries are waiting.</div>
 
-            // Case-insensitive username lookup
-            const username = Object.keys(users).find(k => k.toLowerCase() === usernameRaw.toLowerCase()) || usernameRaw;
+        <button class="btn-google" onclick="googleSignIn()">
+            <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"/></svg>
+            Continue with Google
+        </button>
+        <div class="divider">or</div>
+        <div class="field"><label for="signEmail">Email</label><input type="email" id="signEmail" placeholder="you@example.com" autocomplete="email"></div>
+        <div class="field"><label for="signPw">Password</label><div class="pw-wrap"><input type="password" id="signPw" placeholder="Your password" autocomplete="current-password"><button class="pw-toggle" type="button" onclick="togglePw('signPw',this)">👁</button></div></div>
+        <button class="btn-primary" id="signBtn" onclick="handleSignIn()">Sign In</button>
+        <div class="msg error"   id="signError"></div>
+        <div class="msg success" id="signSuccess"></div>
+        <div class="links-row"><button class="text-link" onclick="handleForgot()">Forgot password?</button></div>
+    </div>
 
-            if (users[username] && users[username].code === code) {
-                // Test accounts use a different character key than their username
-                const charKey = users[username].character || username;
-                const userSession = {
-                    username: charKey,
-                    displayName: username,
-                    role: users[username].role,
-                    loginTime: new Date().toISOString()
-                };
+</div>
 
-                localStorage.setItem('userSession', JSON.stringify(userSession));
-                window.location.href = 'authenticated-dashboard.html';
-            } else {
-                errorMsg.textContent = 'Invalid name or code. Please try again.';
-                errorMsg.style.display = 'block';
-                document.getElementById('code').value = '';
-            }
-        });
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+<script>
+firebase.initializeApp({
+    apiKey:"AIzaSyApHrYubqWrR4m0ihdpq6Ym40jv4HTQ5i0",
+    authDomain:"thoreson-estate.firebaseapp.com",
+    databaseURL:"https://thoreson-estate-default-rtdb.firebaseio.com",
+    projectId:"thoreson-estate",
+    storageBucket:"thoreson-estate.firebasestorage.app",
+    messagingSenderId:"182924616892",
+    appId:"1:182924616892:web:8153e1c69895cee665dcb9"
+});
+const auth=firebase.auth(), db=firebase.database();
+const params=new URLSearchParams(window.location.search);
 
-        // Check if already logged in
-        window.addEventListener('load', function() {
-            const session = localStorage.getItem('userSession');
-            if (session) {
-                window.location.href = 'authenticated-dashboard.html';
-            }
-        });
-    </script>
-    <script>
-        // TEMPORARY: Nuke service worker and all caches
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(registrations => {
-                registrations.forEach(r => r.unregister());
-            });
-            if ('caches' in window) {
-                caches.keys().then(names => names.forEach(n => caches.delete(n)));
-            }
-        }
-    </script>
+function showErr(s,m){const e=document.getElementById(s+'Error');e.textContent=m;e.style.display='block';document.getElementById(s+'Success').style.display='none'}
+function showOk(s,m){const e=document.getElementById(s+'Success');e.textContent=m;e.style.display='block';document.getElementById(s+'Error').style.display='none'}
+function clearMsgs(){['regError','regSuccess','signError','signSuccess'].forEach(id=>document.getElementById(id).style.display='none')}
+function togglePw(id,btn){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'👁':'🙈'}
+function dest(){return'home.html'+(params.get('code')?'?code='+params.get('code'):'')}
+
+async function writeUserRecord(user,displayName){
+    const snap=await db.ref('users/'+user.uid).once('value');
+    if(!snap.exists())await db.ref('users/'+user.uid).set({
+        displayName:displayName||user.displayName||user.email.split('@')[0],
+        email:user.email,createdAt:new Date().toISOString(),gamesPlayed:[],currentGameId:null
+    });
+}
+async function route(user){await writeUserRecord(user,user.displayName);window.location.href=dest()}
+
+auth.getRedirectResult().then(r=>{if(r&&r.user)route(r.user)}).catch(e=>{if(e.code!=='auth/no-auth-event')showErr('sign',e.message)});
+
+async function googleSignIn(){
+    clearMsgs();
+    const provider=new firebase.auth.GoogleAuthProvider();
+    try{const r=await auth.signInWithPopup(provider);await route(r.user)}
+    catch(e){
+        if(e.code==='auth/popup-blocked'||e.code==='auth/popup-closed-by-user')await auth.signInWithRedirect(provider);
+        else showErr('sign',e.message);
+    }
+}
+
+async function handleRegister(){
+    clearMsgs();
+    const name=document.getElementById('regName').value.trim();
+    const email=document.getElementById('regEmail').value.trim();
+    const pw=document.getElementById('regPw').value;
+    const pw2=document.getElementById('regPw2').value;
+    if(!name)return showErr('reg','Please enter your name.');
+    if(!email)return showErr('reg','Please enter your email.');
+    if(pw.length<6)return showErr('reg','Password must be at least 6 characters.');
+    if(pw!==pw2)return showErr('reg','Passwords do not match.');
+    const btn=document.getElementById('regBtn');
+    btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Creating account…';
+    try{
+        const cred=await auth.createUserWithEmailAndPassword(email,pw);
+        await cred.user.updateProfile({displayName:name});
+        await writeUserRecord(cred.user,name);
+        showOk('reg','Account created — redirecting…');
+        setTimeout(()=>window.location.href=dest(),900);
+    }catch(e){
+        btn.disabled=false;btn.textContent='Create Account';
+        if(e.code==='auth/email-already-in-use')showErr('reg','That email already has an account. Sign in on the right.');
+        else if(e.code==='auth/invalid-email')showErr('reg','Please enter a valid email address.');
+        else showErr('reg',e.message);
+    }
+}
+
+async function handleSignIn(){
+    clearMsgs();
+    const email=document.getElementById('signEmail').value.trim();
+    const pw=document.getElementById('signPw').value;
+    if(!email)return showErr('sign','Please enter your email.');
+    if(!pw)return showErr('sign','Please enter your password.');
+    const btn=document.getElementById('signBtn');
+    btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Signing in…';
+    try{const r=await auth.signInWithEmailAndPassword(email,pw);await route(r.user)}
+    catch(e){
+        btn.disabled=false;btn.textContent='Sign In';
+        if(['auth/user-not-found','auth/wrong-password','auth/invalid-credential'].includes(e.code))
+            showErr('sign','Incorrect email or password.');
+        else showErr('sign',e.message);
+    }
+}
+
+async function handleForgot(){
+    clearMsgs();
+    const email=document.getElementById('signEmail').value.trim();
+    if(!email)return showErr('sign','Enter your email above first.');
+    try{await auth.sendPasswordResetEmail(email);showOk('sign','Reset email sent — check your inbox.')}
+    catch(e){showErr('sign','Could not send reset email.')}
+}
+
+document.addEventListener('keydown',e=>{
+    if(e.key!=='Enter')return;
+    const a=document.activeElement?.id;
+    if(['regName','regEmail','regPw','regPw2'].includes(a))handleRegister();
+    if(['signEmail','signPw'].includes(a))handleSignIn();
+});
+</script>
 </body>
 </html>
