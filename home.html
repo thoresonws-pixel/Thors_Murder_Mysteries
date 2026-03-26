@@ -673,6 +673,11 @@ function initInstallBanner() {
         || window.navigator.standalone === true;
     if (isStandalone) return;
 
+    // Don't show on desktop — only mobile/tablet
+    const isMobile = /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent)
+        || (navigator.maxTouchPoints > 1 && /macintosh/i.test(navigator.userAgent)); // iPad on iOS 13+
+    if (!isMobile) return;
+
     // Check if dismissed recently
     if (localStorage.getItem('installDismissed') === 'true') return;
 
