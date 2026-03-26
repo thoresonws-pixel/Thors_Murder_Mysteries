@@ -1189,28 +1189,6 @@
             <div id="monitorAlertItems"></div>
         </div>
 
-        <!-- ── PLAYER ACTIVITY ───────────────────────────────── -->
-        <div class="section-head" style="margin-bottom:10px;">
-            <div class="section-title">Player Activity</div>
-            <button class="btn-ghost" onclick="refreshHealth()">↻ Refresh</button>
-        </div>
-        <div class="panel" style="padding:0;margin-bottom:28px;">
-            <table class="activity-table">
-                <thead>
-                    <tr>
-                        <th>Player</th>
-                        <th>Character</th>
-                        <th>Last Seen</th>
-                        <th>Scans</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="activityTable2">
-                    <tr><td colspan="5" style="color:var(--fog);font-style:italic;text-align:center;padding:24px;">Game hasn't started yet.</td></tr>
-                </tbody>
-            </table>
-        </div>
-
     <!-- ── REVELATION CONTROLS ───────────────────────────────── -->
 
         <div class="section-head">
@@ -1250,6 +1228,28 @@
         </div>
         <div class="panel">
             <div id="leaderboard" style="color:var(--fog);font-style:italic;">No scans yet.</div>
+        </div>
+
+        <!-- ── PLAYER ACTIVITY ───────────────────────────────── -->
+        <div class="section-head" style="margin-bottom:10px;margin-top:28px;">
+            <div class="section-title">Player Activity</div>
+            <button class="btn-ghost" onclick="refreshHealth()">↻ Refresh</button>
+        </div>
+        <div class="panel" style="padding:0;margin-bottom:28px;">
+            <table class="activity-table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Character</th>
+                        <th>Last Seen</th>
+                        <th>Scans</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="activityTable2">
+                    <tr><td colspan="5" style="color:var(--fog);font-style:italic;text-align:center;padding:24px;">Game hasn't started yet.</td></tr>
+                </tbody>
+            </table>
         </div>
 
     </div>
