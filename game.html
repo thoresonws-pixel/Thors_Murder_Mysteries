@@ -1069,7 +1069,7 @@
                     </tr>
                 </thead>
                 <tbody id="activityTable">
-                    <tr><td colspan="9" style="color:var(--fog);font-style:italic;text-align:center;padding:24px;">No activity data yet — game hasn't started.</td></tr>
+                    <tr><td colspan="8" style="color:var(--fog);font-style:italic;text-align:center;padding:24px;">No activity data yet — game hasn't started.</td></tr>
                 </tbody>
             </table>
         </div>
@@ -1102,7 +1102,7 @@
                     </tr>
                 </thead>
                 <tbody id="guestTableBody">
-                    <tr><td colspan="9" style="color:var(--fog);font-style:italic;text-align:center;padding:24px;">No guests yet.</td></tr>
+                    <tr><td colspan="8" style="color:var(--fog);font-style:italic;text-align:center;padding:24px;">No guests yet.</td></tr>
                 </tbody>
             </table>
         </div>
@@ -1212,7 +1212,7 @@
                     </tr>
                 </thead>
                 <tbody id="activityTable2">
-                    <tr><td colspan="9" style="color:var(--fog);font-style:italic;text-align:center;padding:24px;">Game hasn't started yet.</td></tr>
+                    <tr><td colspan="8" style="color:var(--fog);font-style:italic;text-align:center;padding:24px;">Game hasn't started yet.</td></tr>
                 </tbody>
             </table>
         </div>
@@ -1224,26 +1224,6 @@
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- Edit Contact Modal -->
-<div id="editContactModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;align-items:center;justify-content:center;">
-    <div style="background:#111018;border:1px solid rgba(201,162,39,0.2);border-top:2px solid #c9a227;width:90%;max-width:420px;padding:28px;">
-        <div style="font-family:'Playfair Display',serif;font-size:18px;color:#c9a227;margin-bottom:4px;" id="editContactName">Edit Contact</div>
-        <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:3px;color:var(--fog);text-transform:uppercase;margin-bottom:20px;">Update player details</div>
-        <input type="hidden" id="editContactUid">
-        <div style="margin-bottom:14px;">
-            <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:3px;color:rgba(201,162,39,0.5);text-transform:uppercase;margin-bottom:6px;">Email</div>
-            <input type="email" id="editContactEmail" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(201,162,39,0.2);color:#f5f0e6;font-family:'Cormorant Garamond',Georgia,serif;font-size:16px;padding:10px 14px;outline:none;">
-        </div>
-        <div style="margin-bottom:24px;">
-            <div style="font-family:'Special Elite',monospace;font-size:9px;letter-spacing:3px;color:rgba(201,162,39,0.5);text-transform:uppercase;margin-bottom:6px;">Phone</div>
-            <input type="tel" id="editContactPhone" placeholder="555-123-4567" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(201,162,39,0.2);color:#f5f0e6;font-family:'Cormorant Garamond',Georgia,serif;font-size:16px;padding:10px 14px;outline:none;">
-        </div>
-        <div style="display:flex;gap:10px;">
-            <button onclick="saveContact()" class="btn-gold" style="flex:1;">Save</button>
-            <button onclick="closeEditContact()" class="btn-ghost" style="flex:1;">Cancel</button>
-        </div>
-    </div>
-</div>
 
 
 <!-- Firebase + story scripts -->
@@ -1571,7 +1551,7 @@ function refreshHealth() {
     const tbody = document.getElementById(tbId);
     if (!tbody) return;
     if (playerList.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" style="color:var(--fog);font-style:italic;text-align:center;padding:24px;">No players yet.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="color:var(--fog);font-style:italic;text-align:center;padding:24px;">No players yet.</td></tr>';
         return;
     }
     tbody.innerHTML = playerList.map(p => {
@@ -1599,7 +1579,7 @@ function renderGuests() {
     const playerList = Object.entries(players);
 
     if (playerList.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" style="color:var(--fog);font-style:italic;text-align:center;padding:24px;">No guests yet.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="color:var(--fog);font-style:italic;text-align:center;padding:24px;">No guests yet.</td></tr>';
         return;
     }
 
@@ -1625,15 +1605,11 @@ function renderGuests() {
                 <div class="guest-name">${p.displayName || uid} ${isTest ? '<span style="font-size:11px;color:var(--fog);">(test)</span>' : ''}</div>
             </td>
             <td style="font-size:13px;color:var(--mist);">${p.email || '—'}</td>
-            <td style="font-size:13px;color:var(--mist);">${p.phone || '—'}</td>
             <td style="text-align:center;">${check(true)}</td>
             <td style="text-align:center;">${check(hasChar)}</td>
             <td style="text-align:center;">${check(hasSurvey)}</td>
             <td style="text-align:center;">${check(hasWaiver)}</td>
-            <td style="white-space:nowrap;">
-                <button class="btn-ghost" style="font-size:11px;padding:4px 10px;margin-right:4px;" onclick="editContact('${uid}','${p.displayName || ''}','${p.email || ''}','${p.phone || ''}')">✏ Edit</button>
-                <button class="btn-danger" onclick="removePlayer('${uid}', '${p.displayName || uid}')">Remove</button>
-            </td>
+            <td><button class="btn-danger" onclick="removePlayer('${uid}', '${p.displayName || uid}')">Remove</button></td>
         </tr>`;
     }).join('');
 }
@@ -1641,27 +1617,6 @@ function renderGuests() {
 async function togglePayment(uid, currentState) {
     await db.ref('games/' + gameId + '/players/' + uid + '/paymentCollected').set(!currentState);
     showToast(!currentState ? 'Payment marked.' : 'Payment cleared.', 'success');
-}
-
-function editContact(uid, name, email, phone) {
-    document.getElementById('editContactUid').value = uid;
-    document.getElementById('editContactName').textContent = name || 'Edit Contact';
-    document.getElementById('editContactEmail').value = email;
-    document.getElementById('editContactPhone').value = phone;
-    document.getElementById('editContactModal').style.display = 'flex';
-}
-
-function closeEditContact() {
-    document.getElementById('editContactModal').style.display = 'none';
-}
-
-async function saveContact() {
-    const uid   = document.getElementById('editContactUid').value;
-    const email = document.getElementById('editContactEmail').value.trim();
-    const phone = document.getElementById('editContactPhone').value.trim();
-    await db.ref('games/' + gameId + '/players/' + uid).update({ email, phone });
-    closeEditContact();
-    showToast('Contact updated.', 'success');
 }
 
 async function removePlayer(uid, name) {
