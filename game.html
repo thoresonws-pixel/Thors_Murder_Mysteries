@@ -549,20 +549,6 @@
             border-radius: 2px;
         }
 
-        .payment-toggle {
-            font-family: 'Special Elite', monospace;
-            font-size: 10px;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            padding: 4px 10px;
-            cursor: pointer;
-            border-radius: 2px;
-            border: none;
-            transition: all 0.2s;
-        }
-        .payment-paid   { background: rgba(39,170,91,0.15); color: var(--green); }
-        .payment-unpaid { background: rgba(154,144,128,0.1); color: var(--fog); }
-
         /* ── CHARACTERS TAB ───────────────────────────────────── */
         .char-grid {
             display: grid;
@@ -1109,7 +1095,6 @@
                         <th>Character</th>
                         <th>Involvement</th>
                         <th>Gender Pref</th>
-                        <th>Payment</th>
                         <th>Status</th>
                         <th></th>
                     </tr>
@@ -1607,12 +1592,6 @@ function renderGuests() {
                 </div>
             </td>
             <td style="font-family:'Special Elite',monospace;font-size:11px;color:var(--fog);text-transform:uppercase;">${gender}</td>
-            <td>
-                <button class="payment-toggle ${isPaid ? 'payment-paid' : 'payment-unpaid'}"
-                    onclick="togglePayment('${uid}', ${isPaid})">
-                    ${isPaid ? '✓ Paid' : 'Unpaid'}
-                </button>
-            </td>
             <td style="font-family:'Special Elite',monospace;font-size:10px;letter-spacing:1.5px;color:var(--fog);text-transform:uppercase;">${p.status || '—'}</td>
             <td><button class="btn-danger" onclick="removePlayer('${uid}', '${p.displayName || uid}')">Remove</button></td>
         </tr>`;
