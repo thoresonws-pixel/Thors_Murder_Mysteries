@@ -1422,6 +1422,7 @@ function renderChecklist() {
     const ready       = playerList.filter(p => p.status === 'ready').length;
     const hasQuestionnaire = playerList.filter(p => p.questionnaire).length;
     const rolesGenerated   = Object.keys(roleAssign).length > 0;
+    const hasWaiver        = playerList.filter(p => p.waiverSigned).length;
     const skillsAssigned   = Object.keys(skillAssign).length > 0;
     const gameStarted      = activeItems.includes('willsDeath');
     const inviteUrl        = `https://thorsmystery.com/invite.html?code=${gameData.partyCode}`;
@@ -1453,6 +1454,13 @@ function renderChecklist() {
             value: hasQuestionnaire + ' / ' + total,
             status: hasQuestionnaire === total && total > 0 ? 'ok' : 'warn',
             icon:   hasQuestionnaire === total && total > 0 ? '✓' : '⚠',
+            action: null
+        },
+        {
+            label: 'Waiver signed',
+            value: hasWaiver + ' / ' + total,
+            status: hasWaiver === total && total > 0 ? 'ok' : hasWaiver > 0 ? 'warn' : 'error',
+            icon:   hasWaiver === total && total > 0 ? '✓' : hasWaiver > 0 ? '⚠' : '✗',
             action: null
         },
         {
