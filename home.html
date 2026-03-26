@@ -693,15 +693,34 @@ async function saveAccount() {
 function openWaiverModal() {
     const modal = document.getElementById('waiverModal');
     modal.style.display = 'flex';
-    // Reset scroll and button
     document.getElementById('waiverBody').scrollTop = 0;
+
+    // Check after render if content fits without scrolling
+    setTimeout(() => {
+        const body = document.getElementById('waiverBody');
+        const noScrollNeeded = body.scrollHeight <= body.clientHeight + 20;
+        if (noScrollNeeded) {
+            unlockWaiverBtn();
+        } else {
+            const btn = document.getElementById('waiverAcceptBtn');
+            btn.disabled = true;
+            btn.style.background = 'rgba(201,162,39,0.2)';
+            btn.style.color = 'rgba(201,162,39,0.4)';
+            btn.style.borderColor = 'rgba(201,162,39,0.2)';
+            btn.style.cursor = 'not-allowed';
+            document.getElementById('waiverScrollHint').style.display = 'block';
+        }
+    }, 50);
+}
+
+function unlockWaiverBtn() {
     const btn = document.getElementById('waiverAcceptBtn');
-    btn.disabled = true;
-    btn.style.background = 'rgba(201,162,39,0.2)';
-    btn.style.color = 'rgba(201,162,39,0.4)';
-    btn.style.borderColor = 'rgba(201,162,39,0.2)';
-    btn.style.cursor = 'not-allowed';
-    document.getElementById('waiverScrollHint').style.display = 'block';
+    btn.disabled = false;
+    btn.style.background = '#c9a227';
+    btn.style.color = '#06040a';
+    btn.style.borderColor = '#c9a227';
+    btn.style.cursor = 'pointer';
+    document.getElementById('waiverScrollHint').style.display = 'none';
 }
 
 function closeWaiverModal() {
@@ -711,15 +730,7 @@ function closeWaiverModal() {
 function checkWaiverScroll() {
     const body = document.getElementById('waiverBody');
     const scrolledToBottom = body.scrollTop + body.clientHeight >= body.scrollHeight - 20;
-    if (scrolledToBottom) {
-        const btn = document.getElementById('waiverAcceptBtn');
-        btn.disabled = false;
-        btn.style.background = '#c9a227';
-        btn.style.color = '#06040a';
-        btn.style.borderColor = '#c9a227';
-        btn.style.cursor = 'pointer';
-        document.getElementById('waiverScrollHint').style.display = 'none';
-    }
+    if (scrolledToBottom) { unlockWaiverBtn(); }
 }
 
 // Close modal on backdrop click
