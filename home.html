@@ -670,7 +670,9 @@ let deferredInstallPrompt = null;
 function initInstallBanner() {
     // Don't show if already running as installed app
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches
-        || window.navigator.standalone === true;
+        || window.navigator.standalone === true
+        || document.referrer.includes('android-app://')
+        || window.location.href.includes('?source=pwa');
     if (isStandalone) return;
 
     // Don't show on desktop — only mobile/tablet
